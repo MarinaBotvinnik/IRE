@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.util.Dictionary;
 
+
 public class ReadFile {
     private String path;
     private Dictionary<String,Tagenizer> allPapers;
