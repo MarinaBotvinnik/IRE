@@ -1,3 +1,5 @@
+package Model;
+
 import java.util.Dictionary;
 
 public class Tagenizer {

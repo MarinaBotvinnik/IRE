@@ -1,3 +1,5 @@
+package Model;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -18,7 +20,7 @@ import java.util.regex.Pattern;
 
 public class ReadFile {
     private String path;
-    private Dictionary<String,Tagenizer> allPapers;
+    private Dictionary<String, Tagenizer> allPapers;
 
     public ReadFile(String path) {
         this.path = path;
@@ -56,8 +58,6 @@ public class ReadFile {
                 Node node = nodeList.item(i);
                 System.out.println(node);
             }*/
-            final Pattern pattern = Pattern.compile("<tag>(.+?)</tag>", Pattern.DOTALL);
-            final Matcher matcher = pattern.matcher("")
         }
         catch (Exception e){
             System.out.println(e.getMessage());
