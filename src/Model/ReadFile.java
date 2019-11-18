@@ -1,6 +1,10 @@
 package Model;
 
-import org.w3c.dom.Document;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -10,13 +14,11 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import java.beans.Expression;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FilenameFilter;
+import java.io.*;
 import java.util.Dictionary;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 public class ReadFile {
     private String path;
@@ -26,6 +28,7 @@ public class ReadFile {
         this.path = path;
     }
     public void readFile(String curr){
+        new File(System.getProperty("java.io.tmpdir")+"/SeperatedFiles").mkdir();
         listFilesForFolder(curr);
     }
     private void listFilesForFolder(String filePath){
@@ -48,7 +51,16 @@ public class ReadFile {
      */
     private void readDoc(String docPath){
         try {
-
+            FileInputStream fis = new FileInputStream(new File(docPath));
+            Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
+            Elements Documents=file.select("DOC");
+            for(Element doc : Documents){
+                File file2 = new File(System.getProperty("java.io.tmpdir")+"/SeperatedFiles/"+doc.select("DOCNO").text());
+                BufferedWriter bf=new BufferedWriter(new FileWriter(file2));
+                bf.write(doc.html());
+                //System.out.println(doc.html());
+                bf.close();
+            }
             /*DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             File f = new File(docPath);
