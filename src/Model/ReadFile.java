@@ -6,7 +6,6 @@ import org.jsoup.parser.Parser;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.io.*;
-import java.util.Dictionary;
 import java.util.HashMap;
 
 
@@ -14,6 +13,7 @@ public class ReadFile {
     private String path;
     private HashMap<String,String> docMap;
     private Parse parser;
+    private Dictionary dictionary;
 
     public ReadFile(String path) {
         this.path = path;
@@ -52,7 +52,7 @@ public class ReadFile {
                 //bf.close();
                 String docNo = doc.select("DOCNO").text();
                 docMap.put(docNo,docPath);
-                parser.parse(doc.select("TEXT").text());
+                parser.parse(dictionary,doc.select("TEXT").text());
             }
         }
         catch (Exception e){
