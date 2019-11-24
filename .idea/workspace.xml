@@ -3,9 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ed855956-439f-4db6-b857-ae02e384f8d4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CheckClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CheckClass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/ReadFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/ReadFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Model/Parse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Parse.java" afterDir="false" />
     </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,9 +14,15 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="ProjectId" id="1TyaGVve0wOy5eKpBOjJnMFpTFu" />
   <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$/AndroidStudioProjects/SummerProject/BackEnd/Crawler" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
   </component>
   <component name="RunDashboard">
@@ -49,14 +55,27 @@
     <configuration />
   </component>
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ed855956-439f-4db6-b857-ae02e384f8d4" name="Default Changelist" comment="" />
+      <created>1574434695003</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1574434695003</updated>
+      <workItem from="1574434701531" duration="7648000" />
+    </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

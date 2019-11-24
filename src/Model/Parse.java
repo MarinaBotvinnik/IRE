@@ -94,6 +94,19 @@ public class Parse {
                     dictionary.addTerm(termTxt,"");
                     continue;
                 }
+                //if the number is part of a date
+                if(isMounth(splitText[i+1])){
+                    if(Integer.parseInt(splitText[i])<10)
+                        termTxt=mounthNum(splitText[i+1])+"-0"+splitText[i];
+                    else
+                        termTxt=mounthNum(splitText[i+1])+"-"+splitText[i];
+                    dictionary.addTerm(termTxt,"");
+                    continue;
+                }
+                //no need to save the number, it was already saved as a date
+                if(isMounth(splitText[i-1])){
+                    continue;
+                }
                 String termNum =termNum(Double.parseDouble(splitText[i]));
                 dictionary.addTerm(termNum,"");
                 continue;
@@ -125,6 +138,21 @@ public class Parse {
                     dictionary.addTerm(termTxt,"");
                     continue;
                 }
+                //the term is a mounth
+                if(isMounth(splitText[i]) && isNum(splitText[i+1])){
+                        //checking if the number indicates a day
+                    if(Integer.parseInt(splitText[i+1])<=31){
+                        if(Integer.parseInt(splitText[i+1])<10)
+                            termTxt=mounthNum(splitText[i])+"-0"+splitText[i+1];
+                        else
+                            termTxt=mounthNum(splitText[i])+"-"+splitText[i+1];
+                    }
+                    //else, then the number indicates years
+                    else
+                        termTxt=splitText[i+1]+"-"+mounthNum(splitText[i]);
+                    dictionary.addTerm(termTxt,"");
+                    continue;
+                }
             }
         }
 
@@ -148,6 +176,41 @@ public class Parse {
             return false;
         }
         return true;
+    }
+
+    private boolean isMounth(String str){
+        String[] mounths={"January", "JANUARY", "Jan", "February", "FEBRUARY", "Feb", "March", "MARCH", "Mar", "April", "APRIL", "Apr", "May", "MAY", "June", "JUNE", "Jun", "July", "JULY", "Jul", "August", "AUGUST", "Aug", "September", "SEPTEMBER", "Sep", "October", "OCTOBER", "Oct", "November", "NOVEMBER", "Nov", "December", "DECEMBER", "Dec"};
+        for(String month : mounths){
+            if(str.equals(month))
+                return true;
+        }
+        return false;
+    }
+
+    private String mounthNum(String str){
+        if(str.equals("January") || str.equals("JANUARY") || str.equals("Jan"))
+            return "01";
+        if(str.equals("February") || str.equals("FEBRUARY") || str.equals("Feb"))
+            return "02";
+        if(str.equals("March") || str.equals("MARCH") || str.equals("Mar"))
+            return "03";
+        if(str.equals("April") || str.equals("APRIL") || str.equals("Apr"))
+            return "04";
+        if(str.equals("May") || str.equals("MAY"))
+            return "05";
+        if(str.equals("June") || str.equals("JUNE") || str.equals("Jun"))
+            return "06";
+        if(str.equals("July") || str.equals("JULY") || str.equals("Jul"))
+            return "07";
+        if(str.equals("August") || str.equals("AUGUST") || str.equals("Aug"))
+            return "08";
+        if(str.equals("September") || str.equals("SEPTEMBER") || str.equals("Sep"))
+            return "09";
+        if(str.equals("October") || str.equals("OCTOBER") || str.equals("Oct"))
+            return "10";
+        if(str.equals("November") || str.equals("NOVEMBER") || str.equals("Nov"))
+            return "11";
+        return "12";
     }
 
     /**
