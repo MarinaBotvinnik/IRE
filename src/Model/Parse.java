@@ -7,6 +7,7 @@ import java.util.HashMap;
 public class Parse {
 
     private ArrayList<String> stopWords;
+    private HashMap<String,String> months;
 
     public Parse(){
         if (stopWords == null) {
@@ -24,6 +25,7 @@ public class Parse {
                 System.out.println(e.getMessage());
             }
         }
+        months = new HashMap<>();
     }
 
     public void parse(Dictionary dictionary,String text) {
@@ -95,16 +97,16 @@ public class Parse {
                     continue;
                 }
                 //if the number is part of a date
-                if(isMounth(splitText[i+1])){
+                if(isMonth(splitText[i+1])){
                     if(Integer.parseInt(splitText[i])<10)
-                        termTxt=mounthNum(splitText[i+1])+"-0"+splitText[i];
+                        termTxt= monthNum(splitText[i+1])+"-0"+splitText[i];
                     else
-                        termTxt=mounthNum(splitText[i+1])+"-"+splitText[i];
+                        termTxt= monthNum(splitText[i+1])+"-"+splitText[i];
                     dictionary.addTerm(termTxt,"");
                     continue;
                 }
                 //no need to save the number, it was already saved as a date
-                if(isMounth(splitText[i-1])){
+                if(isMonth(splitText[i-1])){
                     continue;
                 }
                 String termNum =termNum(Double.parseDouble(splitText[i]));
@@ -138,24 +140,57 @@ public class Parse {
                     dictionary.addTerm(termTxt,"");
                     continue;
                 }
-                //the term is a mounth
-                if(isMounth(splitText[i]) && isNum(splitText[i+1])){
+                //the term is a month
+                if(isMonth(splitText[i]) && isNum(splitText[i+1])){
                         //checking if the number indicates a day
                     if(Integer.parseInt(splitText[i+1])<=31){
                         if(Integer.parseInt(splitText[i+1])<10)
-                            termTxt=mounthNum(splitText[i])+"-0"+splitText[i+1];
+                            termTxt= monthNum(splitText[i])+"-0"+splitText[i+1];
                         else
-                            termTxt=mounthNum(splitText[i])+"-"+splitText[i+1];
+                            termTxt= monthNum(splitText[i])+"-"+splitText[i+1];
                     }
                     //else, then the number indicates years
                     else
-                        termTxt=splitText[i+1]+"-"+mounthNum(splitText[i]);
+                        termTxt=splitText[i+1]+"-"+ monthNum(splitText[i]);
                     dictionary.addTerm(termTxt,"");
                     continue;
+                }
+                //if its the type WORD - WORD or WORD - WORD - WORD
+                if(splitText[i].indexOf("-")>=0){
+                    String [] numbers = splitToNumbers(splitText[i]);
+                    if(numbers[0].equals("true")){
+                        dictionary.addTerm(numbers[1],"");
+                        dictionary.addTerm(numbers[2],"");
+                    }
+                    dictionary.addTerm(splitText[i],"");
+                }
+                //if ots the type BETWEEN NUMBER AND NUMBER
+                if((splitText[i].equals("Between") || splitText[i].equals("between"))&& isNum(splitText[i+1]) && splitText[i+2].equals("and") && isNum(splitText[i+3])){
+                    dictionary.addTerm(splitText[i]+" "+splitText[i+1]+ " "+ splitText[i+2] + " "+ splitText[i+3],"");
+                    dictionary.addTerm(splitText[i+1],"");
+                    dictionary.addTerm(splitText[i+3],"");
+                }
+                //it is a REGULAR WORD - the dictionary will save it correctly
+               else{
+                   dictionary.saveCorrectly(splitText[i]);
                 }
             }
         }
 
+    }
+
+    private String[] splitToNumbers (String str){
+       String [] splited = new String[3];
+       int place = str.indexOf('-');
+       String first = str.substring(0,place);
+       String sec = str.substring(place+1);
+       if(isNum(first) && isNum(sec)){
+           splited[0] = "true";
+           splited[1]= first;
+           splited[2] = sec;
+       }
+       else splited[0]= "false";
+       return splited;
     }
 
     private boolean isFraction(String txt){
@@ -171,25 +206,43 @@ public class Parse {
 
     private boolean isNum(String str){
         try {
-            double num = Double.parseDouble(str);
+            Double.parseDouble(str);
         } catch (NumberFormatException | NullPointerException nfe) {
             return false;
         }
         return true;
     }
 
-    private boolean isMounth(String str){
-        String[] mounths={"January", "JANUARY", "Jan", "February", "FEBRUARY", "Feb", "March", "MARCH", "Mar", "April", "APRIL", "Apr", "May", "MAY", "June", "JUNE", "Jun", "July", "JULY", "Jul", "August", "AUGUST", "Aug", "September", "SEPTEMBER", "Sep", "October", "OCTOBER", "Oct", "November", "NOVEMBER", "Nov", "December", "DECEMBER", "Dec"};
-        for(String month : mounths){
-            if(str.equals(month))
+    private boolean isMonth(String str){
+
+        if(months.isEmpty())
+        {
+            String[] months={"January", "JANUARY", "Jan","JAN","january",
+                    "February", "FEBRUARY", "Feb","FEB","february",
+                    "March", "MARCH", "Mar","MAR","march",
+                    "April", "APRIL", "Apr","april","APR",
+                    "May", "MAY","may",
+                    "June", "JUNE", "Jun","JUN","june",
+                    "July", "JULY", "Jul","JUL","july",
+                    "August", "AUGUST", "Aug","august","AUG",
+                    "September", "SEPTEMBER", "Sep","SEP","september",
+                    "October", "OCTOBER", "Oct","OCT","october",
+                    "November", "NOVEMBER", "Nov","NOV","november",
+                    "December", "DECEMBER", "Dec","DEC","december"};
+            for(String month : months){
+               this.months.put(month,month.substring(0,2).toLowerCase());
+            }
+        }
+        else{
+            if(months.containsKey(str))
                 return true;
         }
         return false;
     }
 
-    private String mounthNum(String str){
-        if(str.equals("January") || str.equals("JANUARY") || str.equals("Jan"))
-            return "01";
+    private String monthNum(String str){ // add all lower case / and short all upper case
+       if(months.get(str).equals("jan")) //maybe this way its quicker
+           return "01";
         if(str.equals("February") || str.equals("FEBRUARY") || str.equals("Feb"))
             return "02";
         if(str.equals("March") || str.equals("MARCH") || str.equals("Mar"))
@@ -252,7 +305,7 @@ public class Parse {
         String[] splitTxt = text.split(" ");
         int empty=0;
         for(int i=0; i<splitTxt.length; i++){
-            if(stopWords.contains(splitTxt[i]) || !splitTxt[i].equals("between") || !splitTxt[i].equals("Between")){
+            if(stopWords.contains(splitTxt[i]) || !splitTxt[i].equals("between") || !splitTxt[i].equals("Between") ||!splitTxt[i].equals("and") ){
                 splitTxt[i]= null;
                 empty++;
             }
