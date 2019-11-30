@@ -34,6 +34,13 @@ public class Parse {
             String termTxt="";
             ////if the word is a PURE NUMBER
             if(isNum(splitText[i])){
+                ////if the word is Kg
+                if(splitText[i+1].equals("kg") || splitText[i+1].equals("Kg")|| splitText[i+1].equals("KG")||splitText[i+1].equals("kilogram")
+                        ||splitText[i+1].equals("Kilogram")||splitText[i+1].equals("kilograms") ||splitText[i+1].equals("Kilograms")){
+                    termTxt = splitText[i] + "Kg";
+                    dictionary.addTerm(termTxt,docNo);
+                    continue;
+                }
                 ////if the number is PERCENT
                 if(splitText[i+1].equals("percent")|| splitText[i+1].equals("percentage") || splitText[i+1].equals("%")){
                     termTxt = splitText[i]+"%";
@@ -161,7 +168,12 @@ public class Parse {
                         dictionary.addTerm(numbers[1],docNo);
                         dictionary.addTerm(numbers[2],docNo);
                     }
-                    dictionary.addTerm(splitText[i],docNo);
+                    if(numbers[0].equals("kg")){
+                        termTxt = numbers[1]+ "Kg";
+                        dictionary.addTerm(termTxt,docNo);
+                    }
+                    if(numbers[0].equals("true")|| numbers[0].equals("false"))
+                        dictionary.addTerm(splitText[i],docNo);
                 }
                 //if ots the type BETWEEN NUMBER AND NUMBER
                 if((splitText[i].equals("Between") || splitText[i].equals("between"))&& isNum(splitText[i+1]) && splitText[i+2].equals("and") && isNum(splitText[i+3])){
@@ -188,6 +200,10 @@ public class Parse {
            splited[1]= first;
            splited[2] = sec;
        }
+       else if(isNum(first) && (sec.equals("kilograms") || sec.equals("kilogram"))){
+           splited[0] = "kg";
+           splited[1]= first;
+        }
        else splited[0]= "false";
        return splited;
     }
@@ -239,25 +255,25 @@ public class Parse {
     private String monthNum(String str){ // add all lower case / and short all upper case
        if(months.get(str).equals("jan")) //maybe this way its quicker
            return "01";
-        if(str.equals("February") || str.equals("FEBRUARY") || str.equals("Feb"))
+        if(months.get(str).equals("feb"))
             return "02";
-        if(str.equals("March") || str.equals("MARCH") || str.equals("Mar"))
+        if(months.get(str).equals("mar"))
             return "03";
-        if(str.equals("April") || str.equals("APRIL") || str.equals("Apr"))
+        if(months.get(str).equals("apr"))
             return "04";
-        if(str.equals("May") || str.equals("MAY"))
+        if(months.get(str).equals("may"))
             return "05";
-        if(str.equals("June") || str.equals("JUNE") || str.equals("Jun"))
+        if(months.get(str).equals("jun"))
             return "06";
-        if(str.equals("July") || str.equals("JULY") || str.equals("Jul"))
+        if(months.get(str).equals("jul"))
             return "07";
-        if(str.equals("August") || str.equals("AUGUST") || str.equals("Aug"))
+        if(months.get(str).equals("aug"))
             return "08";
-        if(str.equals("September") || str.equals("SEPTEMBER") || str.equals("Sep"))
+        if(months.get(str).equals("sep"))
             return "09";
-        if(str.equals("October") || str.equals("OCTOBER") || str.equals("Oct"))
+        if(months.get(str).equals("oct"))
             return "10";
-        if(str.equals("November") || str.equals("NOVEMBER") || str.equals("Nov"))
+        if(months.get(str).equals("nov"))
             return "11";
         return "12";
     }
