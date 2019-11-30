@@ -7,4 +7,8 @@ public class ViewModel {
     public ViewModel(Model model) {
         this.model = model;
     }
+
+    public void getStem(boolean isStem) {
+        model.setStem(isStem);
+    }
 }
