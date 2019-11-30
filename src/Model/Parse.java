@@ -8,6 +8,7 @@ public class Parse {
 
     private ArrayList<String> stopWords;
     private HashMap<String,String> months;
+    private HashMap<String,String> potentiols;
 
     public Parse(){
         if (stopWords == null) {
