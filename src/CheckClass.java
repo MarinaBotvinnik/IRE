@@ -34,28 +34,10 @@ public class CheckClass extends Application {
         //View -> ViewModel
         mainMenuController view = fxmlLoader.getController();
         view.initialize(viewModel,primaryStage,scene);
-        //--------------
-        //setStageCloseEvent(primaryStage,model);
-        //setStageCloseEvent(primaryStage, model);
-        //
         //Show the Main Window
         primaryStage.show();
     }
 
-    /*private void setStageCloseEvent(Stage primaryStage, MyModel model) {
-        primaryStage.setOnCloseRequest(event -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are you sure you want to exit?");
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
-                // ... user chose OK
-                // Close the program properly
-                model.close();
-            } else {
-                // ... user chose CANCEL or closed the dialog
-                event.consume();
-            }
-        });
-    }*/
 
     public static void main(String[] args) {
         launch(args);
