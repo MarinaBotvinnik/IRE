@@ -50,6 +50,7 @@ public class mainMenuController {
             p_second.setVisible(true);
             p_second.setDisable(false);
             boolean isStem = cb_stem.isSelected();
+            viewModel.getStem(isStem);
         }
     }
 

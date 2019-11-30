@@ -29,9 +29,8 @@ public class Parse {
         months = new HashMap<>();
     }
 
-    public void parse(Dictionary dictionary,String text) {
+    public void parse(Dictionary dictionary,String text, String docNo) {
         String[] splitText = deleteStopWords(text);
-
         for(int i=0; i< splitText.length; i++){
             String termTxt="";
             ////if the word is a PURE NUMBER
@@ -39,7 +38,7 @@ public class Parse {
                 ////if the number is PERCENT
                 if(splitText[i+1].equals("percent")|| splitText[i+1].equals("percentage") || splitText[i+1].equals("%")){
                     termTxt = splitText[i]+"%";
-                    dictionary.addTerm(termTxt,""); //CHANGE THE VALUE
+                    dictionary.addTerm(termTxt,docNo); //CHANGE THE VALUE
                     continue;
                 }
                 ////if the words of type PRICE M\B\T U.S DOLLARS
@@ -58,7 +57,7 @@ public class Parse {
                         num = num*1000000;
                         termTxt = num + "M Dollars";
                     }
-                    dictionary.addTerm(termTxt,"");
+                    dictionary.addTerm(termTxt,docNo);
                     continue;
                 }
                 // if the word is of type price m/bn Dollars
@@ -70,7 +69,7 @@ public class Parse {
                         newVal = newVal*1000;
                         termTxt = newVal + "M Dollars";
                     }
-                    dictionary.addTerm(termTxt,"");
+                    dictionary.addTerm(termTxt,docNo);
                     continue;
                 }
                 // if the word is of type PRICE DOLLARS
@@ -84,7 +83,7 @@ public class Parse {
                     else{
                         termTxt = price + " Dollars";
                     }
-                    dictionary.addTerm(termTxt,"");
+                    dictionary.addTerm(termTxt,docNo);
                     continue;
                 }
                 //if there is a FRACTION after the number
@@ -94,7 +93,7 @@ public class Parse {
                     }
                     else
                         termTxt = splitText[i]+ " "+splitText[i+1];
-                    dictionary.addTerm(termTxt,"");
+                    dictionary.addTerm(termTxt,docNo);
                     continue;
                 }
                 //if the number is part of a date
@@ -103,7 +102,7 @@ public class Parse {
                         termTxt= monthNum(splitText[i+1])+"-0"+splitText[i];
                     else
                         termTxt= monthNum(splitText[i+1])+"-"+splitText[i];
-                    dictionary.addTerm(termTxt,"");
+                    dictionary.addTerm(termTxt,docNo);
                     continue;
                 }
                 //no need to save the number, it was already saved as a date
@@ -111,7 +110,7 @@ public class Parse {
                     continue;
                 }
                 String termNum =termNum(Double.parseDouble(splitText[i]));
-                dictionary.addTerm(termNum,"");
+                dictionary.addTerm(termNum,docNo);
                 continue;
             }
             else{ //its a word or its a number with something attached to this
@@ -133,12 +132,12 @@ public class Parse {
                             termTxt = checkVal + "M Dollars";
                         }
                     }
-                    dictionary.addTerm(termTxt,"");
+                    dictionary.addTerm(termTxt,docNo);
                     continue;
                 }
                 if(splitText[i].charAt(splitText[i].length()-1)=='%'){ //if a % is attached in the beginning
                     termTxt = splitText[i];
-                    dictionary.addTerm(termTxt,"");
+                    dictionary.addTerm(termTxt,docNo);
                     continue;
                 }
                 //the term is a month
@@ -153,27 +152,27 @@ public class Parse {
                     //else, then the number indicates years
                     else
                         termTxt=splitText[i+1]+"-"+ monthNum(splitText[i]);
-                    dictionary.addTerm(termTxt,"");
+                    dictionary.addTerm(termTxt,docNo);
                     continue;
                 }
                 //if its the type WORD - WORD or WORD - WORD - WORD
                 if(splitText[i].indexOf("-")>=0){
                     String [] numbers = splitToNumbers(splitText[i]);
                     if(numbers[0].equals("true")){
-                        dictionary.addTerm(numbers[1],"");
-                        dictionary.addTerm(numbers[2],"");
+                        dictionary.addTerm(numbers[1],docNo);
+                        dictionary.addTerm(numbers[2],docNo);
                     }
-                    dictionary.addTerm(splitText[i],"");
+                    dictionary.addTerm(splitText[i],docNo);
                 }
                 //if ots the type BETWEEN NUMBER AND NUMBER
                 if((splitText[i].equals("Between") || splitText[i].equals("between"))&& isNum(splitText[i+1]) && splitText[i+2].equals("and") && isNum(splitText[i+3])){
-                    dictionary.addTerm(splitText[i]+" "+splitText[i+1]+ " "+ splitText[i+2] + " "+ splitText[i+3],"");
-                    dictionary.addTerm(splitText[i+1],"");
-                    dictionary.addTerm(splitText[i+3],"");
+                    dictionary.addTerm(splitText[i]+" "+splitText[i+1]+ " "+ splitText[i+2] + " "+ splitText[i+3],docNo);
+                    dictionary.addTerm(splitText[i+1],docNo);
+                    dictionary.addTerm(splitText[i+3],docNo);
                 }
                 //it is a REGULAR WORD - the dictionary will save it correctly
                else{
-                   dictionary.saveCorrectly(splitText[i]);
+                   dictionary.saveCorrectly(splitText[i],docNo);
                 }
             }
         }
@@ -215,7 +214,6 @@ public class Parse {
     }
 
     private boolean isMonth(String str){
-
         if(months.isEmpty())
         {
             String[] months={"January", "JANUARY", "Jan","JAN","january",
@@ -231,13 +229,11 @@ public class Parse {
                     "November", "NOVEMBER", "Nov","NOV","november",
                     "December", "DECEMBER", "Dec","DEC","december"};
             for(String month : months){
-               this.months.put(month,month.substring(0,2).toLowerCase());
+               this.months.put(month,month.substring(0,3).toLowerCase());
             }
         }
-        else{
-            if(months.containsKey(str))
-                return true;
-        }
+        if(months.containsKey(str))
+            return true;
         return false;
     }
 

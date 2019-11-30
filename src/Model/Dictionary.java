@@ -3,33 +3,42 @@ package Model;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Dictionary {
-    ConcurrentHashMap<String,String> allTerms;
-    ConcurrentHashMap<String,String> allTermsWithStem;
+    private ConcurrentHashMap<String,String> allTermsWithoutStem;
+    private ConcurrentHashMap<String,String> allTermsWithStem;
+    private boolean stemming;
 
-    public Dictionary (ConcurrentHashMap<String,String> map){
-        allTerms = new ConcurrentHashMap<>();
-        this.allTerms = map;
+    public Dictionary (ConcurrentHashMap<String,String> map, boolean stem){
+        allTermsWithoutStem = new ConcurrentHashMap<>();
+        allTermsWithStem = new ConcurrentHashMap<>();
+        if(stem)
+            this.allTermsWithStem = map;
+        else this.allTermsWithoutStem = map;
+        this.stemming = stem;
     }
 
-    public void addTerm(String key, String value){
-        allTerms.put(key,value);
+    public void addTerm(String key, String value)
+    {
+        if(stemming)
+            allTermsWithStem.put(key,value);
+        else allTermsWithStem.put(key,value);
+
     }
 
-    public void saveCorrectly(String key){
+    public void saveCorrectly(String key, String value){
         char first = key.charAt(0);
         // the word isn't in the dictionary yet
-        if(!allTerms.containsKey(key.toUpperCase()) || !allTerms.containsKey(key.toLowerCase())){
+        if(!allTermsWithoutStem.containsKey(key.toUpperCase()) || !allTermsWithoutStem.containsKey(key.toLowerCase())){
             if(Character.isUpperCase(first)){
-                allTerms.put(key.toUpperCase(),"");
+                allTermsWithoutStem.put(key.toUpperCase(),value);
             }
-            else allTerms.put(key.toLowerCase(),"");
+            else allTermsWithoutStem.put(key.toLowerCase(),value);
         }
         // the word is already in the dictionary
         else{
             if(Character.isLowerCase(first)){
-                if(allTerms.containsKey(key.toUpperCase())){
-                    allTerms.remove(key.toUpperCase());
-                    allTerms.put(key.toLowerCase(),"");
+                if(allTermsWithoutStem.containsKey(key.toUpperCase())){
+                    allTermsWithoutStem.remove(key.toUpperCase());
+                    allTermsWithoutStem.put(key.toLowerCase(),value);
                 }
             }
         }
