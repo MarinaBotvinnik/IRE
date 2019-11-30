@@ -42,6 +42,19 @@ public class Parse {
                     dictionary.addTerm(termTxt,docNo);
                     continue;
                 }
+                ////if the word is Km
+                if(splitText[i+1].equals("km") || splitText[i+1].equals("Km")|| splitText[i+1].equals("KM")||splitText[i+1].equals("kilometer")
+                        ||splitText[i+1].equals("Kilometer")||splitText[i+1].equals("kilometers") ||splitText[i+1].equals("Kilometers")){
+                    termTxt = Double.parseDouble(splitText[i])*10000 + "meters";
+                    dictionary.addTerm(termTxt,docNo);
+                    continue;
+                }
+                ////if the word is meter
+                if(splitText[i+1].equals("meter") || splitText[i+1].equals("Meter") || splitText[i+1].equals("Meters")){
+                    termTxt = splitText[i] + " meters";
+                    dictionary.addTerm(termTxt,docNo);
+                    continue;
+                }
                 ////if the number is PERCENT
                 if(splitText[i+1].equals("percent")|| splitText[i+1].equals("percentage") || splitText[i+1].equals("%")){
                     termTxt = splitText[i]+"%";
@@ -188,6 +201,14 @@ public class Parse {
                         termTxt = numbers[1]+ "Kg";
                         dictionary.addTerm(termTxt,docNo);
                     }
+                    if(numbers[0].equals("km")){
+                        termTxt = numbers[1]+ "Km";
+                        dictionary.addTerm(termTxt,docNo);
+                    }
+                    if(numbers[0].equals("meters")){
+                        termTxt = numbers[1]+ " meters";
+                        dictionary.addTerm(termTxt,docNo);
+                    }
                     if(numbers[0].equals("true")|| numbers[0].equals("false"))
                         dictionary.addTerm(splitText[i],docNo);
                 }
@@ -220,6 +241,14 @@ public class Parse {
            splited[0] = "kg";
            splited[1]= first;
         }
+       else if(isNum(first) && (sec.equals("kilometers") || sec.equals("kilometer"))){
+           splited[0] = "km";
+           splited[1]= first;
+       }
+       else if(isNum(first) && (sec.equals("meters") || sec.equals("meter"))){
+           splited[0] = "meters";
+           splited[1]= first;
+       }
        else splited[0]= "false";
        return splited;
     }
