@@ -18,6 +18,7 @@ public class ReadFile {
     public ReadFile(String path) {
         this.path = path;
     }
+
     public void readFile(String curr){
         //new File(System.getProperty("java.io.tmpdir")+"/SeperatedFiles").mkdir();
         listFilesForFolder(curr);
