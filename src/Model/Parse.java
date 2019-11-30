@@ -114,6 +114,21 @@ public class Parse {
                 continue;
             }
             else{ //its a word or its a number with something attached to this
+                if(Character.isUpperCase(splitText[i].charAt(0))){
+                    int j = 1;
+                    String entity=splitText[i];
+                    while (Character.isUpperCase(splitText[i + j].charAt(0))) {
+                        entity=" "+splitText[i+j];
+                        j++;
+                    }
+                    if (potentiols.containsKey(entity) && !docNo.equals(potentiols.get(entity)) && j>1){
+                        dictionary.addTerm(entity,docNo);
+                        dictionary.addTerm(entity,potentiols.get(entity));
+                    }
+                    else{
+                        potentiols.put(entity,docNo);
+                    }
+                }
                 if(splitText[i].charAt(0)=='$'){ //if a $ is attached in the beginning
                     String value = splitText[i].substring(1);
                     if(splitText[i+1].equals("million") || splitText[i+1].equals("Million"))
