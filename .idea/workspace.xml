@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ed855956-439f-4db6-b857-ae02e384f8d4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CheckClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CheckClass.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Model/Parse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Parse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/ReadFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/ReadFile.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,17 +27,24 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Model/Parse.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="106">
-              <caret line="148" column="37" lean-forward="true" selection-start-line="148" selection-start-column="37" selection-end-line="148" selection-end-column="37" />
+            <state relative-caret-position="174">
+              <caret line="41" selection-start-line="41" selection-end-line="41" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#8832#9588#1" />
-                <element signature="method#splitToNumbers#0;class#Parse#0" />
+                <element signature="method#Parse#0;class#Parse#0" />
                 <element signature="method#isFraction#0;class#Parse#0" />
-                <element signature="method#isMonth#0;class#Parse#0" />
                 <element signature="method#monthNum#0;class#Parse#0" />
                 <element signature="method#termNum#0;class#Parse#0" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Resource/stop_words.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="271" selection-start-line="271" selection-end-line="271" selection-end-column="3" />
             </state>
           </provider>
         </entry>
@@ -86,7 +90,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="676" />
     <option name="width" value="697" />
     <option name="height" value="735" />
@@ -131,7 +135,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1575287452038" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1575305140587" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../Eihut Tohna/Ex1/317522605_204341580" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -184,7 +188,7 @@
       <workItem from="1574766148450" duration="15020000" />
       <workItem from="1574969421386" duration="1372000" />
       <workItem from="1575108481748" duration="7745000" />
-      <workItem from="1575218325736" duration="5009000" />
+      <workItem from="1575218325736" duration="8607000" />
     </task>
     <task id="LOCAL-00001" summary="gui started&#10;parser continued&#10;COMEEE BACKKK DORRRR">
       <created>1574796969317</created>
@@ -207,15 +211,21 @@
       <option name="project" value="LOCAL" />
       <updated>1575145292816</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Strating to debug the parsing">
+      <created>1575287556100</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1575287556100</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9082000" />
+    <option name="totallyTimeSpent" value="12680000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13313162" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -319,25 +329,34 @@
     <MESSAGE value="gui started&#10;parser continued&#10;COMEEE BACKKK DORRRR" />
     <MESSAGE value="gui started&#10;parser continued" />
     <MESSAGE value="added some checking in tha parse class" />
-    <option name="LAST_COMMIT_MESSAGE" value="added some checking in tha parse class" />
+    <MESSAGE value="Strating to debug the parsing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Strating to debug the parsing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Model/Parse.java</url>
-          <line>464</line>
+          <line>41</line>
           <properties />
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Model/Parse.java</url>
-          <line>199</line>
-          <properties />
-          <option name="timeStamp" value="21" />
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="splitText[i]" language="JAVA" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="watch">
+      <expression>
+        <expression-string>splitText[i]</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/Model/Dictionary.java">
@@ -399,16 +418,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Resource/stop_words.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="271" selection-start-line="271" selection-end-line="271" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Model/Parse.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="106">
-          <caret line="148" column="37" lean-forward="true" selection-start-line="148" selection-start-column="37" selection-end-line="148" selection-end-column="37" />
+        <state relative-caret-position="174">
+          <caret line="41" selection-start-line="41" selection-end-line="41" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#8832#9588#1" />
-            <element signature="method#splitToNumbers#0;class#Parse#0" />
+            <element signature="method#Parse#0;class#Parse#0" />
             <element signature="method#isFraction#0;class#Parse#0" />
-            <element signature="method#isMonth#0;class#Parse#0" />
             <element signature="method#monthNum#0;class#Parse#0" />
             <element signature="method#termNum#0;class#Parse#0" />
           </folding>

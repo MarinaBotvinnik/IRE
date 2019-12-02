@@ -18,6 +18,7 @@ public class Parse {
                 String st;
                 //add all the stop-words in all their ways
                 while (( st = buffer.readLine()) != null){
+                    if(!st.equals("between") && !st.equals("and") && !st.equals("may") &&!st.equals("m")&& !st.equals("b")&&!st.equals("t"))
                     stopWords.add(st);
                     stopWords.add(st.toUpperCase());
                     stopWords.add(st.substring(0,1).toUpperCase()+st.substring(1));
@@ -34,7 +35,7 @@ public class Parse {
         Document document = new Document(docNo);
         String[] splitText = deleteStopWords(text);
         int textLength = splitText.length;
-        for(int i=0; i< textLength; i++){
+        for(int i=202; i< textLength; i++){
             String termTxt="";
 
             ////if the word is a PURE NUMBER
@@ -44,8 +45,6 @@ public class Parse {
                 if(i+1<textLength &&(splitText[i+1].equals("kg") || splitText[i+1].equals("Kg")|| splitText[i+1].equals("KG")||splitText[i+1].equals("kilogram")
                         ||splitText[i+1].equals("Kilogram")||splitText[i+1].equals("kilograms") ||splitText[i+1].equals("Kilograms"))){
                     termTxt = splitText[i] + "Kg";
-                    document.addFrequency(termTxt);
-                    document.addPosotion(termTxt,i);
                     dictionary.addTerm(termTxt,docNo);
                     i++;
                     continue;
@@ -55,8 +54,6 @@ public class Parse {
                 if(i+1<textLength && (splitText[i+1].equals("km") || splitText[i+1].equals("Km")|| splitText[i+1].equals("KM")||splitText[i+1].equals("kilometer")
                         ||splitText[i+1].equals("Kilometer")||splitText[i+1].equals("kilometers") ||splitText[i+1].equals("Kilometers"))){
                     termTxt = Double.parseDouble(splitText[i])*1000 + "meters";
-                    document.addFrequency(termTxt);
-                    document.addPosotion(termTxt,i);
                     dictionary.addTerm(termTxt,docNo);
                     i++;
                     continue;
@@ -65,8 +62,6 @@ public class Parse {
                 ////if the word is meter - (skip 1 word ahead + check if there is i+1 word)
                 if( i+1<textLength && (splitText[i+1].equals("meter") || splitText[i+1].equals("Meter") || splitText[i+1].equals("Meters") || splitText[i+1].equals("meters"))){
                     termTxt = splitText[i] + " meters";
-                    document.addFrequency(termTxt);
-                    document.addPosotion(termTxt,i);
                     dictionary.addTerm(termTxt,docNo);
                     i++;
                     continue;
@@ -75,8 +70,6 @@ public class Parse {
                 ////if the number is PERCENT  - (skip 1 word ahead + check if there is i+1 word)
                 if(i+1<textLength && (splitText[i+1].equals("percent")|| splitText[i+1].equals("percentage") || splitText[i+1].equals("%"))){
                     termTxt = splitText[i]+"%";
-                    document.addFrequency(termTxt);
-                    document.addPosotion(termTxt,i);
                     dictionary.addTerm(termTxt,docNo);
                     i++;
                     continue;
@@ -98,8 +91,6 @@ public class Parse {
                         num = num*1000000;
                         termTxt = num + "M Dollars";
                     }
-                    document.addFrequency(termTxt);
-                    document.addPosotion(termTxt,i);
                     dictionary.addTerm(termTxt,docNo);
                     i+=3;
                     continue;
@@ -114,8 +105,6 @@ public class Parse {
                         newVal = newVal*1000;
                         termTxt = newVal + "M Dollars";
                     }
-                    document.addFrequency(termTxt);
-                    document.addPosotion(termTxt,i);
                     dictionary.addTerm(termTxt,docNo);
                     i+=2;
                     continue;
@@ -132,8 +121,6 @@ public class Parse {
                     else{
                         termTxt = price + " Dollars";
                     }
-                    document.addFrequency(termTxt);
-                    document.addPosotion(termTxt,i);
                     dictionary.addTerm(termTxt,docNo);
                     i++;
                     continue;
@@ -149,8 +136,6 @@ public class Parse {
                         termTxt = splitText[i] + " " + splitText[i + 1];
                         i++;
                     }
-                    document.addFrequency(termTxt);
-                    document.addPosotion(termTxt,i);
                     dictionary.addTerm(termTxt,docNo);
                     continue;
                 }
@@ -161,20 +146,10 @@ public class Parse {
                         termTxt= monthNum(splitText[i+1])+"-0"+splitText[i];
                     else
                         termTxt= monthNum(splitText[i+1])+"-"+splitText[i];
-                    document.addFrequency(termTxt);
-                    document.addPosotion(termTxt,i);
                     dictionary.addTerm(termTxt,docNo);
                     continue;
                 }
-
-                //no need to save the number, it was already saved as a date -WHAT???
-                if(isMonth(splitText[i-1])){
-                    continue;
-                }
-
                 String termNum =termNum(Double.parseDouble(splitText[i]));
-                document.addFrequency(termTxt);
-                document.addPosotion(termTxt,i);
                 dictionary.addTerm(termNum,docNo);
                 continue;
             }
@@ -188,8 +163,6 @@ public class Parse {
                         j++;
                     }
                     if (potentials.containsKey(entity) && !docNo.equals(potentials.get(entity)) && j>1){
-                        document.addFrequency(termTxt);
-                        document.addPosotion(termTxt,i);
                         dictionary.addTerm(entity,docNo);
                         dictionary.addTerm(entity, potentials.get(entity));
                     }
@@ -215,8 +188,6 @@ public class Parse {
                             termTxt = checkVal + "M Dollars";
                         }
                     }
-                    document.addFrequency(termTxt);
-                    document.addPosotion(termTxt,i);
                     dictionary.addTerm(termTxt,docNo);
                     i++;
                     continue;
@@ -243,8 +214,6 @@ public class Parse {
                     //else, then the number indicates years
                     else
                         termTxt=splitText[i+1]+"-"+ monthNum(splitText[i]);
-                    document.addFrequency(termTxt);
-                    document.addPosotion(termTxt,i);
                     dictionary.addTerm(termTxt,docNo);
                     i++;
                     continue;
@@ -254,10 +223,6 @@ public class Parse {
                 if(splitText[i].indexOf("-")>=0){
                     String [] numbers = splitToNumbers(splitText[i]);
                     if(numbers[0].equals("true")){
-                        document.addFrequency(numbers[1]);
-                        document.addPosotion(numbers[1],i);
-                        document.addFrequency(numbers[2]);
-                        document.addPosotion(numbers[2],i);
                         dictionary.addTerm(numbers[1],docNo);
                         dictionary.addTerm(numbers[2],docNo);
                     }
@@ -274,8 +239,6 @@ public class Parse {
                         dictionary.addTerm(termTxt,docNo);
                     }
                     if(numbers[0].equals("true")|| numbers[0].equals("false")) {
-                        document.addFrequency(splitText[i]);
-                        document.addPosotion(splitText[i], i);
                         dictionary.addTerm(splitText[i], docNo);
                         continue;
                     }
@@ -283,14 +246,8 @@ public class Parse {
 
                 //if its the type BETWEEN NUMBER AND NUMBER
                 if(i+3<textLength && (splitText[i].equals("Between") || splitText[i].equals("between"))&& isNum(splitText[i+1]) && splitText[i+2].equals("and") && isNum(splitText[i+3])){
-                    document.addFrequency(splitText[i]+" "+splitText[i+1]+ " "+ splitText[i+2] + " "+ splitText[i+3]);
-                    document.addPosotion(splitText[i]+" "+splitText[i+1]+ " "+ splitText[i+2] + " "+ splitText[i+3], i);
                     dictionary.addTerm(splitText[i]+" "+splitText[i+1]+ " "+ splitText[i+2] + " "+ splitText[i+3],docNo);
-                    document.addFrequency(splitText[i+1]);
-                    document.addPosotion(splitText[i+1], i);
                     dictionary.addTerm(splitText[i+1],docNo);
-                    document.addFrequency(splitText[i+3]);
-                    document.addPosotion(splitText[i+3], i);
                     dictionary.addTerm(splitText[i+3],docNo);
                     i+=3;
                     continue;
@@ -298,13 +255,10 @@ public class Parse {
                 //it is a REGULAR WORD - the dictionary will save it correctly
                else{
                    splitText[i]=splitText[i].replace(".","");
-                   document.addFrequency(splitText[i]);
-                   document.addPosotion(splitText[i], i);
                    dictionary.saveCorrectly(splitText[i],docNo);
                 }
             }
         }
-
     }
 
     private String[] splitToNumbers (String str){
@@ -312,11 +266,6 @@ public class Parse {
        int place = str.indexOf('-');
        String first = str.substring(0,place);
        String sec = str.substring(place+1);
-       /*String third="";
-       if(sec.indexOf("-")>=0){
-           sec = str.substring(0,place);
-           third  = str.substring(place+1);
-       }*/
        if(isNum(first) && isNum(sec)){
            splited[0] = "true";
            splited[1]= first;
@@ -448,8 +397,7 @@ public class Parse {
         String[] splitTxt = text.split("\\s+");
         int empty=0;
         for(int i=0; i<splitTxt.length; i++){
-            if(stopWords.contains(splitTxt[i]) &&!splitTxt[i].equals("between") && !splitTxt[i].equals("Between")&& !splitTxt[i].equals("and")
-                &&!splitTxt[i].equals("M") && !splitTxt[i].equals("m") && !splitTxt[i].equals("T") &&!splitTxt[i].equals("B")){
+            if(stopWords.contains(splitTxt[i])){
                 splitTxt[i]= "";
                 empty++;
             }
