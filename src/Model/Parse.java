@@ -1,6 +1,5 @@
 package Model;
 
-import javax.print.Doc;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +14,7 @@ public class Parse {
         if (stopWords == null) {
             stopWords = new ArrayList<>();
             try{
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream("resource/stop_words"),"UTF-8"));
+                BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream("Resource/stop_words.txt"),"UTF-8"));
                 String st;
                 //add all the stop-words in all their ways
                 while (( st = buffer.readLine()) != null){
@@ -165,7 +164,6 @@ public class Parse {
                     document.addFrequency(termTxt);
                     document.addPosotion(termTxt,i);
                     dictionary.addTerm(termTxt,docNo);
-                    i++;
                     continue;
                 }
 
@@ -201,7 +199,7 @@ public class Parse {
                 }
                 if(splitText[i].charAt(0)=='$'){ //if a $ is attached in the beginning
                     String value = splitText[i].substring(1);
-                    if(i+1<textLength && (splitText[i+1].equals("million") || splitText[i+1].equals("Million")))
+                    if(i+1<textLength && (splitText[i+1].equals("million") || splitText[i+1].equals("Million") || splitText[i+1].equals("Million.")))
                         termTxt = value + "M Dollars";
                     else if(splitText[i+1].equals("billion") || splitText[i+1].equals("Billion")){
                         double newVal = Double.parseDouble(splitText[i].substring(1));
@@ -299,6 +297,7 @@ public class Parse {
                 }
                 //it is a REGULAR WORD - the dictionary will save it correctly
                else{
+                   splitText[i]=splitText[i].replace(".","");
                    document.addFrequency(splitText[i]);
                    document.addPosotion(splitText[i], i);
                    dictionary.saveCorrectly(splitText[i],docNo);
@@ -445,19 +444,20 @@ public class Parse {
      * @return
      */
     private String[] deleteStopWords (String text){
-        String[] splitTxt = text.split(" ");
+        text=text.replaceAll("[,:(){}*'\"]", "");
+        String[] splitTxt = text.split("\\s+");
         int empty=0;
         for(int i=0; i<splitTxt.length; i++){
-            if(stopWords.contains(splitTxt[i]) || !splitTxt[i].equals("between") || !splitTxt[i].equals("Between") ||!splitTxt[i].equals("and")
-            ||!splitTxt[i].equals("M") || !splitTxt[i].equals("m") || !splitTxt[i].equals("T") ||!splitTxt[i].equals("B")){
-                splitTxt[i]= null;
+            if(stopWords.contains(splitTxt[i]) &&!splitTxt[i].equals("between") && !splitTxt[i].equals("Between")&& !splitTxt[i].equals("and")
+                &&!splitTxt[i].equals("M") && !splitTxt[i].equals("m") && !splitTxt[i].equals("T") &&!splitTxt[i].equals("B")){
+                splitTxt[i]= "";
                 empty++;
             }
         }
         String[] newText = new String[splitTxt.length - empty];
         int place=0;
         for(int i=0; i< splitTxt.length; i++){
-            if(!splitTxt[i].equals(null)){
+            if(!splitTxt[i].equals("")){
                 newText[place] = splitTxt[i];
                 place++;
             }

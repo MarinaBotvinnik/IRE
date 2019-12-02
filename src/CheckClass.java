@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import Model.Model;
 import ViewModel.ViewModel;
 import View.mainMenuController;
+import Model.ReadFile;
 
 import java.util.Optional;
 
@@ -40,6 +41,8 @@ public class CheckClass extends Application {
 
 
     public static void main(String[] args) {
-        launch(args);
+        //launch(args);
+        ReadFile readFile = new ReadFile("Resource/toCheck");
+        readFile.readFile();
     }
 }
