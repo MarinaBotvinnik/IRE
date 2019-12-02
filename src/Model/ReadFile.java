@@ -7,6 +7,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.io.*;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class ReadFile {
@@ -17,13 +18,17 @@ public class ReadFile {
 
     public ReadFile(String path) {
         this.path = path;
-        this.docMap=new HashMap();
+        docMap = new HashMap<>();
+        parser = new Parse();
+        ConcurrentHashMap <String,String> map = new ConcurrentHashMap<>();
+        dictionary = new Dictionary(map,false);
     }
 
-    public void readFile(String curr){
-        //new File(System.getProperty("java.io.tmpdir")+"/SeperatedFiles").mkdir();
-        listFilesForFolder(curr);
+    public void readFile(){
+        listFilesForFolder(path);
     }
+
+
     private void listFilesForFolder(String filePath){
         final File folder = new File(filePath);
         for (final File fileEntry : folder.listFiles()) {
