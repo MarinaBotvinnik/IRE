@@ -394,6 +394,8 @@ public class Parse {
      */
     private String[] deleteStopWords (String text){
         text=text.replaceAll("[,:(){}*'\"]", "");
+        text=text.replace("[","");
+        text=text.replace("]","");
         String[] splitTxt = text.split("\\s+");
         int empty=0;
         for(int i=0; i<splitTxt.length; i++){
