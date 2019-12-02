@@ -17,6 +17,7 @@ public class ReadFile {
 
     public ReadFile(String path) {
         this.path = path;
+        this.docMap=new HashMap();
     }
 
     public void readFile(String curr){

@@ -3,7 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="ed855956-439f-4db6-b857-ae02e384f8d4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/Parse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Parse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/CheckClass.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/CheckClass.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Parse.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Parse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/ReadFile.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/ReadFile.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CheckClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CheckClass.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Model/ReadFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/ReadFile.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -22,18 +26,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-7" />
-    <option name="width" value="697" />
-    <option name="height" value="735" />
-  </component>
   <component name="ProjectId" id="1TyaGVve0wOy5eKpBOjJnMFpTFu" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1575121258983" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../הנדסת איכות תוכנה/QAcodeReview" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
@@ -133,5 +132,21 @@
     <MESSAGE value="gui started&#10;parser continued&#10;COMEEE BACKKK DORRRR" />
     <MESSAGE value="gui started&#10;parser continued" />
     <option name="LAST_COMMIT_MESSAGE" value="gui started&#10;parser continued" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Model/ReadFile.java</url>
+          <line>56</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Model/ReadFile.java</url>
+          <line>46</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

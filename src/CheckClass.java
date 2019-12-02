@@ -6,6 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import Model.Model;
+import Model.ReadFile;
 import ViewModel.ViewModel;
 import View.mainMenuController;
 
@@ -58,6 +59,8 @@ public class CheckClass extends Application {
     }*/
 
     public static void main(String[] args) {
-        launch(args);
+        //launch(args);
+        ReadFile rf=new ReadFile("Resource/corpus");
+        rf.readFile("Resource/corpus");
     }
 }
