@@ -59,7 +59,9 @@ public class ReadFile {
                 //bf.close();
                 String docNo = doc.select("DOCNO").text();
                 docMap.put(docNo,docPath);
-                parser.parse(dictionary,doc.select("TEXT").text(),docNo);
+                if(!doc.select("TEXT").isEmpty()) {
+                    parser.parse(dictionary, doc.select("TEXT").text(), docNo);
+                }
             }
         }
         catch (Exception e){
