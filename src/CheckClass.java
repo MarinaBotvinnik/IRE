@@ -2,15 +2,11 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import Model.Model;
 import ViewModel.ViewModel;
 import View.mainMenuController;
 import Model.ReadFile;
-
-import java.util.Optional;
 
 public class CheckClass extends Application {
 
@@ -43,6 +39,14 @@ public class CheckClass extends Application {
     public static void main(String[] args) {
         //launch(args);
         ReadFile readFile = new ReadFile("Resource/toCheck");
+        long startTime = System.currentTimeMillis();
+        long start = System.nanoTime();
         readFile.readFile();
+        long end = System.nanoTime();
+        long endTime = System.currentTimeMillis();
+        System.out.println("------ALL DONE MATE!-----");
+        System.out.println((end-start)/1000000.0 + "milisec");
+        System.out.println((endTime-startTime)/60000 + "minutes");
+        System.exit(0);
     }
 }

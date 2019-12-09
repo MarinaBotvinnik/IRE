@@ -1,5 +1,4 @@
 package Model;
-
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -7,7 +6,6 @@ public class Document {
     
     private int max_tf;
     private String max_Term_name;
-    private HashMap<String,String> positions;
     private HashMap<String,Integer> term_frq;
     private int uniqueTermsNum;
     private String doc_name;
@@ -15,20 +13,11 @@ public class Document {
     public Document(String doc_name) {
         max_tf =0;
         max_Term_name = null;
-        positions = new HashMap<>();
         term_frq = new HashMap<>();
         uniqueTermsNum =0;
         this.doc_name = doc_name;
     }
-    
-    public void addPosotion(String term, int pos){
-        if(positions.containsKey(term)){
-            positions.replace(term,positions.get(term)+","+pos);
-        }
-        else{
-            positions.put(term,""+pos);
-        }
-    }
+
 
     public void addFrequency(String term){
         if(term_frq.containsKey(term)){
@@ -47,6 +36,6 @@ public class Document {
             }
         }
         uniqueTermsNum = term_frq.size();
-        //ADD WRITE TO DISC
+
     }
 }
