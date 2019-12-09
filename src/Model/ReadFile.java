@@ -21,7 +21,7 @@ public class ReadFile {
         docMap = new HashMap<>();
         parser = new Parse();
         ConcurrentHashMap <String,String> map = new ConcurrentHashMap<>();
-        dictionary = new Dictionary(map,false);
+        dictionary = new Dictionary();
     }
 
     public void readFile(){
@@ -53,10 +53,6 @@ public class ReadFile {
             Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
             Elements Documents=file.select("DOC");
             for(Element doc : Documents){
-                //File file2 = new File(System.getProperty("java.io.tmpdir")+"/SeperatedFiles/"+doc.select("DOCNO").text());
-                //BufferedWriter bf=new BufferedWriter(new FileWriter(file2));
-                //bf.write(doc.html());
-                //bf.close();
                 String docNo = doc.select("DOCNO").text();
                 docMap.put(docNo,docPath);
                 if(!doc.select("TEXT").isEmpty()) {

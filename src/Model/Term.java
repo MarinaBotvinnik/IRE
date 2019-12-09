@@ -10,6 +10,7 @@ public class Term {
     private String termName;
     private HashMap<String,Integer> docs; //all the documents this term appears in and how many times it appeared in each of them
     private HashMap<String, List<Integer>> positions; //term position per document;
+    int idf;
     boolean isEntity;
 
     public Term (String name, String doc, int position, boolean isEntity){
@@ -20,6 +21,28 @@ public class Term {
         this.isEntity=isEntity;
         positions.put(doc,new LinkedList<>());
         positions.get(doc).add(position);
+        idf=1;
+    }
+
+    public void addTf(String docId){
+        if(!docs.containsKey(docId)){
+            docs.put(docId,1);
+            idf++;
+        }
+        else{
+            docs.replace(docId,docs.get(docId)+1);
+        }
+    }
+
+    public void addPosition(String docId, int position){
+        if(positions.containsKey(docId)){
+            positions.get(docId).add(position);
+        }
+        else {
+            List<Integer> pos = new LinkedList<>();
+            pos.add(position);
+            positions.put(docId, pos);
+        }
     }
 
     public String getTermName() {
@@ -56,6 +79,7 @@ public class Term {
             return true;
         return false;
     }
+
 
     public void setEntity(boolean isEntity){
         this.isEntity=isEntity;
