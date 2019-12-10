@@ -7,7 +7,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.io.*;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 public class ReadFile {
@@ -20,12 +19,28 @@ public class ReadFile {
         this.path = path;
         docMap = new HashMap<>();
         parser = new Parse();
-        ConcurrentHashMap <String,String> map = new ConcurrentHashMap<>();
+        HashMap <String,String> map = new HashMap<>();
         dictionary = new Dictionary();
     }
 
     public void readFile(){
         listFilesForFolder(path);
+    }
+
+    public void tryFunc(){
+        try {
+            FileInputStream fis = new FileInputStream(new File(path));
+            Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
+            Elements Documents=file.select("Term");
+            for(Element doc : Documents){
+                String name = doc.select("Name").text();
+                System.out.println(name);
+            }
+
+        }
+        catch (Exception e){
+            System.out.println("SHIT");
+        }
     }
 
 

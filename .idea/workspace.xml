@@ -1,28 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ed855956-439f-4db6-b857-ae02e384f8d4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396001/FB396001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396002/FB396002" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396003/FB396003" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396004/FB396004" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396005/FB396005" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396006/FB396006" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396007/FB396007" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396008/FB396008" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396009/FB396009" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396010/FB396010" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396011/FB396011" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396012/FB396012" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396013/FB396013" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396014/FB396014" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396015/FB396015" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396016/FB396016" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396017/FB396017" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396018/FB396018" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396019/FB396019" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resource/toCheck/FB396020/FB396020" beforeDir="false" />
+    <list default="true" id="ed855956-439f-4db6-b857-ae02e384f8d4" name="Default Changelist" comment="Strating to debug the parsing">
       <change beforePath="$PROJECT_DIR$/out/production/Google Project/CheckClass.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/CheckClass.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Dictionary.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Dictionary.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Indexer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Indexer.class" afterDir="false" />
@@ -30,12 +9,7 @@
       <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/ReadFile.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/ReadFile.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Term.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Term.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CheckClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CheckClass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/Dictionary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Dictionary.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/Document.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Document.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/Indexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Indexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/Parse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Parse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Model/ReadFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/ReadFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/Term.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Term.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,23 +19,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/CheckClass.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Model/Indexer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="277">
-              <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="238">
+              <caret line="17" column="5" lean-forward="true" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Model/Indexer.java">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/CheckClass.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="16" selection-start-line="16" selection-end-line="16" />
+            <state relative-caret-position="291">
+              <caret line="43" column="8" selection-start-line="43" selection-start-column="8" selection-end-line="43" selection-end-column="8" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -81,13 +55,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Model/Term.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="595">
+            <state relative-caret-position="442">
               <caret line="44" column="9" selection-start-line="44" selection-start-column="9" selection-end-line="44" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#Term#0;class#Term#0" />
-                <element signature="e#1351#1352#0" expanded="true" />
-                <element signature="e#1426#1427#0" expanded="true" />
+                <element signature="e#1347#1348#0" expanded="true" />
+                <element signature="e#1422#1423#0" expanded="true" />
                 <element signature="e#1485#1486#0" expanded="true" />
                 <element signature="e#1517#1518#0" expanded="true" />
                 <element signature="e#1549#1550#0" expanded="true" />
@@ -115,11 +89,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Model/ReadFile.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="22" column="44" selection-start-line="22" selection-start-column="44" selection-end-line="22" selection-end-column="44" />
+            <state relative-caret-position="119">
+              <caret line="36" column="41" lean-forward="true" selection-start-line="36" selection-start-column="41" selection-end-line="36" selection-end-column="41" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Resource/tryTerm.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="12" column="7" lean-forward="true" selection-start-line="12" selection-start-column="7" selection-end-line="12" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -145,17 +128,18 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/CheckClass.java" />
         <option value="$PROJECT_DIR$/src/Model/Document.java" />
         <option value="$PROJECT_DIR$/src/Model/Parse.java" />
-        <option value="$PROJECT_DIR$/src/Model/ReadFile.java" />
         <option value="$PROJECT_DIR$/src/Model/Dictionary.java" />
         <option value="$PROJECT_DIR$/src/Model/Term.java" />
         <option value="$PROJECT_DIR$/src/Model/Indexer.java" />
+        <option value="$PROJECT_DIR$/src/Model/ReadFile.java" />
+        <option value="$PROJECT_DIR$/Resource/tryTerm.txt" />
+        <option value="$PROJECT_DIR$/src/CheckClass.java" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-7" />
     <option name="width" value="697" />
     <option name="height" value="735" />
@@ -200,9 +184,9 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1575911731637" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1575991421865" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Nitutz/hm/hm2" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
@@ -254,7 +238,7 @@
       <workItem from="1574969421386" duration="1372000" />
       <workItem from="1575108481748" duration="7745000" />
       <workItem from="1575218325736" duration="8607000" />
-      <workItem from="1575837882318" duration="17629000" />
+      <workItem from="1575837882318" duration="22852000" />
     </task>
     <task id="LOCAL-00001" summary="gui started&#10;parser continued&#10;COMEEE BACKKK DORRRR">
       <created>1574796969317</created>
@@ -288,13 +272,13 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="42747000" />
+    <option name="totallyTimeSpent" value="47970000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13464448" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13464448" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -303,7 +287,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49924356" visible="true" weight="0.30114567" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49924356" weight="0.30114567" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.43535188" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -461,16 +445,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Model/ReadFile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="22" column="44" selection-start-line="22" selection-start-column="44" selection-end-line="22" selection-end-column="44" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Model/Dictionary.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="260">
@@ -492,32 +466,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Model/Term.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="44" column="9" selection-start-line="44" selection-start-column="9" selection-end-line="44" selection-end-column="9" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#Term#0;class#Term#0" />
-            <element signature="e#1351#1352#0" expanded="true" />
-            <element signature="e#1426#1427#0" expanded="true" />
-            <element signature="e#1485#1486#0" expanded="true" />
-            <element signature="e#1517#1518#0" expanded="true" />
-            <element signature="e#1549#1550#0" expanded="true" />
-            <element signature="e#1580#1581#0" expanded="true" />
-            <element signature="e#2146#2147#0" expanded="true" />
-            <element signature="e#2184#2185#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Model/Indexer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="16" selection-start-line="16" selection-end-line="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Model/Parse.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1301">
@@ -534,10 +482,53 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Model/Term.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="44" column="9" selection-start-line="44" selection-start-column="9" selection-end-line="44" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#Term#0;class#Term#0" />
+            <element signature="e#1347#1348#0" expanded="true" />
+            <element signature="e#1422#1423#0" expanded="true" />
+            <element signature="e#1485#1486#0" expanded="true" />
+            <element signature="e#1517#1518#0" expanded="true" />
+            <element signature="e#1549#1550#0" expanded="true" />
+            <element signature="e#1580#1581#0" expanded="true" />
+            <element signature="e#2146#2147#0" expanded="true" />
+            <element signature="e#2184#2185#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Model/Indexer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="17" column="5" lean-forward="true" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Model/ReadFile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="36" column="41" lean-forward="true" selection-start-line="36" selection-start-column="41" selection-end-line="36" selection-end-column="41" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Resource/tryTerm.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="7" lean-forward="true" selection-start-line="12" selection-start-column="7" selection-end-line="12" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/CheckClass.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
+        <state relative-caret-position="291">
+          <caret line="43" column="8" selection-start-line="43" selection-start-column="8" selection-end-line="43" selection-end-column="8" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

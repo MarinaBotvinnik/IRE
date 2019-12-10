@@ -1,0 +1,13 @@
+<Term>
+<Name>
+bag
+</Name>
+<Docs>
+<Doc>
+df1
+<Pos>
+1,2,3,4
+</Pos>
+</Doc>
+</Docs>
+</Term>
