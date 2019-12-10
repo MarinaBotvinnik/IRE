@@ -10,7 +10,6 @@ public class Parse {
 
     private HashSet<String> stopWords;
     private HashMap<String,String> months;
-    private HashMap<String,String> potentials;
     private Indexer indexer;
 
     public Parse(){
@@ -30,7 +29,6 @@ public class Parse {
                 System.out.println(e.getMessage());
             }
         }
-        potentials = new HashMap<>();
         months = new HashMap<>();
         indexer = new Indexer();
     }
@@ -50,21 +48,21 @@ public class Parse {
                         ||splitText[i+1].equals("Kilogram")||splitText[i+1].equals("kilograms") ||splitText[i+1].equals("Kilograms")
                         ||splitText[i+1].equals("Kgs") ||splitText[i+1].equals("kgs"))){
                     termTxt = splitText[i] + " kg";
-                    addTermToIndx(termTxt,docNo,i,false);
+                    addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
                 }
                 if(i+1<textLength &&(splitText[i+1].equals("gr") || splitText[i+1].equals("gram")|| splitText[i+1].equals("Gram")||splitText[i+1].equals("GRAM")
                         ||splitText[i+1].equals("grams")||splitText[i+1].equals("Grams") ||splitText[i+1].equals("GRAMS"))){
                     termTxt = splitText[i] + " gr";
-                    addTermToIndx(termTxt,docNo,i,false);
+                    addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
                 }
                 if(i+1<textLength &&(splitText[i+1].equals("ton") || splitText[i+1].equals("Ton")|| splitText[i+1].equals("TON")||splitText[i+1].equals("tons")
                         ||splitText[i+1].equals("Tons")||splitText[i+1].equals("TONS"))){
                     termTxt = splitText[i] + "K kg";
-                    addTermToIndx(termTxt,docNo,i,false);
+                    addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
                 }
@@ -72,7 +70,7 @@ public class Parse {
                 if(i+1<textLength && (splitText[i+1].equals("km") || splitText[i+1].equals("Km")|| splitText[i+1].equals("KM")||splitText[i+1].equals("kilometer")
                         ||splitText[i+1].equals("Kilometer")||splitText[i+1].equals("kilometers") ||splitText[i+1].equals("Kilometers"))){
                     termTxt = splitText[i] + "K meters";
-                    addTermToIndx(termTxt,docNo,i,false);
+                    addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
                 }
@@ -80,7 +78,7 @@ public class Parse {
                 ////if the word is meter - (skip 1 word ahead + check if there is i+1 word)
                 if( i+1<textLength && (splitText[i+1].equals("meter") || splitText[i+1].equals("Meter") || splitText[i+1].equals("Meters") || splitText[i+1].equals("meters"))){
                     termTxt = splitText[i] + " meters";
-                    addTermToIndx(termTxt,docNo,i,false);
+                    addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
                 }
@@ -88,14 +86,14 @@ public class Parse {
                 if( i+1<textLength && (splitText[i+1].equals("Centimeter") || splitText[i+1].equals("centimeter") || splitText[i+1].equals("Centimeters")
                         || splitText[i+1].equals("centimeters") || splitText[i+1].equals("cm"))){
                     termTxt = splitText[i] + " cm";
-                    addTermToIndx(termTxt,docNo,i,false);
+                    addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
                 }
                 ////if the number is PERCENT  - (skip 1 word ahead + check if there is i+1 word)
                 if(i+1<textLength && (splitText[i+1].equals("percent")|| splitText[i+1].equals("percentage") || splitText[i+1].equals("%"))){
                     termTxt = splitText[i]+"%";
-                    addTermToIndx(termTxt,docNo,i,false);
+                    addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
                 }
@@ -116,7 +114,7 @@ public class Parse {
                         num = num*1000000;
                         termTxt = num + "M Dollars";
                     }
-                    addTermToIndx(termTxt,docNo,i,false);
+                    addTermToIndx(termTxt,docNo,i);
                     i+=3;
                     continue;
                 }
@@ -130,7 +128,7 @@ public class Parse {
                         newVal = newVal*1000;
                         termTxt = newVal + "M Dollars";
                     }
-                    addTermToIndx(termTxt,docNo,i,false);
+                    addTermToIndx(termTxt,docNo,i);
                     i+=2;
                     continue;
                 }
@@ -146,7 +144,7 @@ public class Parse {
                     else{
                         termTxt = price + " Dollars";
                     }
-                    addTermToIndx(termTxt,docNo,i,false);
+                    addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
                 }
@@ -161,7 +159,7 @@ public class Parse {
                         termTxt = splitText[i] + " " + splitText[i + 1];
                         i++;
                     }
-                    addTermToIndx(termTxt,docNo,i,false);
+                    addTermToIndx(termTxt,docNo,i);
                     continue;
                 }
 
@@ -176,7 +174,7 @@ public class Parse {
                     continue;
                 }
                 String termNum =termNum(Double.parseDouble(splitText[i]));
-                addTermToIndx(termTxt,docNo,i,false);
+                addTermToIndx(termTxt,docNo,i);
                 continue;
             }
             //its a word or its a number with something attached to this
@@ -187,14 +185,8 @@ public class Parse {
                     String entity=splitText[i];
                     while ((i+j<textLength) && Character.isUpperCase(splitText[i + j].charAt(0))) {
                         entity=" "+splitText[i+j];
+                        indexer.addEntToDic(entity,docNo,i);
                         j++;
-                    }
-                    if (potentials.containsKey(entity) && !docNo.equals(potentials.get(entity)) && j>1){
-                        dictionary.addTerm(entity,docNo);
-                        dictionary.addTerm(entity, potentials.get(entity));
-                    }
-                    else{
-                        potentials.put(entity,docNo);
                     }
                 }
 
@@ -217,7 +209,7 @@ public class Parse {
                             }
                         }
                     }
-                    addTermToIndx(termTxt,docNo,i,false);
+                    addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
                 }
@@ -225,7 +217,7 @@ public class Parse {
                 //if a % is attached in the beginning
                 if(splitText[i].charAt(splitText[i].length()-1)=='%'){
                     termTxt = splitText[i];
-                    addTermToIndx(termTxt,docNo,i,false);
+                    addTermToIndx(termTxt,docNo,i);
                     continue;
                 }
 
@@ -242,7 +234,7 @@ public class Parse {
                     //else, then the number indicates years
                     else
                         termTxt=splitText[i+1]+"-"+ monthNum(splitText[i]);
-                    addTermToIndx(termTxt,docNo,i,false);
+                    addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
                 }
@@ -251,29 +243,29 @@ public class Parse {
                 if(splitText[i].indexOf("-")>=0){
                     String [] numbers = splitToNumbers(splitText[i]);
                     if(numbers[0].equals("true")) {
-                        addTermToIndx(numbers[1],docNo,i,false);
-                        addTermToIndx(numbers[2],docNo,i,false);
+                        addTermToIndx(numbers[1],docNo,i);
+                        addTermToIndx(numbers[2],docNo,i);
                     }
                     if(!numbers[0].equals("true")&& !numbers[0].equals("false")) {
                         termTxt = numbers[1] + " " + numbers[0];
-                        addTermToIndx(termTxt,docNo,i,false);
+                        addTermToIndx(termTxt,docNo,i);
                     }
-                    else addTermToIndx(splitText[i],docNo,i,false);
+                    else addTermToIndx(splitText[i],docNo,i);
                         continue;
                     }
 
                 //if its the type BETWEEN NUMBER AND NUMBER
                 if(i+3<textLength && (splitText[i].equals("Between") || splitText[i].equals("between"))&& isNum(splitText[i+1]) && splitText[i+2].equals("and") && isNum(splitText[i+3])){
-                    addTermToIndx(splitText[i]+" "+splitText[i+1]+ " "+ splitText[i+2] + " "+ splitText[i+3],docNo,i,false);
-                    addTermToIndx(splitText[i+1],docNo,i,false);
-                    addTermToIndx(splitText[i+3],docNo,i,false);
+                    addTermToIndx(splitText[i]+" "+splitText[i+1]+ " "+ splitText[i+2] + " "+ splitText[i+3],docNo,i);
+                    addTermToIndx(splitText[i+1],docNo,i);
+                    addTermToIndx(splitText[i+3],docNo,i);
                     i+=3;
                     continue;
                 }
                 //it is a REGULAR WORD - the dictionary will save it correctly
                else{
                    termTxt=splitText[i].replace(".","");
-                   addTermToIndx(termTxt,docNo,i,false);
+                   addTermToIndx(termTxt,docNo,i);
                 }
             }
         }
@@ -440,8 +432,7 @@ public class Parse {
         return newText;
     }
 
-    private void addTermToIndx(String name,String docId,int position, boolean isEntity){
-        Term term = new Term(name,docId,position,isEntity);
-        indexer.addTermToDic(term);
+    private void addTermToIndx(String name,String docId,int position){
+        indexer.addTermToDic(name,docId, position);
     }
 }
