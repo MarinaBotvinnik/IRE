@@ -1,7 +1,9 @@
 package Model;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -89,19 +91,66 @@ public class Indexer {
                     Term term = (Term) iter.next();
                     if (!dictionary.containsKey(term.getTermName().toLowerCase()) || !dictionary.containsKey(term.getTermName().toUpperCase())) {
                         if (!Files.isDirectory(Paths.get("/Posting/" + term.getTermName().charAt(0)))) {
-                            File termPostingFolder = new File("/Posting/" + term.getTermName().charAt(0));
+                            File termPostingFolder = new File("/Posting/" + term.getTermName().toLowerCase().charAt(0));
                             termPostingFolder.mkdir();
                         }
-                        Path path = Paths.get("/Posting/" + term.getTermName().charAt(0) + "/" + term.getTermName().charAt(1) + ".txt");
+                        Path path = Paths.get("/Posting/" + term.getTermName().toLowerCase().charAt(0) + "/" + term.getTermName().toLowerCase().charAt(1) + ".txt");
                         String str = null;
-                        str = "/Posting/" + term.getTermName().charAt(0) + "/" + term.getTermName().charAt(1) + ".txt";
+                        str = "/Posting/" + term.getTermName().toLowerCase().charAt(0) + "/" + term.getTermName().toLowerCase().charAt(1) + ".txt";
                         File termPostingFile = new File(str);
                         if (!Files.exists(path)) {
                             termPostingFile.createNewFile();
                         }
                         FileInputStream fis = new FileInputStream(termPostingFile);
                         org.jsoup.nodes.Document postingFileEditer = Jsoup.parse(fis, null, "", Parser.xmlParser());
-                        
+                        Element termNode= postingFileEditer.createElement(term.getTermName());
+                        HashMap<String,Integer> docs=term.getDocs();
+                        HashMap<String, List<Integer>> positionsList= term.getPositions();
+                        termNode.appendElement("idf").appendText(""+docs.size());
+                        Element docsNode=termNode.appendElement("docs");
+                        for(Map.Entry<String,Integer> entry : docs.entrySet()){
+                            Element docNode=docsNode.appendElement("doc").attr("DOCNAME", entry.getKey());
+                            docNode.appendElement("TF").appendText(""+entry.getValue());
+                            String positions="";
+                            for(Integer pos: positionsList.get(entry.getKey())){
+                                positions+=pos+",";
+                            }
+                            docNode.appendElement("Positions").appendText(positions);
+                        }
+                        dictionary.put(term.getTermName(),"/Posting/" + term.getTermName().toLowerCase().charAt(0) + "/" + term.getTermName().toLowerCase().charAt(1) + ".txt");
+                    }
+                    else{
+                        String tagName;
+                        FileInputStream fis;
+                        Element termNode;
+                        org.jsoup.nodes.Document postingFileEditer;
+                        if (Character.isLowerCase(term.getTermName().charAt(0)) && dictionary.containsKey(term.getTermName().toUpperCase())) {
+                            dictionary.put(term.getTermName(),dictionary.get(term.getTermName().toUpperCase()));
+                            dictionary.remove(term.getTermName().toUpperCase());
+                            fis = new FileInputStream(new File(dictionary.get(term.getTermName())));
+                            postingFileEditer = Jsoup.parse(fis, null, "", Parser.xmlParser());
+                            termNode=postingFileEditer.select(term.getTermName().toUpperCase()).first();
+                            termNode.tagName(term.getTermName());
+                            tagName=term.getTermName();
+                        }
+                        else if(Character.isUpperCase(term.getTermName().charAt(0)) && dictionary.containsKey(term.getTermName().toLowerCase())){
+                            fis = new FileInputStream(new File(dictionary.get(term.getTermName().toLowerCase())));
+                            postingFileEditer = Jsoup.parse(fis, null, "", Parser.xmlParser());
+                            tagName=term.getTermName().toLowerCase();
+                            termNode=postingFileEditer.select(tagName).first();
+                        }
+                        else{
+                            fis = new FileInputStream(new File(dictionary.get(term.getTermName())));
+                            postingFileEditer = Jsoup.parse(fis, null, "", Parser.xmlParser());
+                            tagName=term.getTermName();
+                            termNode=postingFileEditer.select(tagName).first();
+                        }
+                        HashMap<String,Integer> docs=term.getDocs();
+                        HashMap<String, List<Integer>> positionsList= term.getPositions();
+                        termNode.appendElement("idf").appendText(""+docs.size());
+                        Element docsNode=termNode.appendElement("docs");
+                        int Idf=Integer.parseInt(termNode.select("idf").text());
+                        termNode.select("idf").text()
                     }
                 }
             }
