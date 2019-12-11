@@ -27,21 +27,21 @@ public class ReadFile {
         listFilesForFolder(path);
     }
 
-    public void tryFunc(){
-        try {
-            FileInputStream fis = new FileInputStream(new File(path));
-            Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
-            Elements Documents=file.select("Term");
-            for(Element doc : Documents){
-                String name = doc.select("Name").text();
-                System.out.println(name);
-            }
-
-        }
-        catch (Exception e){
-            System.out.println("SHIT");
-        }
-    }
+//    public void tryFunc(){
+//        try {
+//            FileInputStream fis = new FileInputStream(new File(path));
+//            Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
+//            Elements Documents=file.select("Term");
+//            for(Element doc : Documents){
+//                String name = doc.select("Name").text();
+//                System.out.println(name);
+//            }
+//
+//        }
+//        catch (Exception e){
+//            System.out.println("SHIT");
+//        }
+//    }
 
 
     private void listFilesForFolder(String filePath){

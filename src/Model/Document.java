@@ -1,6 +1,7 @@
 package Model;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class Document {
     
@@ -18,24 +19,38 @@ public class Document {
         this.doc_name = doc_name;
     }
 
+    public String getDocName(){
+        return max_Term_name;
+    }
 
-    public void addFrequency(String term){
-        if(term_frq.containsKey(term)){
-            term_frq.replace(term,term_frq.get(term)+1);
+    public int getUniqueTermsNum(){
+        return uniqueTermsNum;
+    }
+
+    public int getMax_tf() {
+        return max_tf;
+    }
+
+    public String getMax_Term_name() {
+        return max_Term_name;
+    }
+
+    public void addTerm(String term){
+        String lowerTerm = term.toLowerCase();
+        if(term_frq.containsKey(lowerTerm)){
+            term_frq.replace(lowerTerm,term_frq.get(lowerTerm)+1);
         }
-        else term_frq.put(term,1);
+        else term_frq.put(lowerTerm,1);
     }
 
     public void closeDoc(){
-        Iterator iterator = term_frq.entrySet().iterator();
-        while (iterator.hasNext()){
-            HashMap.Entry pair = (HashMap.Entry)iterator.next();
-            if(((int)pair.getValue())>max_tf){
-                max_tf= ((int)pair.getValue());
-                max_Term_name = (String)pair.getKey();
+        for (Map.Entry<String, Integer> stringIntegerEntry : term_frq.entrySet()) {
+            HashMap.Entry pair = stringIntegerEntry;
+            if (!pair.getKey().equals("and")&&((int) pair.getValue()) > max_tf) {
+                max_tf = ((int) pair.getValue());
+                max_Term_name = (String) pair.getKey();
             }
         }
         uniqueTermsNum = term_frq.size();
-
     }
 }

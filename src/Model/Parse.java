@@ -12,22 +12,20 @@ public class Parse {
     private HashMap<String,String> months;
     private Indexer indexer;
 
-    public Parse(){
-        if (stopWords == null) {
-            stopWords = new HashSet<>();
-            try{
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream("Resource/stop_words.txt"),"UTF-8"));
-                String st;
-                //add all the stop-words in all their ways
-                while (( st = buffer.readLine()) != null){
-                    if(!st.equals("between") && !st.equals("and") && !st.equals("may") &&!st.equals("m")&& !st.equals("b")&&!st.equals("t"))
+    public Parse() {
+        stopWords = new HashSet<>();
+        try {
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream("Resource/stop_words.txt"), "UTF-8"));
+            String st;
+            //add all the stop-words in all their ways
+            while ((st = buffer.readLine()) != null) {
+                if (!st.equals("between") && !st.equals("and") && !st.equals("may") && !st.equals("m") && !st.equals("b") && !st.equals("t"))
                     stopWords.add(st);
-                    stopWords.add(st.toUpperCase());
-                    stopWords.add(st.substring(0,1).toUpperCase()+st.substring(1));
-                }
-            }catch (Exception e) {
-                System.out.println(e.getMessage());
+                stopWords.add(st.toUpperCase());
+                stopWords.add(st.substring(0, 1).toUpperCase() + st.substring(1));
             }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         months = new HashMap<>();
         indexer = new Indexer();
@@ -49,12 +47,14 @@ public class Parse {
                         ||splitText[i+1].equals("Kgs") ||splitText[i+1].equals("kgs"))){
                     termTxt = splitText[i] + " kg";
                     addTermToIndx(termTxt,docNo,i);
+                    addTermToDoc(document,termTxt);
                     i++;
                     continue;
                 }
                 if(i+1<textLength &&(splitText[i+1].equals("gr") || splitText[i+1].equals("gram")|| splitText[i+1].equals("Gram")||splitText[i+1].equals("GRAM")
                         ||splitText[i+1].equals("grams")||splitText[i+1].equals("Grams") ||splitText[i+1].equals("GRAMS"))){
                     termTxt = splitText[i] + " gr";
+                    addTermToDoc(document,termTxt);
                     addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
@@ -62,6 +62,7 @@ public class Parse {
                 if(i+1<textLength &&(splitText[i+1].equals("ton") || splitText[i+1].equals("Ton")|| splitText[i+1].equals("TON")||splitText[i+1].equals("tons")
                         ||splitText[i+1].equals("Tons")||splitText[i+1].equals("TONS"))){
                     termTxt = splitText[i] + "K kg";
+                    addTermToDoc(document,termTxt);
                     addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
@@ -70,6 +71,7 @@ public class Parse {
                 if(i+1<textLength && (splitText[i+1].equals("km") || splitText[i+1].equals("Km")|| splitText[i+1].equals("KM")||splitText[i+1].equals("kilometer")
                         ||splitText[i+1].equals("Kilometer")||splitText[i+1].equals("kilometers") ||splitText[i+1].equals("Kilometers"))){
                     termTxt = splitText[i] + "K meters";
+                    addTermToDoc(document,termTxt);
                     addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
@@ -78,6 +80,7 @@ public class Parse {
                 ////if the word is meter - (skip 1 word ahead + check if there is i+1 word)
                 if( i+1<textLength && (splitText[i+1].equals("meter") || splitText[i+1].equals("Meter") || splitText[i+1].equals("Meters") || splitText[i+1].equals("meters"))){
                     termTxt = splitText[i] + " meters";
+                    addTermToDoc(document,termTxt);
                     addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
@@ -86,6 +89,7 @@ public class Parse {
                 if( i+1<textLength && (splitText[i+1].equals("Centimeter") || splitText[i+1].equals("centimeter") || splitText[i+1].equals("Centimeters")
                         || splitText[i+1].equals("centimeters") || splitText[i+1].equals("cm"))){
                     termTxt = splitText[i] + " cm";
+                    addTermToDoc(document,termTxt);
                     addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
@@ -93,6 +97,7 @@ public class Parse {
                 ////if the number is PERCENT  - (skip 1 word ahead + check if there is i+1 word)
                 if(i+1<textLength && (splitText[i+1].equals("percent")|| splitText[i+1].equals("percentage") || splitText[i+1].equals("%"))){
                     termTxt = splitText[i]+"%";
+                    addTermToDoc(document,termTxt);
                     addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
@@ -114,6 +119,7 @@ public class Parse {
                         num = num*1000000;
                         termTxt = num + "M Dollars";
                     }
+                    addTermToDoc(document,termTxt);
                     addTermToIndx(termTxt,docNo,i);
                     i+=3;
                     continue;
@@ -121,13 +127,14 @@ public class Parse {
 
                 // if the word is of type price m/bn Dollars
                 if(i+2<textLength && (splitText[i+2].equals("dollars") || splitText[i+2].equals("Dollars"))){
-                    if(splitText[i+1].equals("m") || splitText.equals("M"))
+                    if(splitText[i+1].equals("m") || splitText[i+1].equals("M"))
                         termTxt = splitText[i] + "M Dollars";
                     if( splitText[i+1].equals("bn") || splitText[i+1].equals("BN")){
                         double newVal = Double.parseDouble(splitText[i]);
                         newVal = newVal*1000;
                         termTxt = newVal + "M Dollars";
                     }
+                    addTermToDoc(document,termTxt);
                     addTermToIndx(termTxt,docNo,i);
                     i+=2;
                     continue;
@@ -144,6 +151,7 @@ public class Parse {
                     else{
                         termTxt = price + " Dollars";
                     }
+                    addTermToDoc(document,termTxt);
                     addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
@@ -159,6 +167,7 @@ public class Parse {
                         termTxt = splitText[i] + " " + splitText[i + 1];
                         i++;
                     }
+                    addTermToDoc(document,termTxt);
                     addTermToIndx(termTxt,docNo,i);
                     continue;
                 }
@@ -174,15 +183,15 @@ public class Parse {
                     continue;
                 }
                 String termNum =termNum(Double.parseDouble(splitText[i]));
-                addTermToIndx(termTxt,docNo,i);
-                continue;
+                addTermToDoc(document,termNum);
+                addTermToIndx(termNum,docNo,i);
             }
             //its a word or its a number with something attached to this
             else{
                 //DOR'S POTENTIALS
                 if(Character.isUpperCase(splitText[i].charAt(0))){
                     int j = 1;
-                    String entity=splitText[i];
+                    String entity;
                     while ((i+j<textLength) && Character.isUpperCase(splitText[i + j].charAt(0))) {
                         entity=" "+splitText[i+j];
                         indexer.addEntToDic(entity,docNo,i);
@@ -209,6 +218,7 @@ public class Parse {
                             }
                         }
                     }
+                    addTermToDoc(document,termTxt);
                     addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
@@ -217,6 +227,7 @@ public class Parse {
                 //if a % is attached in the beginning
                 if(splitText[i].charAt(splitText[i].length()-1)=='%'){
                     termTxt = splitText[i];
+                    addTermToDoc(document,termTxt);
                     addTermToIndx(termTxt,docNo,i);
                     continue;
                 }
@@ -234,38 +245,52 @@ public class Parse {
                     //else, then the number indicates years
                     else
                         termTxt=splitText[i+1]+"-"+ monthNum(splitText[i]);
+                    addTermToDoc(document,termTxt);
                     addTermToIndx(termTxt,docNo,i);
                     i++;
                     continue;
                 }
 
                 //if its the type WORD - WORD or WORD - WORD - WORD
-                if(splitText[i].indexOf("-")>=0){
-                    String [] numbers = splitToNumbers(splitText[i]);
-                    if(numbers[0].equals("true")) {
-                        addTermToIndx(numbers[1],docNo,i);
-                        addTermToIndx(numbers[2],docNo,i);
+                if(splitText[i].indexOf("-")>=0) {
+                    String[] numbers = splitToNumbers(splitText[i]);
+                    if (numbers[0].equals("true")) {
+                        addTermToDoc(document, numbers[1]);
+                        addTermToIndx(numbers[1], docNo, i);
+                        addTermToDoc(document, numbers[2]);
+                        addTermToIndx(numbers[2], docNo, i);
+                        continue;
                     }
-                    if(!numbers[0].equals("true")&& !numbers[0].equals("false")) {
+                    if (!numbers[0].equals("false")) {
                         termTxt = numbers[1] + " " + numbers[0];
-                        addTermToIndx(termTxt,docNo,i);
-                    }
-                    else addTermToIndx(splitText[i],docNo,i);
+                        addTermToDoc(document, termTxt);
+                        addTermToIndx(termTxt, docNo, i);
+                        continue;
+                    } else {
+                        addTermToDoc(document, termTxt);
+                        addTermToIndx(splitText[i], docNo, i);
                         continue;
                     }
 
+                }
+
                 //if its the type BETWEEN NUMBER AND NUMBER
                 if(i+3<textLength && (splitText[i].equals("Between") || splitText[i].equals("between"))&& isNum(splitText[i+1]) && splitText[i+2].equals("and") && isNum(splitText[i+3])){
+                    addTermToDoc(document, splitText[i]+" "+splitText[i+1]+ " "+ splitText[i+2] + " "+ splitText[i+3]);
                     addTermToIndx(splitText[i]+" "+splitText[i+1]+ " "+ splitText[i+2] + " "+ splitText[i+3],docNo,i);
+                    addTermToDoc(document, splitText[i+1]);
                     addTermToIndx(splitText[i+1],docNo,i);
+                    addTermToDoc(document, splitText[i+3]);
                     addTermToIndx(splitText[i+3],docNo,i);
                     i+=3;
-                    continue;
                 }
                 //it is a REGULAR WORD - the dictionary will save it correctly
                else{
                    termTxt=splitText[i].replace(".","");
-                   addTermToIndx(termTxt,docNo,i);
+                   if(termTxt.length()>0) {
+                       addTermToDoc(document, termTxt);
+                       addTermToIndx(termTxt, docNo, i);
+                   }
                 }
             }
         }
@@ -316,8 +341,7 @@ public class Parse {
         if(place >=0){
             String first = txt.substring(0,place);
             String sec = txt.substring(place+1);
-            if(isNum(sec) && isNum(first))
-                return true;
+            return isNum(sec) && isNum(first);
         }
         return false;
     }
@@ -350,9 +374,7 @@ public class Parse {
                this.months.put(month,month.substring(0,3).toLowerCase());
             }
         }
-        if(months.containsKey(str))
-            return true;
-        return false;
+        return months.containsKey(str);
     }
 
     private String monthNum(String str){
@@ -417,7 +439,7 @@ public class Parse {
      * @return
      */
     private String[] deleteStopWords (String text){
-        text=text.replaceAll("[,:(){}*'\"]", "").replaceAll("\\[|\\]", "");
+        text=text.replaceAll("[,:(){}*'\"]", "").replaceAll("[\\[\\]]", "");
         String[] splitTxt = text.split("\\s+");
         List<String> l = new ArrayList<>();
         for(int i=0; i<splitTxt.length; i++){
@@ -435,4 +457,5 @@ public class Parse {
     private void addTermToIndx(String name,String docId,int position){
         indexer.addTermToDic(name,docId, position);
     }
+    private void addTermToDoc(Document doc, String termName){doc.addTerm(termName);}
 }

@@ -10,10 +10,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.Dictionary;
 
 public class Indexer {
-    int Max;
+    int maxTerm;
+    int maxDoc;
     HashMap<String, Document> documentsPosting;
     HashMap<String, String> documentsDictionary;
     HashMap<String, String> dictionary;
@@ -26,11 +26,12 @@ public class Indexer {
         dictionary = new HashMap<>();
         posting = new HashMap<>();
         entities = new HashMap<>();
+        maxDoc = 100;
     }
 
     public void addTermToDic(String Name, String docNo, int position) {
         String termName = Name;
-        if (posting.size() < Max) {
+        if (posting.size() < maxTerm) {
             //if it exists in the dictionary
             //boolean existsDic = isTermExistInDic (termName);
             char first = termName.charAt(0);
@@ -73,11 +74,11 @@ public class Indexer {
             //we reached the max size of the posting, time to write to the disc
         }
         else{
-                this.writeToPosting();
+                this.writeTermsToPosting();
             }
     }
 
-        private void writeToPosting() {
+        private void writeTermsToPosting() {
             try {
                 if (!Files.isDirectory(Paths.get("/Posting"))) {
                     File postingFolder = new File("/Posting");
@@ -109,11 +110,27 @@ public class Indexer {
             }
         }
 
+        private void writeDocsToPosting() {
+            try {
+                if (!Files.isDirectory(Paths.get("/docPosting"))) {
+                }
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         public void addEntToDic (String Name, String docNo,int position){
 
         }
 
-        public void addDocToDic (Document doc){
+        public void addDocToDic (Document doc) {
+            if (documentsPosting.size() < maxDoc) {
+                documentsPosting.put(doc.getDocName(), doc);
+            }
+            else{
+                writeDocsToPosting();
+            }
 
         }
 
@@ -126,7 +143,6 @@ public class Indexer {
                 } else posting.put(termName.toLowerCase(), null);
                 return false;
             } else {
-                if ()
             }
             return true;
         }
@@ -135,9 +151,9 @@ public class Indexer {
             char first = termName.charAt(0);
             if (Character.isLowerCase(first)) {
                 if (dictionary.containsKey(termName.toUpperCase())) {
-                    int value = dictionary.get(termName.toUpperCase());
+                    String value = dictionary.get(termName.toUpperCase());
                     dictionary.remove(termName.toUpperCase());
-                    dictionary.put(termName.toLowerCase(), value + 1);
+                    dictionary.put(termName.toLowerCase(), value);
                     return true;
                 }
             } else dictionary.replace(termName, dictionary.get(termName) + 1);

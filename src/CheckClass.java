@@ -38,11 +38,10 @@ public class CheckClass extends Application {
 
     public static void main(String[] args) {
         //launch(args);
-        ReadFile readFile = new ReadFile("Resource/tryTerm.txt");
+        ReadFile readFile = new ReadFile("Resource/toCheck");
         long startTime = System.currentTimeMillis();
         long start = System.nanoTime();
         readFile.readFile();
-        //readFile.tryFunc();
         long end = System.nanoTime();
         long endTime = System.currentTimeMillis();
         System.out.println("------ALL DONE MATE!-----");
