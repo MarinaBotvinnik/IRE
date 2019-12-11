@@ -118,6 +118,7 @@ public class Indexer {
                             docNode.appendElement("Positions").appendText(positions);
                         }
                         dictionary.put(term.getTermName(),"/Posting/" + term.getTermName().toLowerCase().charAt(0) + "/" + term.getTermName().toLowerCase().charAt(1) + ".txt");
+                        fis.close();
                     }
                     else{
                         String tagName;
@@ -147,12 +148,33 @@ public class Indexer {
                         }
                         HashMap<String,Integer> docs=term.getDocs();
                         HashMap<String, List<Integer>> positionsList= term.getPositions();
-                        termNode.appendElement("idf").appendText(""+docs.size());
+                        int idf=Integer.parseInt(termNode.select("idf").first().text());
                         Element docsNode=termNode.appendElement("docs");
-                        int Idf=Integer.parseInt(termNode.select("idf").text());
-                        termNode.select("idf").text();
+                        for(Map.Entry<String,Integer> entry : docs.entrySet()){
+                            String positions="";
+                            for(Integer pos: positionsList.get(entry.getKey())){
+                                positions+=pos+",";
+                            }
+                            if(docsNode.select("doc[DOCNAME='"+entry.getKey()+"']")==null){
+                                idf++;
+                                Element docNode=docsNode.appendElement("doc").attr("DOCNAME", entry.getKey());
+                                docNode.appendElement("TF").appendText(""+entry.getValue());
+                                docNode.appendElement("Positions").appendText(positions);
+                            }
+                            else{
+                                Element docNode=docsNode.select("doc[DOCNAME='"+entry.getKey()+"']").first();
+                                int tf=Integer.parseInt(docNode.select("TF").first().text())+entry.getValue();
+                                docNode.select("TF").first().text(""+tf);
+                                String str=docNode.select("Positions").first().text();
+                                str+=positions;
+                                docNode.select("Positions").first().text(str);
+                            }
+                        }
+                        termNode.select("idf").first().text(""+idf);
+                        fis.close();
                     }
                 }
+                posting.clear();
             }
             catch (IOException e) {
                 e.printStackTrace();

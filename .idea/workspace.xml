@@ -4,7 +4,7 @@
     <list default="true" id="ed855956-439f-4db6-b857-ae02e384f8d4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Model/Indexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Indexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/Term.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Term.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Model/ReadFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/ReadFile.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
