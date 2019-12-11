@@ -70,7 +70,7 @@ public class ReadFile {
             for(Element doc : Documents){
                 String docNo = doc.select("DOCNO").text();
                 docMap.put(docNo,docPath);
-                if(!doc.select("TEXT").isEmpty()) {
+                if(doc.select("TEXT").first()!=null) {
                     parser.parse(dictionary, doc.select("TEXT").text(), docNo);
                 }
             }
