@@ -5,9 +5,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,6 +14,7 @@ import java.util.*;
 public class Indexer {
     int maxTerm;
     int maxDoc;
+    int docDirecotryNum;
     HashMap<String, Document> documentsPosting;
     HashMap<String, String> documentsDictionary;
     HashMap<String, String> dictionary;
@@ -28,7 +27,8 @@ public class Indexer {
         dictionary = new HashMap<>();
         posting = new HashMap<>();
         entities = new HashMap<>();
-        maxDoc = 100;
+        maxDoc = 20;
+        docDirecotryNum=1;
     }
 
     public void addTermToDic(String Name, String docNo, int position) {
@@ -150,7 +150,7 @@ public class Indexer {
                         termNode.appendElement("idf").appendText(""+docs.size());
                         Element docsNode=termNode.appendElement("docs");
                         int Idf=Integer.parseInt(termNode.select("idf").text());
-                        termNode.select("idf").text()
+                        termNode.select("idf").text();
                     }
                 }
             }
@@ -161,10 +161,38 @@ public class Indexer {
 
         private void writeDocsToPosting() {
             try {
-                if (!Files.isDirectory(Paths.get("/docPosting"))) {
+                Path path = Paths.get("/DocumentsPosting");
+                if (!Files.isDirectory(path)) {
+                    File postingFolder = new File("/DocumentsPosting");
+                    postingFolder.mkdir();
                 }
-            }
-            catch (IOException e) {
+                File termPostingFolder = new File("/DocumentsPosting/" + docDirecotryNum + "-" + (docDirecotryNum + maxDoc - 1));
+                termPostingFolder.mkdir();
+                String str;
+                str = "/DocumentsPosting/" + docDirecotryNum + "-" + (docDirecotryNum + maxDoc - 1) +"/"+ docDirecotryNum + "-" + (docDirecotryNum + maxDoc - 1) +".txt";
+                File termPostingFile = new File(str);
+                termPostingFile.createNewFile();
+                FileInputStream fis = new FileInputStream(termPostingFile);
+                org.jsoup.nodes.Document postingFileEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());
+                docDirecotryNum+=maxDoc;
+                BufferedWriter writer = new BufferedWriter(new FileWriter(str));
+                for (Map.Entry<String,Document> stringIntegerEntry : documentsPosting.entrySet()) {
+                    HashMap.Entry pair = stringIntegerEntry;
+                    Document document =(Document)pair.getValue();
+                    Element docNode = postingFileEditor.createElement("newElement"); // this tag name is not seen anywhere
+                    Element docAtt = postingFileEditor.createElement(document.getDocName());
+                    docAtt.appendElement("maxTf").appendText("" + document.getMax_tf());
+                    docAtt.appendElement("maxTfName").appendText(document.getMax_Term_name());
+                    docAtt.appendElement("uniqueTerms").appendText("" + document.getUniqueTermsNum());
+                    docNode.appendChild(docAtt);
+                    writer.write(docNode.html());
+                    writer.newLine();
+                    dictionary.put(document.getDocName(), str);
+                }
+                writer.write("DONE");
+                writer.close();
+                documentsPosting.clear();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

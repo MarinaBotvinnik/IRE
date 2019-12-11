@@ -20,7 +20,7 @@ public class Document {
     }
 
     public String getDocName(){
-        return max_Term_name;
+        return doc_name;
     }
 
     public int getUniqueTermsNum(){
@@ -46,7 +46,7 @@ public class Document {
     public void closeDoc(){
         for (Map.Entry<String, Integer> stringIntegerEntry : term_frq.entrySet()) {
             HashMap.Entry pair = stringIntegerEntry;
-            if (!pair.getKey().equals("and")&&((int) pair.getValue()) > max_tf) {
+            if (!pair.getKey().equals("") && !pair.getKey().equals("and")&&((int) pair.getValue()) > max_tf) {
                 max_tf = ((int) pair.getValue());
                 max_Term_name = (String) pair.getKey();
             }

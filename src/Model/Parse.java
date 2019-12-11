@@ -287,7 +287,7 @@ public class Parse {
                 //it is a REGULAR WORD - the dictionary will save it correctly
                else{
                    termTxt=splitText[i].replace(".","");
-                   if(termTxt.length()>0) {
+                   if(termTxt.length()>1) {
                        addTermToDoc(document, termTxt);
                        addTermToIndx(termTxt, docNo, i);
                    }
@@ -439,7 +439,7 @@ public class Parse {
      * @return
      */
     private String[] deleteStopWords (String text){
-        text=text.replaceAll("[,:(){}*'\"]", "").replaceAll("[\\[\\]]", "");
+        text=text.replaceAll("[,:(){}*?;'\"]", "").replaceAll("[\\[\\]]", "");
         String[] splitTxt = text.split("\\s+");
         List<String> l = new ArrayList<>();
         for(int i=0; i<splitTxt.length; i++){
