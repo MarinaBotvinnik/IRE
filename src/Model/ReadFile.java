@@ -73,7 +73,10 @@ public class ReadFile {
             for(Element doc : Documents){
                 String docNo = doc.select("DOCNO").text();
                 docMap.put(docNo,docPath);
-                if(doc.select("TEXT").first()!=null) {
+                int check;
+                if(docNo.equals("LA011089-0070"))
+                    check=0;
+                if(doc.select("TEXT").hasText()) {
                     parser.parse(dictionary, doc.select("TEXT").text(), docNo);
                 }
             }

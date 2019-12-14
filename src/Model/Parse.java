@@ -253,7 +253,7 @@ public class Parse {
                 }
 
                 //if its the type WORD - WORD or WORD - WORD - WORD
-                if(splitText[i].indexOf("-")>=0) {
+                if(splitText[i].indexOf("-")>=0 && !termTxt.equals("--")) {
                     String[] numbers = splitToNumbers(splitText[i]);
                     if (numbers[0].equals("true")) {
                         addTermToDoc(document, numbers[1]);
@@ -288,7 +288,7 @@ public class Parse {
                 //it is a REGULAR WORD - the dictionary will save it correctly
                else{
                    termTxt=splitText[i].replace(".","");
-                   if(termTxt.length()>1) {
+                   if(termTxt.length()>1 && !termTxt.equals("--")) {
                        addTermToDoc(document, termTxt);
                        addTermToIndx(termTxt, docNo, i);
                    }
@@ -448,7 +448,7 @@ public class Parse {
      * @return
      */
     private String[] deleteStopWords (String text){
-        text=text.replaceAll("[,:(){}*?;'\"]", "").replaceAll("[\\[\\]]", "");
+        text=text.replaceAll("[,:(){}*?;!'\"]", "").replaceAll("[\\[\\]]", "");
         String[] splitTxt = text.split("\\s+");
         List<String> l = new ArrayList<>();
         for(int i=0; i<splitTxt.length; i++){

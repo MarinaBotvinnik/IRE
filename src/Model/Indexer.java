@@ -47,7 +47,6 @@ public class Indexer {
             stemmer.stem();
             termName = stemmer.toString();
         }
-        if (posting.size() < maxTerm) {
             //if it exists in the dictionary
             char first = termName.charAt(0);
             // the word isn't in the dictionary yet
@@ -67,10 +66,10 @@ public class Indexer {
                     posting.get(termName.toLowerCase()).addDocPosition(docNo, position);
                 }
             }
+        if(posting.size() >= maxTerm){
+            //this.writeTermsToPosting();
+            posting.clear();
         }
-        else{
-                this.writeTermsToPosting();
-            }
     }
 
         private void writeTermsToPosting() {
@@ -81,13 +80,17 @@ public class Indexer {
                 }
                 for (Map.Entry<String, Term> stringTermEntry : posting.entrySet()) {
                     Term term = stringTermEntry.getValue();
-                    if (!dictionary.containsKey(term.getTermName().toLowerCase()) && !dictionary.containsKey(term.getTermName().toUpperCase()) && !term.getTermName().equals("--")) {
+                    if (!dictionary.containsKey(term.getTermName().toLowerCase()) && !dictionary.containsKey(term.getTermName().toUpperCase())) {
                         if (!Files.isDirectory(Paths.get("/Posting/" + term.getTermName().charAt(0)))) {
                             File termPostingFolder = new File("/Posting/" + term.getTermName().toLowerCase().charAt(0));
                             termPostingFolder.mkdir();
                         }
-                        Path path = Paths.get("/Posting/" + term.getTermName().toLowerCase().charAt(0) + "/" + term.getTermName().toLowerCase().charAt(1) + ".txt");
-                        String str = "/Posting/" + term.getTermName().toLowerCase().charAt(0) + "/" + term.getTermName().toLowerCase().charAt(1) + ".txt";
+                        String str;
+                        if(term.getTermName().length()>1)
+                            str = "/Posting/" + term.getTermName().toLowerCase().charAt(0) + "/" + term.getTermName().toLowerCase().charAt(1) + ".txt";
+                        else
+                            str = "/Posting/" + term.getTermName().toLowerCase().charAt(0) + "/" + "singlechar.txt";
+                        Path path = Paths.get(str);
                         File termPostingFile = new File(str);
                         boolean boolTemp=false;
                         if (!Files.exists(path)) {
@@ -105,7 +108,7 @@ public class Indexer {
                         Element termNode= root.appendElement("term").attr("TERMNAME",term.getTermName());
                         HashMap<String,Integer> docs=term.getDocs();
                         HashMap<String, List<Integer>> positionsList= term.getPositions();
-                        termNode.appendElement("idf").appendText(""+docs.size());
+                        termNode.appendElement("df").appendText(""+docs.size());
                         Element docsNode=termNode.appendElement("docs");
                         for(Map.Entry<String,Integer> entry : docs.entrySet()){
                             Element docNode=docsNode.appendElement("doc").attr("DOCNAME", entry.getKey());
@@ -116,12 +119,12 @@ public class Indexer {
                             }
                             docNode.appendElement("Positions").appendText(positions);
                         }
-                        dictionary.put(term.getTermName(),"/Posting/" + term.getTermName().toLowerCase().charAt(0) + "/" + term.getTermName().toLowerCase().charAt(1) + ".txt");
+                        dictionary.put(term.getTermName(),str);
                         writer.write(root.outerHtml());
                         writer.close();
                         fis.close();
                     }
-                    else if(!term.getTermName().equals("--")){
+                    else{
                         String tagName;
                         FileInputStream fis;
                         Element termNode;
@@ -157,7 +160,7 @@ public class Indexer {
                         }
                         HashMap<String,Integer> docs=term.getDocs();
                         HashMap<String, List<Integer>> positionsList= term.getPositions();
-                        int idf=Integer.parseInt(termNode.select("idf").first().text());
+                        int df=Integer.parseInt(termNode.select("df").first().text());
                         Element docsNode=termNode.select("docs").first();
                         for(Map.Entry<String,Integer> entry : docs.entrySet()){
                             String positions="";
@@ -165,7 +168,7 @@ public class Indexer {
                                 positions+=pos+",";
                             }
                             if(docsNode.select("doc[DOCNAME='"+entry.getKey()+"']").first()==null){
-                                idf++;
+                                df++;
                                 Element docNode=docsNode.appendElement("doc").attr("DOCNAME", entry.getKey());
                                 docNode.appendElement("TF").appendText(""+entry.getValue());
                                 docNode.appendElement("Positions").appendText(positions);
@@ -180,7 +183,7 @@ public class Indexer {
                                 docNode.select("Positions").first().text(str);
                             }
                         }
-                        termNode.select("idf").first().text(""+idf);
+                        termNode.select("df").first().text(""+df);
                         writer.write(postingFileEditer.selectFirst("root").outerHtml());
                         writer.close();
                         fis.close();
