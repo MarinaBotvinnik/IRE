@@ -15,16 +15,19 @@ public class ReadFile {
     private Parse parser;
     private Dictionary dictionary;
 
-    public ReadFile(String path) {
-        this.path = path;
+    public ReadFile() {
         docMap = new HashMap<>();
         parser = new Parse();
         HashMap <String,String> map = new HashMap<>();
         dictionary = new Dictionary();
+        path = "";
     }
 
-    public void readFile(){
+    public void readFile(String path){
+        this.path = path;
         listFilesForFolder(path);
+        parser.closeParser();
+        parser.upload(); //temp function
     }
 
 //    public void tryFunc(){

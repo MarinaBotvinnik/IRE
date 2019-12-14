@@ -14,12 +14,14 @@ import java.util.*;
 public class Indexer {
     int maxTerm;
     int maxDoc;
-    int docDirecotryNum;
+    int docDirectoryNum;
+    boolean isStem;
     HashMap<String, Document> documentsPosting;
     HashMap<String, String> documentsDictionary;
     HashMap<String, String> dictionary;
     HashMap<String, Term> posting;
     HashMap<String, Term> entities;
+    Stemmer stemmer;
 
     public Indexer() {
         documentsPosting = new HashMap<>();
@@ -28,14 +30,24 @@ public class Indexer {
         posting = new HashMap<>();
         entities = new HashMap<>();
         maxDoc = 20;
-        docDirecotryNum=1;
+        docDirectoryNum =1;
+        isStem = false;
+    }
+
+    public void setStem(boolean stem) {
+        isStem = stem;
     }
 
     public void addTermToDic(String Name, String docNo, int position) {
-        String termName = Name;
+        String termName=Name;
+        if(isStem){
+            stemmer = new Stemmer();
+            stemmer.add(Name.toCharArray(),Name.length());
+            stemmer.stem();
+            termName = stemmer.toString();
+        }
         if (posting.size() < maxTerm) {
             //if it exists in the dictionary
-            //boolean existsDic = isTermExistInDic (termName);
             char first = termName.charAt(0);
             // the word isn't in the dictionary yet
             if (!posting.containsKey(termName.toUpperCase()) || !posting.containsKey(termName.toLowerCase())) {
@@ -54,26 +66,6 @@ public class Indexer {
                     posting.get(termName.toLowerCase()).addDocPosition(docNo, position);
                 }
             }
-            //it means it exist in the posting and the dictionary
-
-//            if(existsDic){
-//                //the term changed to lowerCase
-//                if(changeTerm(termName)){
-//                    Term chaged = posting.get(termName);
-//                }
-//                //term stays the same
-//                else{
-//                    Term existTerm = posting.get(termName);
-//
-//                }
-//            }
-//            //it exist in the dictionary but not in the posting
-//            else{
-//                posting.put(termName,term);
-//            }
-//
-//        }
-            //we reached the max size of the posting, time to write to the disc
         }
         else{
                 this.writeTermsToPosting();
@@ -111,11 +103,11 @@ public class Indexer {
                         for(Map.Entry<String,Integer> entry : docs.entrySet()){
                             Element docNode=docsNode.appendElement("doc").attr("DOCNAME", entry.getKey());
                             docNode.appendElement("TF").appendText(""+entry.getValue());
-                            String positions="";
+                            StringBuilder positions= new StringBuilder();
                             for(Integer pos: positionsList.get(entry.getKey())){
-                                positions+=pos+",";
+                                positions.append(pos).append(",");
                             }
-                            docNode.appendElement("Positions").appendText(positions);
+                            docNode.appendElement("Positions").appendText(positions.toString());
                         }
                         dictionary.put(term.getTermName(),"/Posting/" + term.getTermName().toLowerCase().charAt(0) + "/" + term.getTermName().toLowerCase().charAt(1) + ".txt");
                         fis.close();
@@ -188,15 +180,14 @@ public class Indexer {
                     File postingFolder = new File("/DocumentsPosting");
                     postingFolder.mkdir();
                 }
-                File termPostingFolder = new File("/DocumentsPosting/" + docDirecotryNum + "-" + (docDirecotryNum + maxDoc - 1));
+                File termPostingFolder = new File("/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1));
                 termPostingFolder.mkdir();
-                String str;
-                str = "/DocumentsPosting/" + docDirecotryNum + "-" + (docDirecotryNum + maxDoc - 1) +"/"+ docDirecotryNum + "-" + (docDirecotryNum + maxDoc - 1) +".txt";
+                String str = "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) +"/"+ docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) +".txt";
                 File termPostingFile = new File(str);
                 termPostingFile.createNewFile();
                 FileInputStream fis = new FileInputStream(termPostingFile);
                 org.jsoup.nodes.Document postingFileEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());
-                docDirecotryNum+=maxDoc;
+                docDirectoryNum +=maxDoc;
                 BufferedWriter writer = new BufferedWriter(new FileWriter(str));
                 for (Map.Entry<String,Document> stringIntegerEntry : documentsPosting.entrySet()) {
                     HashMap.Entry pair = stringIntegerEntry;
@@ -209,10 +200,10 @@ public class Indexer {
                     docNode.appendChild(docAtt);
                     writer.write(docNode.html());
                     writer.newLine();
-                    dictionary.put(document.getDocName(), str);
+                    documentsDictionary.put(document.getDocName(), str);
                 }
-                writer.write("DONE");
                 writer.close();
+                fis.close();
                 documentsPosting.clear();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -246,7 +237,7 @@ public class Indexer {
             return true;
         }
 
-        private boolean changeTerm (String termName){
+        private boolean changeTerm (String termName) {
             char first = termName.charAt(0);
             if (Character.isLowerCase(first)) {
                 if (dictionary.containsKey(termName.toUpperCase())) {
@@ -257,5 +248,63 @@ public class Indexer {
                 }
             } else dictionary.replace(termName, dictionary.get(termName) + 1);
             return false;
-    }
+        }
+
+        public void closeIndexer (){
+            //writeDictionary("TermDictionary",dictionary);
+            writeDictionary("DocumentsDictionary",documentsDictionary);
+        }
+
+        private void writeDictionary(String dicName, HashMap<String,String> dictionary){
+            try{
+                Path path = Paths.get("/"+dicName);
+                if (!Files.isDirectory(path)) {
+                    File postingFolder = new File("/"+dicName);
+                    postingFolder.mkdir();
+                }
+                String str ="/"+dicName+"/"+dicName +".txt";
+                File termPostingFile = new File(str);
+                termPostingFile.createNewFile();
+                FileInputStream fis = new FileInputStream(termPostingFile);
+                org.jsoup.nodes.Document postingFileEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());
+                BufferedWriter writer = new BufferedWriter(new FileWriter(str));
+                for (Map.Entry<String,String> stringIntegerEntry : dictionary.entrySet()) {
+                    HashMap.Entry pair = stringIntegerEntry;
+                    String termName = (String) pair.getKey();
+                    String termPath =(String) pair.getValue();
+                    Element docNode = postingFileEditor.createElement("newElement"); // this tag name is not seen anywhere
+                    Element docAtt = postingFileEditor.createElement(termName);
+                    docAtt.appendElement("PATH").appendText(termPath);
+                    docNode.appendChild(docAtt);
+                    writer.write(docNode.html());
+                    writer.newLine();
+                }
+                writer.close();
+                fis.close();
+
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+
+        public TreeMap<String,String> uploadDictionary() {
+            HashMap<String, String> dic = new HashMap<>();
+            try {
+                FileInputStream fis = new FileInputStream(new File("/DocumentsDictionary/DocumentsDictionary.txt"));
+                org.jsoup.nodes.Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
+                Elements terms = file.children();
+                for (Element term : terms) {
+                    String termName = term.nodeName();
+                    String termPath = term.select("PATH").text();
+                    dic.put(termName, termPath);
+                }
+                fis.close();
+                TreeMap<String, String> alphabeticDic = new TreeMap<>(dic);
+                return alphabeticDic;
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return null;
+            }
+        }
 }

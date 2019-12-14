@@ -19,10 +19,11 @@ public class Parse {
             String st;
             //add all the stop-words in all their ways
             while ((st = buffer.readLine()) != null) {
-                if (!st.equals("between") && !st.equals("and") && !st.equals("may") && !st.equals("m") && !st.equals("b") && !st.equals("t"))
+                if (!st.equals("between") && !st.equals("and") && !st.equals("may") && !st.equals("m") && !st.equals("b") && !st.equals("t")) {
                     stopWords.add(st);
-                stopWords.add(st.toUpperCase());
-                stopWords.add(st.substring(0, 1).toUpperCase() + st.substring(1));
+                    stopWords.add(st.toUpperCase());
+                    stopWords.add(st.substring(0, 1).toUpperCase() + st.substring(1));
+                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -296,6 +297,14 @@ public class Parse {
         }
         document.closeDoc();
         indexer.addDocToDic(document);
+    }
+
+    public void closeParser(){
+        indexer.closeIndexer();
+    }
+
+    public void upload(){
+        indexer.uploadDictionary();
     }
 
     private String[] splitToNumbers (String str){

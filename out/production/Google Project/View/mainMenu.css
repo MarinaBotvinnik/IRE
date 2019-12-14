@@ -26,5 +26,5 @@ TextField:hover{
     -fx-background-color: #fff6e4;
     -fx-text-fill: black;
     -fx-font-family: "Tahoma";
-    -fx-font-weight: light;
+    -fx-font-weight: lighter;
 }
