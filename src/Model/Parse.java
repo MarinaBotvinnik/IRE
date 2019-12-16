@@ -193,7 +193,7 @@ public class Parse {
                     String entity;
                     while ((i+j<textLength) && Character.isUpperCase(splitText[i + j].charAt(0))) {
                         entity=" "+splitText[i+j];
-                        indexer.addEntToDic(entity,docNo,i);
+                        //indexer.addEntToDic(entity,docNo,i);
                         j++;
                     }
                 }
@@ -461,7 +461,7 @@ public class Parse {
      * @return
      */
     private String[] deleteStopWords (String text){
-        text=text.replaceAll("[,:(){}*?;!'\"]", "").replaceAll("[\\[\\]]", "");
+        text=text.replaceAll("[,:(){}*?|&@#=+;!'\"]", "").replaceAll("[\\[\\]]", "");
         String[] splitTxt = text.split("\\s+");
         List<String> l = new ArrayList<>();
         for(int i=0; i<splitTxt.length; i++){

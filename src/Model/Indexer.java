@@ -21,31 +21,26 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
 public class Indexer {
-    private int maxTerm;
-    private int maxDoc;
-    private int docDirectoryNum;
-    private boolean isStem;
     private String path;
-    private HashMap<String, Document> documentsPosting;
-    private HashMap<String, String> documentsDictionary;
-    private HashMap<String, String> dictionary;
-    private HashMap<String, Term> posting;
-    private HashMap<String, Term> entities;
-    private Stemmer stemmer;
-    int iteration;
-    int writes;
+    volatile int iteration;
     double time;
     Object lock1;
     Object lock2;
     Object lock3;
+    int maxTerm;
+    int maxDoc;
+    int writes;
+    int docDirectoryNum;
+    boolean isStem;
     HashMap<String, Document> documentsPosting;
     HashMap<String, String> documentsDictionary;
     volatile ConcurrentHashMap<String, String> dictionary;
-    HashMap<String, Term> posting;
+    volatile ConcurrentHashMap<String, Term> posting;
     HashMap<String, Term> entities;
     volatile ConcurrentHashMap<String,Object> filesLockers;
 
     public Indexer(boolean stem) {
+        path="C:/";
         iteration=0;
         writes=0;
         time=System.currentTimeMillis();
@@ -56,14 +51,12 @@ public class Indexer {
         documentsPosting = new HashMap<>();
         documentsDictionary = new HashMap<>();
         dictionary = new ConcurrentHashMap<>();
-        posting = new HashMap<>();
+        posting = new ConcurrentHashMap<>();
         entities = new HashMap<>();
-        maxDoc = 10000;
-        maxTerm=50;
         maxDoc = 20;
-        maxTerm=200000;
+        maxTerm=100000;
         docDirectoryNum =1;
-        isStem = stem;
+        isStem = false;
     }
 
     public void setStem(boolean stem) {
@@ -96,7 +89,7 @@ public class Indexer {
         String termName=Name;
         if(isStem){
             boolean isUP = Character.isUpperCase(termName.charAt(0));
-            stemmer = new Stemmer();
+            Stemmer stemmer = new Stemmer();
             stemmer.add(Name.toCharArray(),Name.length());
             stemmer.stem();
             termName = stemmer.toString();
@@ -106,9 +99,9 @@ public class Indexer {
             //if it exists in the dictionary
             char first = termName.charAt(0);
             // the word isn't in the dictionary yet
-            if (!posting.containsKey(termName.toUpperCase()) || !posting.containsKey(termName.toLowerCase())) {
+            if (!posting.containsKey(termName.toLowerCase())) {
                 if (Character.isUpperCase(first)) {
-                    posting.put(termName.toUpperCase(), new Term(termName.toUpperCase(), docNo, position));
+                    posting.put(termName.toLowerCase(), new Term(termName.toUpperCase(), docNo, position));
                 } else posting.put(termName.toLowerCase(), new Term(termName.toLowerCase(), docNo, position));
             } else {
                 if (Character.isLowerCase(first) && Character.isUpperCase(posting.get(termName.toLowerCase()).getTermName().charAt(0))) {
@@ -121,13 +114,17 @@ public class Indexer {
                 }
             }
         if(posting.size() >= maxTerm){
-            double start = System.currentTimeMillis();
-            System.out.println(((start-time)/60000)+" parsing time");
-            writes=0;
-            writeToTempPosting();
-            double end =  System.currentTimeMillis();
-            System.out.println(((end-start)/60000 )+" writing time");
-            System.out.println(writes);
+//            double start = System.currentTimeMillis();
+//            System.out.println(((start-time)/60000)+" parsing time");
+//            writes=0;
+            iteration++;
+            TreeMap<String, Term> sortedPosting = new TreeMap<>(this.posting);
+            this.posting.clear();
+            Thread thread=new Thread(()->writeToTempPosting(this.iteration,sortedPosting));
+            thread.start();
+//            double end =  System.currentTimeMillis();
+//            System.out.println(((end-start)/60000 )+" writing time");
+//            System.out.println(writes);
 //            ExecutorService executor= Executors.newFixedThreadPool(100);
 //            for (Map.Entry<String, Term> stringTermEntry : posting.entrySet()){
 //                executor.execute(()->writeTermsToPosting(stringTermEntry));
@@ -138,19 +135,16 @@ public class Indexer {
 //            } catch (InterruptedException e) {
 //                e.printStackTrace();
 //            }
-            posting.clear();
-            iteration++;
-            time=end;
+//            time=end;
         }
     }
 
-    private void writeToTempPosting(){
+    private void writeToTempPosting(int iteration, TreeMap<String, Term> sortedPosting){
         try {
             if (!Files.isDirectory(Paths.get("/Posting"))) {
                 File postingFolder = new File("/Posting");
                 postingFolder.mkdir();
             }
-            TreeMap<String, Term> sortedPosting = new TreeMap<>(this.posting);
             Set set = sortedPosting.entrySet();
             Iterator it = set.iterator();
             Term currTerm;
@@ -171,8 +165,11 @@ public class Indexer {
                         fis.close();
                         writes++;
                     }
-                    charAt0 = ("" + currTerm.getTermName().charAt(0)).toLowerCase();
-                    if (currTerm.getTermName().length() > 1 && currTerm.getTermName().charAt(1)!=' ' && currTerm.getTermName().charAt(1)!='.')
+                    if(currTerm.getTermName().charAt(1)!='/')
+                        charAt0 = ("" + currTerm.getTermName().charAt(0)).toLowerCase();
+                    else
+                        charAt0="slash";
+                    if (currTerm.getTermName().length() > 1 && currTerm.getTermName().charAt(1)!=' ' && currTerm.getTermName().charAt(1)!='.' && currTerm.getTermName().charAt(1)!='/')
                         charAt1 = ("" + currTerm.getTermName().charAt(1)).toLowerCase();
                     else if(currTerm.getTermName().length() > 1 && currTerm.getTermName().charAt(1)==' ')
                         charAt1="_";
@@ -224,8 +221,8 @@ public class Indexer {
 
         private void writeTermsToPosting(Map.Entry<String, Term> stringTermEntry) {
             try {
-                if (!Files.isDirectory(Paths.get(path + "/Posting"))) {
-                    File postingFolder = new File(path +"/Posting");
+                if (!Files.isDirectory(Paths.get("/Posting"))) {
+                    File postingFolder = new File("/Posting");
                     postingFolder.mkdir();
                 }
                     Term term = stringTermEntry.getValue();
@@ -488,8 +485,8 @@ public class Indexer {
         }
 
         public void closeIndexer (){
-            writeDictionary("TermDictionary",dictionary);
-            writeDictionary("DocumentsDictionary",documentsDictionary);
+//            writeDictionary("TermDictionary",dictionary);
+//            writeDictionary("DocumentsDictionary",documentsDictionary);
             mergePostingToOne(this.path+"/Posting");
         }
 
@@ -497,8 +494,11 @@ public class Indexer {
         private void mergePostingToOne(String filePath) {
             File file = new File(filePath);
             File[] firstLetters = file.listFiles();
-            for (File secondLetter: firstLetters) {
-               mergeToOne(secondLetter);
+            for (File firstLetter: firstLetters) {
+               File[] secondLetters = firstLetter.listFiles();
+                for (File secLetter: secondLetters) {
+                    mergeToOne(secLetter);
+                }
             }
         }
 
@@ -506,14 +506,16 @@ public class Indexer {
         private void mergeToOne(File secondLetters) {
             try {
                 File[] iters = secondLetters.listFiles();
-                File termPostingFile = new File(secondLetters.getAbsolutePath());
+                File termPostingFile = new File(secondLetters.getAbsolutePath()+".txt");
                 termPostingFile.createNewFile();
                 FileInputStream fis = new FileInputStream(termPostingFile);
                 org.jsoup.nodes.Document postingFileEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());
+                fis.close();
                 Element root = postingFileEditor.createElement("root");
                 for (File iter: iters) {
                     FileInputStream fis2 = new FileInputStream(iter);
-                    org.jsoup.nodes.Document tempEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());
+                    org.jsoup.nodes.Document tempEditor = Jsoup.parse(fis2, null, "", Parser.xmlParser());
+                    fis2.close();
                     Elements terms = tempEditor.select("term");
                     for (Element term: terms) {
                         String name = term.attr("TERMNAME");
@@ -533,29 +535,31 @@ public class Indexer {
                             currTerm = lower;
                         }
                         //update idf
-                        int idfCurr=Integer.parseInt(currTerm.select("idf").first().text());
-                        int idfMerge = Integer.parseInt(term.select("idf").first().text());
-                        currTerm.select("idf").first().replaceWith(new TextNode(""+idfCurr+idfMerge));
+                        int idfCurr=Integer.parseInt(currTerm.select("df").first().text());
+                        int idfMerge = Integer.parseInt(term.select("df").first().text());
+                        currTerm.select("df").first().text(""+idfCurr+idfMerge);
                         //update the tf
                         Elements docsCurr = currTerm.select("doc");
                         Elements docsMerge = term.select("doc");
                         for (Element doc: docsMerge) {
-                            if(docsCurr.select("doc[DOCNAME="+doc.attr("DOCNAME")+"]")==null){
-                                docsCurr.append(doc.html());
+                            if(docsCurr.select("doc[DOCNAME="+doc.attr("DOCNAME")+"]").isEmpty()){
+                                currTerm.selectFirst("docs").append(doc.outerHtml());
                             }
                             else{
                                 int tfCurr=Integer.parseInt(docsCurr.select("doc[DOCNAME="+doc.attr("DOCNAME")+"]").select("tf").first().text());
                                 int tfMerge = Integer.parseInt(doc.select("tf").first().text());
-                                docsCurr.select("doc[DOCNAME="+doc.attr("DOCNAME")+"]").select("tf").first().replaceWith(new TextNode(""+tfCurr+tfMerge));
+                                docsCurr.select("doc[DOCNAME="+doc.attr("DOCNAME")+"]").select("tf").first().text(""+tfCurr+tfMerge);
                                 String positions = doc.select("positions").first().text();
                                 String currPositions = docsCurr.select("doc[DOCNAME="+doc.attr("DOCNAME")+"]").select("positions").first().text();
                                 currPositions = currPositions+positions;
-                                docsCurr.select("doc[DOCNAME="+doc.attr("DOCNAME")+"]").select("positions").first().replaceWith(new TextNode(currPositions));
+                                docsCurr.select("doc[DOCNAME="+doc.attr("DOCNAME")+"]").select("positions").first().text(currPositions);
                             }
                         }
-
                     }
                 }
+                BufferedWriter writer = new BufferedWriter(new FileWriter(secondLetters.getAbsolutePath()+".txt"));
+                writer.write(root.outerHtml());
+                writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
 

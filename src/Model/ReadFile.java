@@ -20,9 +20,9 @@ public class ReadFile {
     }
 
     public void readFile(String path){
-        listFilesForFolder(path);
+        //listFilesForFolder(path);
         parser.closeParser();
-        parser.upload(); //temp function
+        //parser.upload(); //temp function
     }
 
 
