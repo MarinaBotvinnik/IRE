@@ -82,7 +82,7 @@ public class Indexer {
         String termName = Name;
         if (isStem) {
             boolean isUP = Character.isUpperCase(termName.charAt(0));
-            stemmer = new Stemmer();
+            Stemmer stemmer = new Stemmer();
             stemmer.add(Name.toCharArray(),Name.length());
             stemmer.stem();
             termName = stemmer.toString();

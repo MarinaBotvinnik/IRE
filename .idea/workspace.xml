@@ -2,19 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ed855956-439f-4db6-b857-ae02e384f8d4" name="Default Changelist" comment="Strating to debug the parsing">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/CheckClass.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/CheckClass.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Resource/mainMenu.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/Resource/mainMenu.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Indexer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Indexer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Model.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Model.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Parse.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Parse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/ReadFile.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/ReadFile.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Term.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Term.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/View/mainMenuController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/View/mainMenuController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/ViewModel/ViewModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/ViewModel/ViewModel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CheckClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CheckClass.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/mainMenu.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/mainMenu.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Model/Indexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Indexer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Model/Parse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Parse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/ReadFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/ReadFile.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,7 +92,7 @@
       <workItem from="1575218325736" duration="8607000" />
       <workItem from="1575837882318" duration="17629000" />
       <workItem from="1576152765840" duration="23844000" />
-      <workItem from="1576229037829" duration="76855000" />
+      <workItem from="1576229037829" duration="77452000" />
     </task>
     <task id="LOCAL-00001" summary="gui started&#10;parser continued&#10;COMEEE BACKKK DORRRR">
       <created>1574796969317</created>
@@ -170,10 +163,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Strating to debug the parsing" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="262" y="0" key="CommitChangelistDialog2" timestamp="1576337237102">
+    <state x="262" y="0" key="CommitChangelistDialog2" timestamp="1576507132626">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="262" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1576337237102" />
+    <state x="262" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1576507132626" />
     <state width="455" height="438" key="DebuggerActiveHint" timestamp="1576498959929">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -210,14 +203,14 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state width="1237" height="157" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1576504810949" />
-    <state x="119" y="50" width="1161" height="580" key="MergeDialog" timestamp="1576500636242">
+    <state x="54" y="29" width="1161" height="580" key="MergeDialog" timestamp="1576507159080">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="119" y="50" width="1161" height="580" key="MergeDialog/0.0.1280.680@0.0.1280.680" timestamp="1576500636242" />
-    <state x="354" y="56" key="MultipleFileMergeDialog" timestamp="1576500636250">
+    <state x="54" y="29" width="1161" height="580" key="MergeDialog/0.0.1280.680@0.0.1280.680" timestamp="1576507159080" />
+    <state x="354" y="56" key="MultipleFileMergeDialog" timestamp="1576507159080">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="354" y="56" key="MultipleFileMergeDialog/0.0.1280.680@0.0.1280.680" timestamp="1576500636250" />
+    <state x="354" y="56" key="MultipleFileMergeDialog/0.0.1280.680@0.0.1280.680" timestamp="1576507159080" />
     <state x="336" y="164" key="com.intellij.ide.util.TipDialog" timestamp="1576229060535">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
