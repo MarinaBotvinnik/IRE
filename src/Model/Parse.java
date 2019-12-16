@@ -35,6 +35,10 @@ public class Parse {
         int textLength = splitText.length;
         for(int i=0; i< textLength; i++){
             String termTxt=splitText[i];
+            if(termTxt.length()>1 && termTxt.charAt(0)=='.' && Character.isDigit(termTxt.charAt(1))){
+                termTxt = 0+termTxt;
+                splitText[i]=0+termTxt;
+            }
             if(termTxt.length()==0)
                 continue;
             ////if the word is a PURE NUMBER
@@ -285,16 +289,17 @@ public class Parse {
                 }
                 //it is a REGULAR WORD - the dictionary will save it correctly
                else{
-                   termTxt=splitText[i].replace(".","");
-                   if(termTxt.length()>1 && !termTxt.equals("--")) {
+                    termTxt=splitText[i].replace(".","");
+                    termTxt=termTxt.replace("/","");
+                   if(termTxt.length()>1 && !termTxt.equals("--") && !termTxt.equals("---")) {
                        addTermToDoc(document, termTxt);
                        addTermToIndx(termTxt, docNo, i);
                    }
                 }
             }
         }
-        document.closeDoc();
-        indexer.addDocToDic(document);
+        //document.closeDoc();
+        //indexer.addDocToDic(document);
     }
 
     public void closeParser(){

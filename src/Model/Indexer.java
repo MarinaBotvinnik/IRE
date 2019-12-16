@@ -7,18 +7,11 @@ import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
 import java.io.*;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import static java.util.concurrent.Executors.newFixedThreadPool;
 
 public class Indexer {
     private String path;
@@ -63,14 +56,15 @@ public class Indexer {
         isStem = stem;
     }
 
-    public int getNumOfDocs(){
+    public int getNumOfDocs() {
         return documentsDictionary.size();
     }
-    public int getNumOfTerm(){
+
+    public int getNumOfTerm() {
         return dictionary.size();
     }
 
-    public void reset(){
+    public void reset() {
         documentsPosting.clear();
         documentsDictionary.clear();
         dictionary.clear();
@@ -78,18 +72,17 @@ public class Indexer {
         entities.clear();
     }
 
-    public void setPath(String path){
-        if(isStem){
+    public void setPath(String path) {
+        if (isStem) {
             this.path = path + "/Stemming";
-        }
-        else this.path = path + "/noStemming";
+        } else this.path = path + "/noStemming";
     }
 
     public void addTermToDic(String Name, String docNo, int position) {
-        String termName=Name;
-        if(isStem){
+        String termName = Name;
+        if (isStem) {
             boolean isUP = Character.isUpperCase(termName.charAt(0));
-            Stemmer stemmer = new Stemmer();
+            stemmer = new Stemmer();
             stemmer.add(Name.toCharArray(),Name.length());
             stemmer.stem();
             termName = stemmer.toString();
@@ -221,8 +214,8 @@ public class Indexer {
 
         private void writeTermsToPosting(Map.Entry<String, Term> stringTermEntry) {
             try {
-                if (!Files.isDirectory(Paths.get("/Posting"))) {
-                    File postingFolder = new File("/Posting");
+                if (!Files.isDirectory(Paths.get(path + "/Posting"))) {
+                    File postingFolder = new File(path +"/Posting");
                     postingFolder.mkdir();
                 }
                     Term term = stringTermEntry.getValue();
@@ -484,11 +477,11 @@ public class Indexer {
 
         }
 
-        public void closeIndexer (){
-//            writeDictionary("TermDictionary",dictionary);
-//            writeDictionary("DocumentsDictionary",documentsDictionary);
-            mergePostingToOne(this.path+"/Posting");
-        }
+    public void closeIndexer() {
+        //writeDictionary("TermDictionary",dictionary);
+        //writeDictionary("DocumentsDictionary",documentsDictionary);
+        mergePostingToOne(this.path + "/Posting");
+    }
 
         // all the files of the first letter
         private void mergePostingToOne(String filePath) {
@@ -566,69 +559,56 @@ public class Indexer {
             }
         }
 
-        private Elements readDoc(String path){
-            try {
-                //NEED TO CHANGE THE PATH TO THE DICTIONARY PATH
-                FileInputStream fis = new FileInputStream(new File(path));
-                org.jsoup.nodes.Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
-                Elements terms = file.select("term");
-                return terms;
-            }catch (IOException e){
-                e.printStackTrace();
-                return null;
+    private void writeDictionary(String dicName, HashMap<String, String> dictionary) {
+        try {
+            Path path = Paths.get(this.path + "/" + dicName);
+            if (!Files.isDirectory(path)) {
+                File postingFolder = new File("/" + dicName);
+                postingFolder.mkdir();
             }
-        }
-
-        private void writeDictionary(String dicName, HashMap<String,String> dictionary){
-            try{
-                Path path = Paths.get(this.path +"/"+dicName);
-                if (!Files.isDirectory(path)) {
-                    File postingFolder = new File("/"+dicName);
-                    postingFolder.mkdir();
-                }
-                String str ="/"+dicName+"/"+dicName +".txt";
-                File termPostingFile = new File(str);
-                termPostingFile.createNewFile();
-                FileInputStream fis = new FileInputStream(termPostingFile);
-                org.jsoup.nodes.Document postingFileEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());
-                BufferedWriter writer = new BufferedWriter(new FileWriter(str));
-                Element root = postingFileEditor.createElement("root");
-                for (Map.Entry<String,String> stringIntegerEntry : dictionary.entrySet()) {
-                    HashMap.Entry pair = stringIntegerEntry;
-                    String termName = (String) pair.getKey();
-                    String termPath =(String) pair.getValue();
-                    Element docAtt = postingFileEditor.createElement(termName);
-                    docAtt.appendElement("PATH").appendText(termPath);
-                    root.appendChild(docAtt);
-                }
-                writer.write(root.html());
-                writer.close();
-                fis.close();
-
-            }catch (IOException e){
-                e.printStackTrace();
+            String str = "/" + dicName + "/" + dicName + ".txt";
+            File termPostingFile = new File(str);
+            termPostingFile.createNewFile();
+            FileInputStream fis = new FileInputStream(termPostingFile);
+            org.jsoup.nodes.Document postingFileEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());
+            BufferedWriter writer = new BufferedWriter(new FileWriter(str));
+            Element root = postingFileEditor.createElement("root");
+            for (Map.Entry<String, String> stringIntegerEntry : dictionary.entrySet()) {
+                HashMap.Entry pair = stringIntegerEntry;
+                String termName = (String) pair.getKey();
+                String termPath = (String) pair.getValue();
+                Element docAtt = postingFileEditor.createElement(termName);
+                docAtt.appendElement("PATH").appendText(termPath);
+                root.appendChild(docAtt);
             }
+            writer.write(root.html());
+            writer.close();
+            fis.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
-        public TreeMap<String,String> uploadDictionary() {
-            HashMap<String, String> dic = new HashMap<>();
-            try {
-                //NEED TO CHANGE THE PATH TO THE DICTIONARY PATH
-                FileInputStream fis = new FileInputStream(new File(this.path +"/DocumentsDictionary/DocumentsDictionary.txt"));
-                org.jsoup.nodes.Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
-                Elements terms = file.children();
-                for (Element term : terms) {
-                    String termName = term.nodeName();
-                    String termPath = term.select("PATH").text();
-                    dic.put(termName, termPath);
-                }
-                fis.close();
-                TreeMap<String, String> alphabeticDic = new TreeMap<>(dic);
-                return alphabeticDic;
-
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return null;
+    public TreeMap<String, String> uploadDictionary() {
+        HashMap<String, String> dic = new HashMap<>();
+        try {
+            //NEED TO CHANGE THE PATH TO THE DICTIONARY PATH
+            FileInputStream fis = new FileInputStream(new File(this.path + "/DocumentsDictionary/DocumentsDictionary.txt"));
+            org.jsoup.nodes.Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
+            Elements terms = file.children();
+            for (Element term : terms) {
+                String termName = term.nodeName();
+                String termPath = term.select("PATH").text();
+                dic.put(termName, termPath);
             }
+            fis.close();
+            TreeMap<String, String> alphabeticDic = new TreeMap<>(dic);
+            return alphabeticDic;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
         }
+    }
 }
