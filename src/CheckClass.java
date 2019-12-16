@@ -44,7 +44,7 @@ public class CheckClass extends Application {
 
     public static void main(String[] args) {
 
-        /*ReadFile readFile = new ReadFile();
+        ReadFile readFile = new ReadFile();
         long startTime = System.currentTimeMillis();
         long start = System.nanoTime();
         readFile.readFile("Resource/toCheck");
@@ -52,8 +52,8 @@ public class CheckClass extends Application {
         long endTime = System.currentTimeMillis();
         System.out.println("------ALL DONE MATE!-----");
         System.out.println((end-start)/1000000.0 + "milisec");
-        System.out.println((endTime-startTime)/60000 + "minutes");*/
-        launch(args);
-        System.exit(0);
+        System.out.println((endTime-startTime)/60000 + "minutes");
+        //launch(args);
+         System.exit(0);
     }
 }
