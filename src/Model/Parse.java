@@ -35,6 +35,10 @@ public class Parse {
         int textLength = splitText.length;
         for(int i=0; i< textLength; i++){
             String termTxt=splitText[i];
+            if(termTxt.length()>1 && termTxt.charAt(0)=='.' && Character.isDigit(termTxt.charAt(1))){
+                termTxt = 0+termTxt;
+                splitText[i]=0+termTxt;
+            }
             if(termTxt.length()==0)
                 continue;
             ////if the word is a PURE NUMBER
@@ -193,7 +197,7 @@ public class Parse {
                     String entity;
                     while ((i+j<textLength) && Character.isUpperCase(splitText[i + j].charAt(0))) {
                         entity=" "+splitText[i+j];
-                        indexer.addEntToDic(entity,docNo,i);
+                        //indexer.addEntToDic(entity,docNo,i);
                         j++;
                     }
                 }
@@ -285,16 +289,17 @@ public class Parse {
                 }
                 //it is a REGULAR WORD - the dictionary will save it correctly
                else{
-                   termTxt=splitText[i].replace(".","");
-                   if(termTxt.length()>1 && !termTxt.equals("--")) {
+                    termTxt=splitText[i].replace(".","");
+                    termTxt=termTxt.replace("/","");
+                   if(termTxt.length()>1 && !termTxt.equals("--") && !termTxt.equals("---")) {
                        addTermToDoc(document, termTxt);
                        addTermToIndx(termTxt, docNo, i);
                    }
                 }
             }
         }
-        document.closeDoc();
-        indexer.addDocToDic(document);
+        //document.closeDoc();
+        //indexer.addDocToDic(document);
     }
 
     public void closeParser(){
@@ -461,7 +466,7 @@ public class Parse {
      * @return
      */
     private String[] deleteStopWords (String text){
-        text=text.replaceAll("[,:(){}*?;!'\"]", "").replaceAll("[\\[\\]]", "");
+        text=text.replaceAll("[,:(){}*?|&@#=+;!'\"]", "").replaceAll("[\\[\\]]", "");
         String[] splitTxt = text.split("\\s+");
         List<String> l = new ArrayList<>();
         for(int i=0; i<splitTxt.length; i++){

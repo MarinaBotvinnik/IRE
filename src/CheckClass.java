@@ -43,7 +43,7 @@ public class CheckClass extends Application {
 
     public static void main(String[] args) {
 
-        ReadFile readFile = new ReadFile();
+        ReadFile readFile = new ReadFile(false);
         long startTime = System.currentTimeMillis();
         long start = System.nanoTime();
         readFile.readFile("Resource/toCheck");
