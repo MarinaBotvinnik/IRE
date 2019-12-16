@@ -4,18 +4,31 @@ import java.util.TreeMap;
 
 public class Model {
     private ReadFile readFile;
-    private Indexer indexer;
 
-    public Model() {
-        readFile = new ReadFile();
-        indexer = new Indexer();
+    public Model(boolean isStem) {
+        readFile = new ReadFile(isStem);
     }
 
     public TreeMap<String,String> uploadDictionary(){
-        return indexer.uploadDictionary();
+        return readFile.upload();
     }
 
     public void setStem(boolean isStem) {
-        indexer.setStem(isStem);
+        readFile.setIndexerStem(isStem);
+    }
+
+    public void startPosting(String corpusPath, String postingPath){
+        readFile.setIndexerPath(postingPath);
+        readFile.readFile(corpusPath);
+    }
+    public int getNumOfDocs(){
+        return readFile.getNumOfDocs();
+    }
+    public int getNumOfTerm(){
+        return readFile.getNumOfTerm();
+    }
+
+    public void reset(){
+        readFile.reset();
     }
 }

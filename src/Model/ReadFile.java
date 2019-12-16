@@ -7,44 +7,23 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.io.*;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 
 public class ReadFile {
-    private String path;
     private HashMap<String,String> docMap;
     private Parse parser;
-    private Dictionary dictionary;
 
-    public ReadFile() {
+    public ReadFile(boolean isStem) {
         docMap = new HashMap<>();
-        parser = new Parse();
-        HashMap <String,String> map = new HashMap<>();
-        dictionary = new Dictionary();
-        path = "";
+        parser = new Parse(isStem);
     }
 
     public void readFile(String path){
-        this.path = path;
         listFilesForFolder(path);
         parser.closeParser();
         parser.upload(); //temp function
     }
-
-//    public void tryFunc(){
-//        try {
-//            FileInputStream fis = new FileInputStream(new File(path));
-//            Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
-//            Elements Documents=file.select("Term");
-//            for(Element doc : Documents){
-//                String name = doc.select("Name").text();
-//                System.out.println(name);
-//            }
-//
-//        }
-//        catch (Exception e){
-//            System.out.println("SHIT");
-//        }
-//    }
 
 
     private void listFilesForFolder(String filePath){
@@ -74,12 +53,35 @@ public class ReadFile {
                 String docNo = doc.select("DOCNO").text();
                 docMap.put(docNo,docPath);
                 if(doc.select("TEXT").first()!=null) {
-                    parser.parse(dictionary, doc.select("TEXT").text(), docNo);
+                    parser.parse(doc.select("TEXT").text(), docNo);
                 }
             }
         }
         catch (Exception e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public void setIndexerStem(boolean isStem){
+        parser.setIndexerStem(isStem);
+    }
+
+    public TreeMap<String,String > upload(){
+        return parser.upload();
+    }
+
+    public void setIndexerPath(String path){
+        parser.setIndexerPath(path);
+    }
+
+    public int getNumOfDocs(){
+        return parser.getNumOfDocs();
+    }
+    public int getNumOfTerm(){
+        return parser.getNumOfTerm();
+    }
+
+    public void reset(){
+        parser.reset();
     }
 }

@@ -1,10 +1,7 @@
 package Model;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class Parse {
 
@@ -12,7 +9,7 @@ public class Parse {
     private HashMap<String,String> months;
     private Indexer indexer;
 
-    public Parse() {
+    public Parse(boolean stem) {
         stopWords = new HashSet<>();
         try {
             BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream("Resource/stop_words.txt"), "UTF-8"));
@@ -29,10 +26,10 @@ public class Parse {
             System.out.println(e.getMessage());
         }
         months = new HashMap<>();
-        indexer = new Indexer();
+        indexer = new Indexer(stem);
     }
 
-    public void parse(Dictionary dictionary,String text, String docNo) {
+    public void parse(String text, String docNo) {
         Document document = new Document(docNo);
         String[] splitText = deleteStopWords(text);
         int textLength = splitText.length;
@@ -180,7 +177,8 @@ public class Parse {
                         termTxt= monthNum(splitText[i+1])+"-0"+splitText[i];
                     else
                         termTxt= monthNum(splitText[i+1])+"-"+splitText[i];
-                    dictionary.addTerm(termTxt,docNo);
+                    addTermToDoc(document,termTxt);
+                    addTermToIndx(termTxt,docNo,i);
                     continue;
                 }
                 String termNum =termNum(Double.parseDouble(splitText[i]));
@@ -303,8 +301,23 @@ public class Parse {
         indexer.closeIndexer();
     }
 
-    public void upload(){
-        indexer.uploadDictionary();
+    public TreeMap<String,String> upload(){
+       return indexer.uploadDictionary();
+    }
+
+    public void setIndexerPath(String path){
+        indexer.setPath(path);
+    }
+
+    public int getNumOfDocs(){
+        return indexer.getNumOfDocs();
+    }
+    public int getNumOfTerm(){
+        return indexer.getNumOfTerm();
+    }
+
+    public void reset(){
+        indexer.reset();
     }
 
     private String[] splitToNumbers (String str){
@@ -467,4 +480,8 @@ public class Parse {
         indexer.addTermToDic(name,docId, position);
     }
     private void addTermToDoc(Document doc, String termName){doc.addTerm(termName);}
+
+    public void setIndexerStem(boolean isStem){
+        indexer.setStem(isStem);
+    }
 }

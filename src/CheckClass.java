@@ -13,7 +13,6 @@ public class CheckClass extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         //ViewModel -> Model
-        Model model = new Model();
         ViewModel viewModel = new ViewModel();
 
         //Loading Main Windows
@@ -43,16 +42,16 @@ public class CheckClass extends Application {
 
 
     public static void main(String[] args) {
-
-        /*ReadFile readFile = new ReadFile();
-        long startTime = System.currentTimeMillis();
-        long start = System.nanoTime();
-        readFile.readFile("Resource/toCheck");
-        long end = System.nanoTime();
-        long endTime = System.currentTimeMillis();
-        System.out.println("------ALL DONE MATE!-----");
-        System.out.println((end-start)/1000000.0 + "milisec");
-        System.out.println((endTime-startTime)/60000 + "minutes");*/
+//
+//        ReadFile readFile = new ReadFile();
+//        long startTime = System.currentTimeMillis();
+//        long start = System.nanoTime();
+//        readFile.readFile("Resource/toCheck");
+//        long end = System.nanoTime();
+//        long endTime = System.currentTimeMillis();
+//        System.out.println("------ALL DONE MATE!-----");
+//        System.out.println((end-start)/1000000.0 + "millisec");
+//        System.out.println((endTime-startTime)/60000 + "minutes");
         launch(args);
         System.exit(0);
     }

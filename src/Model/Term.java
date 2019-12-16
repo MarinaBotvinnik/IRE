@@ -36,17 +36,6 @@ public class Term {
         }
     }
 
-//    public void addPosition(String docId, int position){
-//        if(positions.containsKey(docId)){
-//            positions.get(docId).add(position);
-//        }
-//        else {
-//            List<Integer> pos = new LinkedList<>();
-//            pos.add(position);
-//            positions.put(docId, pos);
-//        }
-//    }
-
     public String getTermName() {
         return termName;
     }
