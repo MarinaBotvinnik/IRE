@@ -32,6 +32,7 @@ public class ReadFile {
             if (fileEntry.isDirectory()) {
                 listFilesForFolder(fileEntry.getPath());
             } else {//I GOT TO THE DOCUMENT
+                System.out.println(fileEntry.getPath());
                 readDoc(fileEntry.getPath());
             }
         }

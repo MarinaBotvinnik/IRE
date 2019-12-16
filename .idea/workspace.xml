@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ed855956-439f-4db6-b857-ae02e384f8d4" name="Default Changelist" comment="">
+    <list default="true" id="ed855956-439f-4db6-b857-ae02e384f8d4" name="Default Changelist" comment="Strating to debug the parsing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/CheckClass.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/CheckClass.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Indexer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Indexer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Model.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Model.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Parse.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Parse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/ReadFile.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/ReadFile.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/View/mainMenuController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/View/mainMenuController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/ViewModel/ViewModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/ViewModel/ViewModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CheckClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CheckClass.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Model/Indexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Indexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Model/ReadFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/ReadFile.java" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,14 +30,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="-7" />
-    <option name="width" value="697" />
-    <option name="height" value="735" />
-  </component>
   <component name="ProjectId" id="1TyaGVve0wOy5eKpBOjJnMFpTFu" />
   <component name="ProjectLevelVcsManager">
     <OptionsSetting value="false" id="Update" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -47,18 +54,6 @@
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
   <component name="RunManager">
     <configuration name="CheckClass" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="CheckClass" />
@@ -74,13 +69,15 @@
     </recent_temporary>
   </component>
   <component name="ServiceViewManager">
-    <option name="allServicesViewState">
-      <serviceView>
-        <treeState>
-          <expand />
-          <select />
-        </treeState>
-      </serviceView>
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
     </option>
   </component>
   <component name="SvnConfiguration">
@@ -100,6 +97,7 @@
       <workItem from="1575218325736" duration="8607000" />
       <workItem from="1575837882318" duration="17629000" />
       <workItem from="1576152765840" duration="23844000" />
+      <workItem from="1576229037829" duration="68179000" />
     </task>
     <task id="LOCAL-00001" summary="gui started&#10;parser continued&#10;COMEEE BACKKK DORRRR">
       <created>1574796969317</created>
@@ -169,20 +167,79 @@
     <MESSAGE value="Strating to debug the parsing" />
     <option name="LAST_COMMIT_MESSAGE" value="Strating to debug the parsing" />
   </component>
+  <component name="WindowStateProjectService">
+    <state x="262" y="0" key="CommitChangelistDialog2" timestamp="1576337237102">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="262" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1576337237102" />
+    <state width="455" height="438" key="DebuggerActiveHint" timestamp="1576483486213">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="455" height="438" key="DebuggerActiveHint/0.0.1280.680@0.0.1280.680" timestamp="1576483486213" />
+    <state width="1237" height="146" key="GridCell.Tab.0.bottom" timestamp="1576493395214">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1237" height="146" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1576493395214" />
+    <state width="1237" height="146" key="GridCell.Tab.0.center" timestamp="1576493395213">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1237" height="146" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1576493395213" />
+    <state width="1237" height="146" key="GridCell.Tab.0.left" timestamp="1576493395213">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1237" height="146" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1576493395213" />
+    <state width="1237" height="146" key="GridCell.Tab.0.right" timestamp="1576493395214">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1237" height="146" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1576493395214" />
+    <state width="1237" height="157" key="GridCell.Tab.1.bottom" timestamp="1576493378412">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1237" height="157" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1576493378412" />
+    <state width="1237" height="157" key="GridCell.Tab.1.center" timestamp="1576493378412">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1237" height="157" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1576493378412" />
+    <state width="1237" height="157" key="GridCell.Tab.1.left" timestamp="1576493378412">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1237" height="157" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1576493378412" />
+    <state width="1237" height="157" key="GridCell.Tab.1.right" timestamp="1576493378412">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1237" height="157" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1576493378412" />
+    <state x="119" y="50" width="1161" height="580" key="MergeDialog" timestamp="1576337195147">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="119" y="50" width="1161" height="580" key="MergeDialog/0.0.1280.680@0.0.1280.680" timestamp="1576337195147" />
+    <state x="354" y="56" key="MultipleFileMergeDialog" timestamp="1576337198485">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="354" y="56" key="MultipleFileMergeDialog/0.0.1280.680@0.0.1280.680" timestamp="1576337198485" />
+    <state x="336" y="164" key="com.intellij.ide.util.TipDialog" timestamp="1576229060535">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="336" y="164" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1576229060535" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Model/ReadFile.java</url>
-          <line>78</line>
+          <line>85</line>
           <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Model/Indexer.java</url>
+          <line>120</line>
+          <option name="timeStamp" value="65" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
-        <watch expression="splitText[i]" language="JAVA" />
         <watch expression="dictionary" language="JAVA" />
+        <watch expression="((HashMap.Node)stringTermEntry).getValue()" custom="java.util.HashMap.Node" />
       </configuration>
     </watches-manager>
   </component>
