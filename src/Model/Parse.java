@@ -204,6 +204,9 @@ public class Parse {
 
                 if(splitText[i].charAt(0)=='$') { //if a $ is attached in the beginning
                     String value = splitText[i].substring(1);
+                    if(value.length()>1 && value.charAt(0)=='.' && Character.isDigit(value.charAt(1))){
+                        value = 0+value;
+                    }
                     if (isNum(value)) {
                         if (i + 1 < textLength && (splitText[i + 1].equals("million") || splitText[i + 1].equals("Million") || splitText[i + 1].equals("Million.")))
                             termTxt = value + "M Dollars";
@@ -255,7 +258,7 @@ public class Parse {
                 }
 
                 //if its the type WORD - WORD or WORD - WORD - WORD
-                if(splitText[i].indexOf("-")>=0 && !termTxt.equals("--")) {
+                if(splitText[i].indexOf("-")>=0 && !termTxt.equals("--") && !termTxt.equals("---")) {
                     String[] numbers = splitToNumbers(splitText[i]);
                     if (numbers[0].equals("true")) {
                         addTermToDoc(document, numbers[1]);
@@ -270,6 +273,7 @@ public class Parse {
                         addTermToIndx(termTxt, docNo, i);
                         continue;
                     } else {
+                        termTxt = termTxt.replace(".","");
                         addTermToDoc(document, termTxt);
                         addTermToIndx(splitText[i], docNo, i);
                         continue;
@@ -279,6 +283,12 @@ public class Parse {
 
                 //if its the type BETWEEN NUMBER AND NUMBER
                 if(i+3<textLength && (splitText[i].equals("Between") || splitText[i].equals("between"))&& isNum(splitText[i+1]) && splitText[i+2].equals("and") && isNum(splitText[i+3])){
+                    if(splitText[i+1].charAt(0)=='.'){
+                        splitText[i+1] = 0+splitText[i+1];
+                    }
+                    if(splitText[i+3].charAt(0)=='.'){
+                        splitText[i+3] = 0+splitText[i+3];
+                    }
                     addTermToDoc(document, splitText[i]+" "+splitText[i+1]+ " "+ splitText[i+2] + " "+ splitText[i+3]);
                     addTermToIndx(splitText[i]+" "+splitText[i+1]+ " "+ splitText[i+2] + " "+ splitText[i+3],docNo,i);
                     addTermToDoc(document, splitText[i+1]);
@@ -291,7 +301,7 @@ public class Parse {
                else{
                     termTxt=splitText[i].replace(".","");
                     termTxt=termTxt.replace("/","");
-                   if(termTxt.length()>1 && !termTxt.equals("--") && !termTxt.equals("---")) {
+                   if(termTxt.length()>1 && !termTxt.equals("--") && !termTxt.equals("---") && !termTxt.equals("and") && !termTxt.equals("And") && !termTxt.equals("AND")) {
                        addTermToDoc(document, termTxt);
                        addTermToIndx(termTxt, docNo, i);
                    }
@@ -299,7 +309,7 @@ public class Parse {
             }
         }
         //document.closeDoc();
-        //indexer.addDocToDic(document);
+        indexer.addDocToDic(document);
     }
 
     public void closeParser(){
@@ -332,6 +342,10 @@ public class Parse {
        String sec = str.substring(place+1);
        if(isNum(first) && isNum(sec)){
            splited[0] = "true";
+           if(first.charAt(0)=='.')
+               first= 0+first;
+           if(sec.charAt(0)=='.')
+               sec= 0+sec;
            splited[1]= first;
            splited[2] = sec;
        }
@@ -466,7 +480,7 @@ public class Parse {
      * @return
      */
     private String[] deleteStopWords (String text){
-        text=text.replaceAll("[,:(){}*?|&@#=+;!'\"]", "").replaceAll("[\\[\\]]", "");
+        text=text.replaceAll("[,:(){}<>*?|&@#=+;!'\"]", "").replaceAll("[\\[\\]]", "");
         String[] splitTxt = text.split("\\s+");
         List<String> l = new ArrayList<>();
         for(int i=0; i<splitTxt.length; i++){
