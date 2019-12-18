@@ -316,8 +316,8 @@ public class Parse {
         indexer.closeIndexer();
     }
 
-    public TreeMap<String,String> upload(){
-       return indexer.uploadDictionary();
+    public LinkedHashMap<String,String> upload(boolean stem,String path){
+       return indexer.uploadDictionary(stem,path);
     }
 
     public void setIndexerPath(String path){
@@ -480,7 +480,7 @@ public class Parse {
      * @return
      */
     private String[] deleteStopWords (String text){
-        text=text.replaceAll("[,:(){}<>*?|&@#=+;!'\"]", "").replaceAll("[\\[\\]]", "");
+        text=text.replaceAll("[,:(){}<>`~*?|&@#=+;!'\"]", "").replaceAll("[\\[\\]]", "");
         String[] splitTxt = text.split("\\s+");
         List<String> l = new ArrayList<>();
         for(int i=0; i<splitTxt.length; i++){

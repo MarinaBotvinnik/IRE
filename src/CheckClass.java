@@ -33,11 +33,6 @@ public class CheckClass extends Application {
         //Show the Main Window
         primaryStage.show();
 
-        /*FXMLLoader fxmlLoader = new FXMLLoader();
-        Parent root = fxmlLoader.load(getClass().getClassLoader().getResource("mainMenu.fxml").openStream());
-        primaryStage.setTitle("The Search Engine");
-        primaryStage.setScene(new Scene(root, 800, 700));
-        primaryStage.show();*/
     }
 
 
