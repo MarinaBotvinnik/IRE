@@ -308,7 +308,7 @@ public class Parse {
                 }
             }
         }
-        //document.closeDoc();
+        document.closeDoc();
         indexer.addDocToDic(document);
     }
 

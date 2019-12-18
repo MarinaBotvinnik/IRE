@@ -26,16 +26,6 @@ public class Term {
         this.termName=name;
     }
 
-    public void addTf(String docId){
-        if(!docs.containsKey(docId)){
-            docs.put(docId,1);
-            idf++;
-        }
-        else{
-            docs.replace(docId,docs.get(docId)+1);
-        }
-    }
-
     public String getTermName() {
         return termName;
     }

@@ -38,7 +38,7 @@ public class Indexer {
         dictionary = new ConcurrentHashMap<>();
         posting = new ConcurrentHashMap<>();
         entities = new HashMap<>();
-        maxDoc = 10000;
+        maxDoc = 1000;
         maxTerm=100000;
         docDirectoryNum =1;
         isStem = false;
@@ -243,7 +243,6 @@ public class Indexer {
             if(entities.containsKey(Name)){
                 Term ent = entities.remove(Name);
                 ent.addDocPosition(docNo,position);
-                ent.addTf(docNo);
                 posting.put(Name,ent);
                 //the dictionary hasn't been written yet
                 if(!documentsDictionary.containsKey(docNo)){
@@ -252,13 +251,28 @@ public class Indexer {
                     document.closeDoc();
                 }else{
                     String path = documentsDictionary.get(docNo);
-
+                    File termPostingFile = new File(path);
+                    FileInputStream fis = null;
+                    try {
+                        fis = new FileInputStream(termPostingFile);
+                        org.jsoup.nodes.Document postingFileEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());
+                        fis.close();
+                        Element doc=postingFileEditor.selectFirst(docNo);
+                        int maxTf=Integer.parseInt(doc.selectFirst("maxTf").text());
+                        if(ent.getDocs().get(docNo)>maxTf){
+                            doc.selectFirst("maxTF").text(""+ent.getDocs().get(docNo));
+                            doc.selectFirst("maxTF");
+                        }
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             //its entity that appeared more than once but we didnt write it yet
             else if(posting.containsKey(Name)){
                 Term ent = posting.remove(Name);
-                ent.addTf(docNo);
                 ent.addDocPosition(docNo,position);
                 posting.put(Name,ent);
 
@@ -275,11 +289,9 @@ public class Indexer {
         }
 
         public void addDocToDic (Document doc) {
-            if (documentsPosting.size() < maxDoc) {
-                documentsPosting.put(doc.getDocName(), doc);
-            }
-            else{
-                //writeDocsToPosting();
+        documentsPosting.put(doc.getDocName(), doc);
+            if (documentsPosting.size() >= maxDoc){
+                writeDocsToPosting();
                 iteration++;
                 TreeMap<String, Term> sortedPosting = new TreeMap<>(this.posting);
                 this.posting.clear();
@@ -287,10 +299,17 @@ public class Indexer {
                 Thread thread=new Thread(()->writeToTempPosting(this.iteration,sortedPosting));
                 thread.start();
             }
-
         }
 
     public void closeIndexer() {
+        if(!posting.isEmpty()){
+            writeDocsToPosting();
+            iteration++;
+            TreeMap<String, Term> sortedPosting = new TreeMap<>(this.posting);
+            this.posting.clear();
+            this.documentsPosting.clear();
+            writeToTempPosting(this.iteration,sortedPosting);
+        }
         //writeDictionary("TermDictionary",dictionary);
         this.dictionary.clear();
         //writeDictionary("DocumentsDictionary",documentsDictionary);
@@ -300,14 +319,12 @@ public class Indexer {
 
         // all the files of the first letter
         private void mergePostingToOne(String filePath) {
-            Thread[] threads=new Thread[50];
-            int j=0;
             File file = new File(filePath);
             File[] firstLetters = file.listFiles();
-//            ExecutorService executor= Executors.newFixedThreadPool(2);
+            ExecutorService executor= Executors.newFixedThreadPool(3);
             for (File firstLetter : firstLetters) {
                 File[] secondLetters = firstLetter.listFiles();
-//                Runnable runnable = () -> {
+                Runnable runnable = () -> {
                     for (File secLetter : secondLetters) {
                         if(secLetter.isDirectory()) {
                             mergeToOne(secLetter);
@@ -317,15 +334,15 @@ public class Indexer {
                         if(secondLetters[i].isDirectory())
                             secondLetters[i].delete();
                     }
-//                };
-//                executor.execute(runnable);
+                };
+                executor.execute(runnable);
             }
-//            executor.shutdown();
-//            try {
-//                executor.awaitTermination(1,TimeUnit.HOURS);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+            executor.shutdown();
+            try {
+                executor.awaitTermination(1,TimeUnit.HOURS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // merge all the files
@@ -349,7 +366,8 @@ public class Indexer {
                         Elements terms = tempEditor.select("term");
                         Elements currTerms = root.select("term");
                         Iterator elementIter=currTerms.iterator();
-                        for (int j=0; j<terms.size(); j++) {
+                        int k=terms.size();
+                        for (int j=0; j<k; j++) {
                             Element term=terms.first();
                             String name = term.attr("TERMNAME");
                             Element currTerm=null;
