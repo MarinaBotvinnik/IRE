@@ -427,36 +427,19 @@ public class Indexer {
             File postingFolder = new File(this.path + "/" + dicName);
             postingFolder.mkdir();
         }
-//            String str =this.path + "/" + dicName + "/" + dicName + ".txt";
-//            File termPostingFile = new File(str);
-//            termPostingFile.createNewFile();
-//            FileInputStream fis = new FileInputStream(termPostingFile);
-//            org.jsoup.nodes.Document postingFileEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());
-//            BufferedWriter writer = new BufferedWriter(new FileWriter(str));
-//            Element root = postingFileEditor.createElement("root");
-//            for (Map.Entry<String, String> stringIntegerEntry : dictionary.entrySet()) {
-//                HashMap.Entry pair = stringIntegerEntry;
-//                String termName = (String) pair.getKey();
-//                String value = (String) pair.getValue();
-//                String[] all = value.split(",");
-//                String termPath = all[0];
-//                int allTf = 0;
-//                for(int i=1; i<all.length; i++){
-//                    allTf = allTf + Integer.parseInt(all[i]);
-//                }
-//                Element docAtt = postingFileEditor.createElement(termName);
-//                docAtt.appendElement("PATH").appendText(termPath);
-//                docAtt.appendElement("TFSUM").appendText(""+allTf);
-//                root.appendChild(docAtt);
-//            }
-//            writer.write(root.html());
-//            writer.close();
-//            fis.close();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         try {
+            for (Map.Entry<String, String> stringIntegerEntry : dictionary.entrySet()) {
+                HashMap.Entry pair = stringIntegerEntry;
+                String termName = (String) pair.getKey();
+                String value = (String) pair.getValue();
+                String[] all = value.split(",");
+                String termPath = all[0];
+                int allTf = 0;
+                for (int i = 1; i < all.length; i++) {
+                    allTf = allTf + Integer.parseInt(all[i]);
+                }
+                dictionary.replace(termName,termPath+","+allTf);
+            }
             String str = this.path + "/" + dicName + "/" + dicName + ".ser";
             File termPostingFile = new File(str);
             termPostingFile.createNewFile();
@@ -470,33 +453,27 @@ public class Indexer {
         }
     }
 
-    public TreeMap<String, String> uploadDictionary(boolean stem,String path) {
+    public LinkedHashMap<String, String> uploadDictionary(boolean stem,String path) {
         setStem(stem);
         setPath(path);
-        HashMap<String, String> dic = new HashMap<>();
-//        try {
-//            FileInputStream fis = new FileInputStream(new File(this.path + "/TermDictionary/TermDictionary.txt"));
-//            org.jsoup.nodes.Document file = Jsoup.   parse(fis, null, "", Parser.xmlParser());
-//            Elements terms = file.children();
-//            //List<String> names =
-//            for (Element term : terms) {
-//                String termName = term.nodeName();
-//                String termPath = term.select("TFSUM").text();
-//                dic.put(termName, termPath);
-//            }
-//            fis.close();
-//            //Collections.sort(names,String.CASE_INSENSITIVE_ORDER);
-//            return null;
-//
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//            return null;
-//        }
+        Map<String, String> dic;
         try {
             FileInputStream fis = new FileInputStream(new File(this.path + "/TermDictionary/TermDictionary.ser"));
             ObjectInputStream inputStream = new ObjectInputStream(fis);
-            dic =(HashMap<String, String>) inputStream.readObject();
-            TreeMap<String,String > ordered = new TreeMap<>(dic);
+            dic =(Map)inputStream.readObject();
+            ConcurrentHashMap<String,String> append = new ConcurrentHashMap<>(dic);
+            dictionary = append;
+            List<String> names = new ArrayList<>();
+            for (Map.Entry<String, String> stringIntegerEntry : dictionary.entrySet()) {
+                HashMap.Entry pair = stringIntegerEntry;
+                String termName = (String) pair.getKey();
+                names.add(termName);
+            }
+            Collections.sort(names,String.CASE_INSENSITIVE_ORDER);
+            LinkedHashMap<String,String> ordered = new LinkedHashMap<>();
+            for (String name:names) {
+                ordered.put(name,dictionary.get(name));
+            }
             return ordered;
         }catch (Exception e){
             e.getStackTrace();

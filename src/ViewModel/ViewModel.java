@@ -1,14 +1,16 @@
 package ViewModel;
 import Model.Model;
+
+import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
 public class ViewModel {
     private Model model;
-    private TreeMap<String ,String> dictionary;
+    private LinkedHashMap<String ,String> dictionary;
 
     public ViewModel()
     {
-       dictionary = new TreeMap<>();
+       dictionary = new LinkedHashMap<>();
        model=null;
     }
 
@@ -19,7 +21,7 @@ public class ViewModel {
         dictionary = model.uploadDictionary(stem, path);
     }
 
-    public TreeMap<String,String> getDictionary(){
+    public LinkedHashMap<String,String> getDictionary(){
         return dictionary;
     }
 

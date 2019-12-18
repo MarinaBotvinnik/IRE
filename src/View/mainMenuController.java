@@ -137,12 +137,13 @@ public class mainMenuController {
 
     public void showDictionary(){
         if(isUploaded) {
-            TreeMap<String, String> dic = viewModel.getDictionary();
+            LinkedHashMap<String, String> dic = viewModel.getDictionary();
             StringBuilder str1 = new StringBuilder();
             for(Map.Entry<String,String> entry : dic.entrySet()) {
                 String term = entry.getKey();
                 String posting = entry.getValue();
-                str1.append(term).append("    ->    ").append(posting).append("\n");
+                String[] show = posting.split(",");
+                str1.append(term).append("       --->       ").append(show[1]).append("\n");
             }
             c_Posting.textProperty().set(str1.toString());
             setPane3();

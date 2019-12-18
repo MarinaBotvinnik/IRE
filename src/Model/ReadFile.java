@@ -7,6 +7,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.io.*;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
 
@@ -67,7 +68,7 @@ public class ReadFile {
         parser.setIndexerStem(isStem);
     }
 
-    public TreeMap<String,String > upload(boolean stem,String path){
+    public LinkedHashMap<String,String > upload(boolean stem, String path){
         return parser.upload(stem,path);
     }
 

@@ -316,7 +316,7 @@ public class Parse {
         indexer.closeIndexer();
     }
 
-    public TreeMap<String,String> upload(boolean stem,String path){
+    public LinkedHashMap<String,String> upload(boolean stem,String path){
        return indexer.uploadDictionary(stem,path);
     }
 
