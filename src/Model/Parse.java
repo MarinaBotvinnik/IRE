@@ -39,6 +39,9 @@ public class Parse {
                 termTxt = 0+termTxt;
                 splitText[i]=0+termTxt;
             }
+            if(termTxt.equals("grams")){
+                System.out.println(docNo);
+            }
             if(termTxt.length()==0)
                 continue;
             ////if the word is a PURE NUMBER

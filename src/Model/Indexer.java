@@ -192,9 +192,6 @@ public class Indexer {
                     }
                     docNode.appendElement("Positions").appendText(positions);
                 }
-//                if(!dictionary.containsKey(currTerm.getTermName())) {
-//                    dictionary.put(currTerm.getTermName(), this.path+"\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt");
-//                }
             }
         }
         catch (IOException e) {
