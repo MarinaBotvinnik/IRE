@@ -30,6 +30,8 @@ public class Parse {
     }
 
     public void parse(String text, String docNo) {
+        int test=0;
+        int entityIndexer=0;
         Document document = new Document(docNo);
         String[] splitText = deleteStopWords(text);
         int textLength = splitText.length;
@@ -195,14 +197,20 @@ public class Parse {
             //its a word or its a number with something attached to this
             else{
                 //DOR'S POTENTIALS
-                if(Character.isUpperCase(splitText[i].charAt(0))){
+                if(Character.isUpperCase(splitText[i].charAt(0)) && i>=entityIndexer){
                     int j = 1;
-                    String entity;
-                    while ((i+j<textLength) && Character.isUpperCase(splitText[i + j].charAt(0))) {
-                        entity=" "+splitText[i+j];
-                        //indexer.addEntToDic(entity,docNo,i);
+                    String entity=splitText[i];
+                    while ((i+j<textLength) && Character.isUpperCase(splitText[i + j].charAt(0)) && j<=3) {
+                        test++;
+                        entity+=" "+splitText[i+j];
+                        if(indexer.addEntToDic(entity,docNo,i)) {
+                            entity=splitText[i].replace(".","");
+                            entity=entity.replace("/","");
+                            addTermToDoc(document, entity);
+                        }
                         j++;
                     }
+                    entityIndexer+=i+j;
                 }
 
                 if(splitText[i].charAt(0)=='$') { //if a $ is attached in the beginning

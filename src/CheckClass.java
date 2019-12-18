@@ -38,16 +38,16 @@ public class CheckClass extends Application {
 
     public static void main(String[] args) {
 
-//        ReadFile readFile = new ReadFile(true);
-//        long startTime = System.currentTimeMillis();
-//        long start = System.nanoTime();
-//        readFile.readFile("Resource/corpus");
-//        long end = System.nanoTime();
-//        long endTime = System.currentTimeMillis();
-//        System.out.println("------ALL DONE MATE!-----");
-//        System.out.println((end-start)/1000000.0 + "milisec");
-//        System.out.println((endTime-startTime)/60000 + "minutes");
-        launch(args);
+        ReadFile readFile = new ReadFile(false);
+        long startTime = System.currentTimeMillis();
+        long start = System.nanoTime();
+        readFile.readFile("Resource/corpus");
+        long end = System.nanoTime();
+        long endTime = System.currentTimeMillis();
+        System.out.println("------ALL DONE MATE!-----");
+        System.out.println((end-start)/1000000.0 + "milisec");
+        System.out.println((endTime-startTime)/60000 + "minutes");
+        //launch(args);
         System.exit(0);
     }
 }
