@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ed855956-439f-4db6-b857-ae02e384f8d4" name="Default Changelist" comment="">
+    <list default="true" id="ed855956-439f-4db6-b857-ae02e384f8d4" name="Default Changelist" comment="Strating to debug the parsing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Google Project/CheckClass.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/CheckClass.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Document.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Document.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Indexer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Indexer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Model.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Model.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Parse.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Parse.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/ReadFile.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/ReadFile.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/View/mainMenuController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/View/mainMenuController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/ViewModel/ViewModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/ViewModel/ViewModel.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CheckClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CheckClass.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Model/Document.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Document.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Model/Indexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Indexer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Model/Parse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Parse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/ReadFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/ReadFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/Term.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Term.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +100,7 @@
       <workItem from="1575837882318" duration="17629000" />
       <workItem from="1576152765840" duration="23844000" />
       <workItem from="1576229037829" duration="101516000" />
-      <workItem from="1576580023073" duration="19897000" />
+      <workItem from="1576580023073" duration="40855000" />
     </task>
     <task id="LOCAL-00001" summary="gui started&#10;parser continued&#10;COMEEE BACKKK DORRRR">
       <created>1574796969317</created>
@@ -178,50 +181,50 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="262" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1576663266522" />
-    <state width="455" height="438" key="DebuggerActiveHint" timestamp="1576662042761">
+    <state width="455" height="438" key="DebuggerActiveHint" timestamp="1576669399871">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="455" height="438" key="DebuggerActiveHint/0.0.1280.680@0.0.1280.680" timestamp="1576662042761" />
-    <state width="1237" height="154" key="GridCell.Tab.0.bottom" timestamp="1576662524439">
+    <state width="455" height="438" key="DebuggerActiveHint/0.0.1280.680@0.0.1280.680" timestamp="1576669399871" />
+    <state width="1237" height="154" key="GridCell.Tab.0.bottom" timestamp="1576688679689">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="154" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1576662524439" />
-    <state width="1237" height="154" key="GridCell.Tab.0.center" timestamp="1576662524439">
+    <state width="1237" height="154" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1576688679689" />
+    <state width="1237" height="154" key="GridCell.Tab.0.center" timestamp="1576688679688">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="154" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1576662524439" />
-    <state width="1237" height="154" key="GridCell.Tab.0.left" timestamp="1576662524439">
+    <state width="1237" height="154" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1576688679688" />
+    <state width="1237" height="154" key="GridCell.Tab.0.left" timestamp="1576688679688">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="154" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1576662524439" />
-    <state width="1237" height="154" key="GridCell.Tab.0.right" timestamp="1576662524439">
+    <state width="1237" height="154" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1576688679688" />
+    <state width="1237" height="154" key="GridCell.Tab.0.right" timestamp="1576688679688">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="154" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1576662524439" />
-    <state width="1237" height="154" key="GridCell.Tab.1.bottom" timestamp="1576662524439">
+    <state width="1237" height="154" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1576688679688" />
+    <state width="1237" height="154" key="GridCell.Tab.1.bottom" timestamp="1576688664098">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="154" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1576662524439" />
-    <state width="1237" height="154" key="GridCell.Tab.1.center" timestamp="1576662524439">
+    <state width="1237" height="154" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1576688664098" />
+    <state width="1237" height="154" key="GridCell.Tab.1.center" timestamp="1576688664098">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="154" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1576662524439" />
-    <state width="1237" height="154" key="GridCell.Tab.1.left" timestamp="1576662524439">
+    <state width="1237" height="154" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1576688664098" />
+    <state width="1237" height="154" key="GridCell.Tab.1.left" timestamp="1576688664098">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="154" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1576662524439" />
-    <state width="1237" height="154" key="GridCell.Tab.1.right" timestamp="1576662524439">
+    <state width="1237" height="154" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1576688664098" />
+    <state width="1237" height="154" key="GridCell.Tab.1.right" timestamp="1576688664098">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="154" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1576662524439" />
-    <state x="54" y="29" width="1161" height="580" key="MergeDialog" timestamp="1576507159080">
+    <state width="1237" height="154" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1576688664098" />
+    <state x="54" y="29" width="1161" height="580" key="MergeDialog" timestamp="1576663829677">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="54" y="29" width="1161" height="580" key="MergeDialog/0.0.1280.680@0.0.1280.680" timestamp="1576507159080" />
-    <state x="354" y="56" key="MultipleFileMergeDialog" timestamp="1576507159080">
+    <state x="54" y="29" width="1161" height="580" key="MergeDialog/0.0.1280.680@0.0.1280.680" timestamp="1576663829677" />
+    <state x="354" y="56" key="MultipleFileMergeDialog" timestamp="1576663866922">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="354" y="56" key="MultipleFileMergeDialog/0.0.1280.680@0.0.1280.680" timestamp="1576507159080" />
+    <state x="354" y="56" key="MultipleFileMergeDialog/0.0.1280.680@0.0.1280.680" timestamp="1576663866922" />
     <state x="336" y="164" key="com.intellij.ide.util.TipDialog" timestamp="1576580031284">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -232,37 +235,32 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Model/ReadFile.java</url>
-          <line>57</line>
+          <line>58</line>
           <option name="timeStamp" value="20" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Model/Indexer.java</url>
-          <line>321</line>
-          <option name="timeStamp" value="78" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Model/ReadFile.java</url>
-          <line>61</line>
+          <line>62</line>
           <option name="timeStamp" value="93" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Model/ReadFile.java</url>
-          <line>23</line>
+          <line>24</line>
           <option name="timeStamp" value="94" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Model/Indexer.java</url>
-          <line>352</line>
+          <line>369</line>
           <option name="timeStamp" value="95" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Model/Indexer.java</url>
-          <line>426</line>
+          <line>463</line>
           <option name="timeStamp" value="102" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Model/Indexer.java</url>
-          <line>416</line>
+          <line>453</line>
           <option name="timeStamp" value="103" />
         </line-breakpoint>
       </breakpoints>

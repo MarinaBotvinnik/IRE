@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class Indexer {
+    private ExecutorService executor;
     private String path;
     private volatile int iteration;
     private double time;
@@ -21,7 +22,7 @@ public class Indexer {
     private int writes;
     private int docDirectoryNum;
     private boolean isStem;
-    private HashMap<String, Document> documentsPosting;
+    private ConcurrentHashMap<String, Document> documentsPosting;
     private ConcurrentHashMap<String, String> documentsDictionary;
     private volatile ConcurrentHashMap<String, String> dictionary;
     private volatile ConcurrentHashMap<String, Term> posting;
@@ -32,15 +33,16 @@ public class Indexer {
         iteration=0;
         writes=0;
         time=System.currentTimeMillis();
-        documentsPosting = new HashMap<>();
+        documentsPosting = new ConcurrentHashMap<>();
         documentsDictionary = new ConcurrentHashMap<>();
         dictionary = new ConcurrentHashMap<>();
         posting = new ConcurrentHashMap<>();
         entities = new HashMap<>();
-        maxDoc = 1000;
+        maxDoc = 10000;
         maxTerm=100000;
         docDirectoryNum =1;
         isStem = stem;
+        executor= Executors.newFixedThreadPool(4);
     }
 
     public void setStem(boolean stem) {
@@ -202,22 +204,26 @@ public class Indexer {
         }
     }
 
-        private void writeDocsToPosting() {
+        private void writeDocsToPosting(ConcurrentHashMap<String, Document> documentsPosting) {
             try {
                 Path path = Paths.get(this.path +"/DocumentsPosting");
                 if (!Files.isDirectory(path)) {
                     File postingFolder = new File(this.path +"/DocumentsPosting");
                     postingFolder.mkdir();
                 }
-                File termPostingFolder = new File(this.path +"/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1));
-                termPostingFolder.mkdir();
-                String str = this.path +"/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) +"/"+ docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) +".txt";
-                File termPostingFile = new File(termPostingFolder.getAbsolutePath(), (docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) )+".txt");
-                termPostingFile.createNewFile();
-                FileInputStream fis = new FileInputStream(termPostingFile);
+                String str;
+                FileInputStream fis=null;
+                synchronized (this) {
+                    File termPostingFolder = new File(this.path + "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1));
+                    termPostingFolder.mkdir();
+                    str = this.path + "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + "/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + ".txt";
+                    File termPostingFile = new File(termPostingFolder.getAbsolutePath(), (docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1)) + ".txt");
+                    termPostingFile.createNewFile();
+                    fis = new FileInputStream(termPostingFile);
+                    docDirectoryNum += maxDoc;
+                }
                 org.jsoup.nodes.Document postingFileEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());
                 Element root = postingFileEditor.createElement("root");
-                docDirectoryNum +=maxDoc;
                 BufferedWriter writer = new BufferedWriter(new FileWriter(str));
                 for (Map.Entry<String,Document> stringIntegerEntry : documentsPosting.entrySet()) {
                     HashMap.Entry pair = stringIntegerEntry;
@@ -227,7 +233,6 @@ public class Indexer {
                     docAtt.appendElement("maxTfName").appendText(document.getMax_Term_name());
                     docAtt.appendElement("uniqueTerms").appendText("" + document.getUniqueTermsNum());
                     root.appendChild(docAtt);
-                    documentsDictionary.put(document.getDocName(), str);
                 }
                 writer.write(root.html());
                 writer.close();
@@ -238,72 +243,101 @@ public class Indexer {
             }
         }
 
-        public void addEntToDic (String Name, String docNo,int position){
+        public boolean addEntToDic (String Name, String docNo,int position){
         //its an entity that showed up only once and now its its second time
-            if(entities.containsKey(Name)){
+            if(entities.containsKey(Name) && !entities.get(Name).getDocs().containsKey(docNo)){
                 Term ent = entities.remove(Name);
+                String oldDoc=ent.getDocs().keySet().iterator().next();
                 ent.addDocPosition(docNo,position);
-                posting.put(Name,ent);
+                posting.put(Name.toLowerCase(),ent);
                 //the dictionary hasn't been written yet
-                if(!documentsDictionary.containsKey(docNo)){
-                    Document document = documentsPosting.get(docNo);
-                    document.addTerm(Name);
+                if(!documentsDictionary.containsKey(oldDoc)){
+                    Document document = documentsPosting.get(oldDoc);
+                    if(ent.getDocs().get(oldDoc)==null || document==null)
+                        System.out.println("sd");
+                    document.addTermWithTF(Name,ent.getDocs().get(oldDoc));
                     document.closeDoc();
                 }else{
-                    String path = documentsDictionary.get(docNo);
+                    String path = documentsDictionary.get(oldDoc);
                     File termPostingFile = new File(path);
-                    FileInputStream fis = null;
-                    try {
-                        fis = new FileInputStream(termPostingFile);
-                        org.jsoup.nodes.Document postingFileEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());
-                        fis.close();
-                        Element doc=postingFileEditor.selectFirst(docNo);
-                        int maxTf=Integer.parseInt(doc.selectFirst("maxTf").text());
-                        if(ent.getDocs().get(docNo)>maxTf){
-                            doc.selectFirst("maxTF").text(""+ent.getDocs().get(docNo));
-                            doc.selectFirst("maxTF");
-                        }
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    FileInputStream fis;
+//                    try {
+//                        fis = new FileInputStream(termPostingFile);
+//                        org.jsoup.nodes.Document postingFileEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());
+//                        fis.close();
+//                        Element doc=postingFileEditor.selectFirst(oldDoc);
+//                        int maxTf=Integer.parseInt(doc.selectFirst("maxtf").text());
+//                        if(ent.getDocs().get(oldDoc)>maxTf){
+//                            doc.selectFirst("maxtf").text(""+ent.getDocs().get(oldDoc));
+//                            doc.selectFirst("maxtfname").text(ent.getTermName());
+//                            BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+//                            writer.write(postingFileEditor.html());
+//                            writer.close();
+//                        }
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
                 }
+                return true;
             }
             //its entity that appeared more than once but we didnt write it yet
-            else if(posting.containsKey(Name)){
-                Term ent = posting.remove(Name);
+            else if(posting.containsKey(Name.toLowerCase())){
+                Term ent = posting.get(Name.toLowerCase());
                 ent.addDocPosition(docNo,position);
-                posting.put(Name,ent);
-
+                return true;
             }
             //its an entity that has been written before so we need to update it
-            else if(dictionary.containsKey(Name)){
-
+            else if(dictionary.containsKey(Name.toUpperCase())){
+                posting.put(Name.toLowerCase(),new Term(Name.toUpperCase(),docNo,position));
+                return true;
             }
             //its completely new entity!
             else{
                 Term term = new Term(Name,docNo,position);
                 entities.put(Name,term);
+                return false;
             }
         }
 
         public void addDocToDic (Document doc) {
         documentsPosting.put(doc.getDocName(), doc);
             if (documentsPosting.size() >= maxDoc){
-                writeDocsToPosting();
-                iteration++;
-                TreeMap<String, Term> sortedPosting = new TreeMap<>(this.posting);
-                this.posting.clear();
+                for (Map.Entry<String,Document> stringIntegerEntry : documentsPosting.entrySet()) {
+                    HashMap.Entry pair = stringIntegerEntry;
+                    Document document =(Document)pair.getValue();
+                    String str = this.path + "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + "/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + ".txt";
+                    documentsDictionary.put(document.getDocName(), str);
+                }
+                ConcurrentHashMap<String,Document> copy=new ConcurrentHashMap<>(documentsPosting);
                 this.documentsPosting.clear();
-                Thread thread=new Thread(()->writeToTempPosting(this.iteration,sortedPosting));
-                thread.start();
+                Runnable runnable1 = () ->{
+                    writeDocsToPosting(copy);
+                };
+                this.executor.execute(runnable1);
+                iteration++;
+                ConcurrentHashMap<String,Term> copy2=new ConcurrentHashMap<>(this.posting);
+                this.posting.clear();
+                Runnable runnable2 =()->{
+                    TreeMap<String, Term> sortedPosting = new TreeMap<>(copy2);
+                    writeToTempPosting(this.iteration,sortedPosting);
+                };
+                this.executor.execute(runnable2);
             }
         }
 
     public void closeIndexer() {
-        if(!posting.isEmpty()){
-            writeDocsToPosting();
+        if(!posting.isEmpty() || !documentsPosting.isEmpty()){
+            for (Map.Entry<String,Document> stringIntegerEntry : documentsPosting.entrySet()) {
+                HashMap.Entry pair = stringIntegerEntry;
+                Document document =(Document)pair.getValue();
+                String str = this.path + "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + "/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + ".txt";
+                documentsDictionary.put(document.getDocName(), str);
+            }
+            ConcurrentHashMap<String,Document> copy=documentsPosting;
+            Thread thread1=new Thread(()->writeDocsToPosting(copy));
+            thread1.start();
             iteration++;
             TreeMap<String, Term> sortedPosting = new TreeMap<>(this.posting);
             this.posting.clear();
