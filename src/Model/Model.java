@@ -9,8 +9,8 @@ public class Model {
         readFile = new ReadFile(isStem);
     }
 
-    public TreeMap<String,String> uploadDictionary(){
-        return readFile.upload();
+    public TreeMap<String,String> uploadDictionary(boolean stem,String path){
+        return readFile.upload(stem,path);
     }
 
     public void setStem(boolean isStem) {

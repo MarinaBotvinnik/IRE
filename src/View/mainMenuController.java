@@ -25,22 +25,20 @@ public class mainMenuController {
     private Stage stage;
     private Scene scene;
     private boolean isUploaded;
-    private String postingPath;
-    private boolean reset;
+    private String postPath;
 
     public void initialize(ViewModel model, Stage primaryS, Scene scene){
         this.viewModel = model;
         this.stage = primaryS;
         this.scene = scene;
         isUploaded = false;
-        reset = false;
     }
 
     //when GO! pressed
     public void setPane2() {
         String corpusPath = tf_corpusPath.getText();
         String postingPath = tf_postingPath.getText();
-        this.postingPath = postingPath;
+        postPath = postingPath;
         if (corpusPath.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "You didn't enter a corpus path, Please enter a path before continue");
             alert.show();
@@ -56,23 +54,31 @@ public class mainMenuController {
             if(withStem.exists() && isStem){
                 Alert alert = new Alert(Alert.AlertType.WARNING, "You already built a posting file with stemming for this corpus");
                 alert.show();
+                p_first.setVisible(false);
+                p_first.setDisable(true);
+                p_second.setVisible(true);
+                p_second.setDisable(false);
                 return;
             }
             else if(withoutStem.exists() && !isStem){
                 Alert alert = new Alert(Alert.AlertType.WARNING, "You already built a posting file without stemming for this corpus");
                 alert.show();
+                p_first.setVisible(false);
+                p_first.setDisable(true);
+                p_second.setVisible(true);
+                p_second.setDisable(false);
                 return;
             }
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("The engine is running");
             alert.setContentText("Please wait while the posting files are created");
+            alert.show();
             alert.getDialogPane().setDisable(true);
             long startTime 	= System.nanoTime();
             viewModel.start(corpusPath,postingPath,isStem);
             long endTime = System.nanoTime();
             long div = 1000000;
             long totalTime =(endTime-startTime)/div;
-            alert.getDialogPane().setDisable(false);
             p_first.setVisible(false);
             p_first.setDisable(true);
             p_second.setVisible(true);
@@ -83,6 +89,8 @@ public class mainMenuController {
                     "Number of terms:" + viewModel.getNumOfTerm()+ "\n"+
                     "Total time of running(in seconds): "+totalTime/1000 + "\n"+
                     "Total time of running(in minutes): "+totalTime/60000);
+            alert1.show();
+            alert.getDialogPane().setDisable(false);
         }
     }
 
@@ -109,28 +117,26 @@ public class mainMenuController {
     }
 
     private void getPath(TextField tf) {
+        tf.clear();
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fileChooser.showOpenDialog(null);
         File file = fileChooser.getSelectedFile();
-        String p = file.getAbsolutePath();
-        tf.appendText(p);
+        if(file!=null) {
+            String p = file.getAbsolutePath();
+            tf.appendText(p);
+        }
     }
 
     public void uploadDictionary(){
-        if(reset){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "You reset the system so there is no dictionary.");
-            alert.show();
-            return;
-        }
-        viewModel.uploadDictionary();
+        viewModel.uploadDictionary(cb_stem.isSelected(),postPath);
         isUploaded = true;
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "The dictionary uploaded correctly!");
         alert.show();
     }
 
     public void showDictionary(){
-        if(isUploaded && !reset) {
+        if(isUploaded) {
             TreeMap<String, String> dic = viewModel.getDictionary();
             StringBuilder str1 = new StringBuilder();
             for(Map.Entry<String,String> entry : dic.entrySet()) {
@@ -149,18 +155,16 @@ public class mainMenuController {
 
     public void reset(){
         viewModel.reset();
-        delete(new File(postingPath+"/Stemming"));
-        delete(new File(postingPath+"/noStemming"));
-        reset = true;
-    }
-    private void delete(File file) {
-        if (file.isDirectory()) {
-            for (File deleteMe : file.listFiles()) {
-                // recursive delete
-                delete(deleteMe);
-            }
-        }
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "you reset the system , all posting files were deleted!");
+        alert.show();
+        setPane1();
     }
 
+    private void setPane1(){
+        p_second.setDisable(true);
+        p_second.setVisible(false);
+        p_first.setVisible(true);
+        p_first.setDisable(false);
+    }
 
 }

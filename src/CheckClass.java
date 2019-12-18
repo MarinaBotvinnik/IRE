@@ -33,26 +33,21 @@ public class CheckClass extends Application {
         //Show the Main Window
         primaryStage.show();
 
-        /*FXMLLoader fxmlLoader = new FXMLLoader();
-        Parent root = fxmlLoader.load(getClass().getClassLoader().getResource("mainMenu.fxml").openStream());
-        primaryStage.setTitle("The Search Engine");
-        primaryStage.setScene(new Scene(root, 800, 700));
-        primaryStage.show();*/
     }
 
 
     public static void main(String[] args) {
 
-        ReadFile readFile = new ReadFile(true);
-        long startTime = System.currentTimeMillis();
-        long start = System.nanoTime();
-        readFile.readFile("Resource/corpus");
-        long end = System.nanoTime();
-        long endTime = System.currentTimeMillis();
-        System.out.println("------ALL DONE MATE!-----");
-        System.out.println((end-start)/1000000.0 + "milisec");
-        System.out.println((endTime-startTime)/60000 + "minutes");
-        //launch(args);
+//        ReadFile readFile = new ReadFile(true);
+//        long startTime = System.currentTimeMillis();
+//        long start = System.nanoTime();
+//        readFile.readFile("Resource/corpus");
+//        long end = System.nanoTime();
+//        long endTime = System.currentTimeMillis();
+//        System.out.println("------ALL DONE MATE!-----");
+//        System.out.println((end-start)/1000000.0 + "milisec");
+//        System.out.println((endTime-startTime)/60000 + "minutes");
+        launch(args);
         System.exit(0);
     }
 }

@@ -20,7 +20,7 @@ public class ReadFile {
     }
 
     public void readFile(String path){
-        //listFilesForFolder(path);
+        listFilesForFolder(path);
         parser.closeParser();
         //parser.upload(); //temp function
     }
@@ -67,8 +67,8 @@ public class ReadFile {
         parser.setIndexerStem(isStem);
     }
 
-    public TreeMap<String,String > upload(){
-        return parser.upload();
+    public TreeMap<String,String > upload(boolean stem,String path){
+        return parser.upload(stem,path);
     }
 
     public void setIndexerPath(String path){

@@ -9,10 +9,14 @@ public class ViewModel {
     public ViewModel()
     {
        dictionary = new TreeMap<>();
+       model=null;
     }
 
-    public void uploadDictionary(){
-        dictionary= model.uploadDictionary();
+    public void uploadDictionary(boolean stem,String path){
+        if(model==null) {
+            model = new Model(stem);
+        }
+        dictionary = model.uploadDictionary(stem, path);
     }
 
     public TreeMap<String,String> getDictionary(){
