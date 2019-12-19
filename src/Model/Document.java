@@ -3,14 +3,25 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Class that represents a document with the following definitions:
+ * name of the document
+ * the word with most appearences
+ * the num value of most appearences
+ * all words in this document and their frequences
+ */
 public class Document {
-    
+
     private int max_tf;
     private String max_Term_name;
     private HashMap<String,Integer> term_frq;
     private int uniqueTermsNum;
     private String doc_name;
 
+    /**
+     * Constructor of the docu
+     * @param doc_name
+     */
     public Document(String doc_name) {
         max_tf =0;
         max_Term_name = null;

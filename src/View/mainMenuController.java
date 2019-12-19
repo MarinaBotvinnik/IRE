@@ -135,41 +135,21 @@ public class mainMenuController {
         alert.show();
     }
 
-    public void showDictionary(){
-        try {
-            if (isUploaded) {
-                LinkedHashMap<String, String> dic = viewModel.getDictionary();
-                List<String> freq = new ArrayList<>();
-                StringBuilder str1 = new StringBuilder();
-//            for(Map.Entry<String,String> entry : dic.entrySet()) {
-//                String term = entry.getKey();
-//                String posting = entry.getValue();
-//                String[] show = posting.split(",");
-//                str1.append(term).append("       --->       ").append(show[1]).append("\n");
-//                freq.add(show[1]);
-                BufferedWriter writer = new BufferedWriter(new FileWriter("D:\\204096242\\frequencies.txt"));
-                Collection<String> f = dic.values();
-                Collections.sort(freq, String.CASE_INSENSITIVE_ORDER);
-                String v="";
-                for (String fr : f) {
-                    String[] a = fr.split(",");
-                    //freq.add(a[1]);
-                    v = v + a[1]+",";
-                }
-                writer.write(v);
-                writer.close();
-                for (int i = 0; i < 10; i++) {
-                    System.out.println("Most frequens: " + freq.get(i));
-                    System.out.println("Less frequens: " + freq.get(freq.size() - 1 - i));
-                }
-                c_Posting.textProperty().set(str1.toString());
-                setPane3();
-            } else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "You didn't uploaded your dictionary yet.");
-                alert.show();
+    public void showDictionary() {
+        if (isUploaded) {
+            LinkedHashMap<String, String> dic = viewModel.getDictionary();
+            StringBuilder str1 = new StringBuilder();
+            for (Map.Entry<String, String> entry : dic.entrySet()) {
+                String term = entry.getKey();
+                String posting = entry.getValue();
+                String[] show = posting.split(",");
+                str1.append(term).append("       --->       ").append(show[1]).append("\n");
             }
-        }catch (IOException e){
-            e.getMessage();
+            c_Posting.textProperty().set(str1.toString());
+            setPane3();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "You didn't uploaded your dictionary yet.");
+            alert.show();
         }
     }
 
@@ -180,7 +160,7 @@ public class mainMenuController {
         setPane1();
     }
 
-    private void setPane1(){
+    public void setPane1(){
         p_second.setDisable(true);
         p_second.setVisible(false);
         p_first.setVisible(true);
