@@ -8,6 +8,7 @@ public class Parse {
     private HashSet<String> stopWords;
     private HashMap<String,String> months;
     private Indexer indexer;
+    int numOfNumbers =0;
 
     public Parse(boolean stem) {
         stopWords = new HashSet<>();
@@ -30,7 +31,6 @@ public class Parse {
     }
 
     public void parse(String text, String docNo) {
-        int test=0;
         int entityIndexer=0;
         Document document = new Document(docNo);
         String[] splitText = deleteStopWords(text);
@@ -41,13 +41,11 @@ public class Parse {
                 termTxt = 0+termTxt;
                 splitText[i]=0+termTxt;
             }
-            if(termTxt.equals("grams")){
-                System.out.println(docNo);
-            }
             if(termTxt.length()==0)
                 continue;
             ////if the word is a PURE NUMBER
             if(isNum(splitText[i])){
+                numOfNumbers++;
                 ////if the word is Kg - (skip 1 word ahead + check if there is i+1 word)
                 if(i+1<textLength &&(splitText[i+1].equals("kg") || splitText[i+1].equals("Kg")|| splitText[i+1].equals("KG")||splitText[i+1].equals("kilogram")
                         ||splitText[i+1].equals("Kilogram")||splitText[i+1].equals("kilograms") ||splitText[i+1].equals("Kilograms")
@@ -201,7 +199,7 @@ public class Parse {
                     int j = 1;
                     String entity=splitText[i];
                     while ((i+j<textLength) && Character.isUpperCase(splitText[i + j].charAt(0)) && j<=3) {
-                        test++;
+                        //test++;
                         entity+=" "+splitText[i+j];
                         if(indexer.addEntToDic(entity,docNo,i)) {
                             entity=splitText[i].replace(".","");
@@ -325,6 +323,7 @@ public class Parse {
 
     public void closeParser(){
         indexer.closeIndexer();
+        System.out.println("Numbers in the corpus:" + numOfNumbers);
     }
 
     public LinkedHashMap<String,String> upload(boolean stem,String path){

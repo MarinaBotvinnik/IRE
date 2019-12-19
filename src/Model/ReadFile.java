@@ -23,7 +23,6 @@ public class ReadFile {
     public void readFile(String path){
         listFilesForFolder(path);
         parser.closeParser();
-        //parser.upload(); //temp function
     }
 
 
@@ -33,7 +32,7 @@ public class ReadFile {
             if (fileEntry.isDirectory()) {
                 listFilesForFolder(fileEntry.getPath());
             } else {//I GOT TO THE DOCUMENT
-                System.out.println(fileEntry.getPath());
+                //System.out.println(fileEntry.getPath());
                 readDoc(fileEntry.getPath());
             }
         }
@@ -55,7 +54,10 @@ public class ReadFile {
                 String docNo = doc.select("DOCNO").text();
                 docMap.put(docNo,docPath);
                 if(doc.select("TEXT").first()!=null) {
-                    parser.parse(doc.select("TEXT").text(), docNo);
+                    String text = doc.select("TEXT").text();
+                    if(!text.isEmpty()) {
+                        parser.parse(text, docNo);
+                    }
                 }
             }
         }

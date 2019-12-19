@@ -42,7 +42,7 @@ public class Indexer {
         maxTerm=100000;
         docDirectoryNum =1;
         isStem = stem;
-        executor= Executors.newFixedThreadPool(4);
+        executor= Executors.newFixedThreadPool(8);
     }
 
     public void setStem(boolean stem) {
@@ -133,6 +133,7 @@ public class Indexer {
             Element root=null;
             FileInputStream fis=null;
             org.jsoup.nodes.Document postingFileEditer;
+            String toWrite="";
             while (it.hasNext()) {
                 currTerm = (Term) ((Map.Entry) it.next()).getValue();
                 if(!((currTerm.getTermName().charAt(0)+"").toLowerCase()).equals(charAt0) || (currTerm.getTermName().length()>1 && !((currTerm.getTermName().charAt(1)+"").toLowerCase()).equals(charAt1))) {
@@ -226,8 +227,10 @@ public class Indexer {
                     HashMap.Entry pair = stringIntegerEntry;
                     Document document =(Document)pair.getValue();
                     Element docAtt = postingFileEditor.createElement(document.getDocName());
+                    if(document==null || document.getMax_Term_name()==null)
+                        System.out.printf("ohhh nooo document is null");
                     docAtt.appendElement("maxTf").appendText("" + document.getMax_tf());
-                    docAtt.appendElement("maxTfName").appendText(document.getMax_Term_name());
+                    docAtt.appendElement("maxTfName").appendText(""+document.getMax_Term_name());
                     docAtt.appendElement("uniqueTerms").appendText("" + document.getUniqueTermsNum());
                     root.appendChild(docAtt);
                 }
@@ -352,10 +355,10 @@ public class Indexer {
         private void mergePostingToOne(String filePath) {
             File file = new File(filePath);
             File[] firstLetters = file.listFiles();
-            ExecutorService executor= Executors.newFixedThreadPool(3);
+            //ExecutorService executor= Executors.newFixedThreadPool(3);
             for (File firstLetter : firstLetters) {
                 File[] secondLetters = firstLetter.listFiles();
-                Runnable runnable = () -> {
+                //Runnable runnable = () -> {
                     for (File secLetter : secondLetters) {
                         if(secLetter.isDirectory()) {
                             mergeToOne(secLetter);
@@ -365,15 +368,15 @@ public class Indexer {
                         if(secondLetters[i].isDirectory())
                             secondLetters[i].delete();
                     }
-                };
-                executor.execute(runnable);
+                //};
+                //executor.execute(runnable);
             }
-            executor.shutdown();
-            try {
-                executor.awaitTermination(1,TimeUnit.HOURS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            //executor.shutdown();
+//            try {
+//                executor.awaitTermination(1,TimeUnit.HOURS);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
         }
 
         // merge all the files
@@ -436,7 +439,7 @@ public class Indexer {
                                 //update the tf
                                 Elements docsCurr = currTerm.select("doc");
                                 Elements docsMerge = term.select("doc");
-                                currTerm.selectFirst("docs").append(docsMerge.outerHtml());
+                                currTerm.selectFirst("docs").insertChildren(-1,docsMerge);
                                 terms.remove(term);
                             }
                         }
