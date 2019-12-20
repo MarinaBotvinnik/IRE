@@ -15,7 +15,7 @@ public class Term {
 
     private String termName;
     private HashMap<String,Integer> docs; //all the documents this term appears in and how many times it appeared in each of them
-    private HashMap<String, List<Integer>> positions; //term position per document;
+    private HashMap<String, String> positions; //term position per document;
     int idf;
 
     /**
@@ -29,8 +29,8 @@ public class Term {
         docs = new HashMap<>();
         docs.put(doc,1);
         positions=new HashMap<>();
-        positions.put(doc,new LinkedList<>());
-        positions.get(doc).add(position);
+        //positions.put(doc,new LinkedList<>());
+        positions.put(doc,""+position);
         idf=1;
     }
 
@@ -62,7 +62,7 @@ public class Term {
      * Getter of the positions
      * @return
      */
-    public HashMap<String, List<Integer>> getPositions(){
+    public HashMap<String, String> getPositions(){
         return positions;
     }
 
@@ -74,12 +74,11 @@ public class Term {
     public void addDocPosition (String doc, int position){
         if(docs.containsKey(doc)){
             docs.replace(doc,docs.get(doc)+1);
-            positions.get(doc).add(position);
+            positions.replace(doc,positions.get(doc)+","+position);
         }
         else{
             docs.put(doc,1);
-            positions.put(doc,new LinkedList<>());
-            positions.get(doc).add(position);
+            positions.put(doc,""+position);
         }
     }
 }

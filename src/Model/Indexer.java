@@ -1,10 +1,5 @@
 package Model;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-import org.jsoup.parser.Parser;
-import org.jsoup.select.Elements;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,14 +7,15 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.*;
 
+/**
+ * This class is in charge of indexing the documents and terms that had been parsed
+ * and creating a posting file and a dictionary for both the terms and documents
+ */
 public class Indexer {
     private ExecutorService executor;
     private String path;
     private volatile int iteration;
-    private double time;
-    private int maxTerm;
     private int maxDoc;
-    private int writes;
     private int docDirectoryNum;
     private boolean isStem;
     private ConcurrentHashMap<String, Document> documentsPosting;
@@ -30,18 +26,19 @@ public class Indexer {
     private int numOfTerms;
     private int numOfDocs;
 
+    /**
+     * Constructor of the class, sets if the words need to be stemmed
+     * @param stem - true if words should be stemmed, false otherwise
+     */
     public Indexer(boolean stem) {
         path = "";
         iteration = 0;
-        writes = 0;
-        time = System.currentTimeMillis();
         documentsPosting = new ConcurrentHashMap<>();
         documentsDictionary = new ConcurrentHashMap<>();
         dictionary = new ConcurrentHashMap<>();
         posting = new ConcurrentHashMap<>();
         entities = new HashMap<>();
         maxDoc = 1000;
-        maxTerm = 100000;
         docDirectoryNum = 1;
         isStem = stem;
         executor = Executors.newFixedThreadPool(8);
@@ -49,18 +46,34 @@ public class Indexer {
         numOfTerms = 0;
     }
 
+    /**
+     * Method to set the stemmer on so the terms will be stemmed
+     * @param stem - true if words should be stemmed, false otherwise
+     */
     public void setStem(boolean stem) {
         isStem = stem;
     }
 
+    /**
+     * Method returns the number of documents parsed so far
+     * @return
+     */
     public int getNumOfDocs() {
         return numOfDocs;
     }
 
+    /**
+     * Method returns the number of documents parsed so far
+     * @return numOfTerms
+     */
     public int getNumOfTerm() {
         return numOfTerms;
     }
 
+    /**
+     * Method resets the indexer by clearing all the data base and deleting all
+     * the files from the posting file
+     */
     public void reset() {
         documentsPosting.clear();
         documentsDictionary.clear();
@@ -72,6 +85,10 @@ public class Indexer {
         file.delete();
     }
 
+    /**
+     * Method deletes all the files from the given path
+     * @param filepath
+     */
     private void deleteAll(String filepath) {
         final File folder = new File(filepath);
         for (final File fileEntry : folder.listFiles()) {
@@ -85,6 +102,10 @@ public class Indexer {
 
     }
 
+    /**
+     * Method sets the posting file path, where to save the posting files
+     * @param path
+     */
     public void setPath(String path) {
         if (isStem) {
             this.path = path + "\\Stemming";
@@ -94,6 +115,12 @@ public class Indexer {
             file.mkdir();
     }
 
+    /**
+     * Method adds parsed terms to the dictionary and stems the term if the stem is set to true
+     * @param Name
+     * @param docNo
+     * @param position
+     */
     public void addTermToDic(String Name, String docNo, int position) {
         String termName = Name;
         if (isStem) {
@@ -122,6 +149,12 @@ public class Indexer {
         }
     }
 
+    /**
+     * Method saves the terms in the sorted tree map to a temporary posting file which will be merged later on
+     * to the final posting file with the other iterations
+     * @param iteration
+     * @param sortedPosting
+     */
     private void writeToTempPosting(int iteration, TreeMap<String, Term> sortedPosting) {
         try {
             if (!Files.isDirectory(Paths.get(this.path + "/Posting"))) {
@@ -141,14 +174,11 @@ public class Indexer {
                 if (!((currTerm.getTermName().charAt(0) + "").toLowerCase()).equals(charAt0) || (currTerm.getTermName().length() > 1 && !((currTerm.getTermName().charAt(1) + "").toLowerCase()).equals(charAt1))) {
                     if (needWrite) {
                         BufferedWriter writer = new BufferedWriter(new FileWriter(str));
-                        //writer.write(root.outerHtml());//------------------------------
-                        writer.write(toWrite);//*************************************
+                        writer.write(toWrite);
                         writer.close();
-                        //fis.close();
-                        writes++;
                         toWrite = "";
                     }
-                    if (currTerm.getTermName().charAt(0) != '/')
+                    if (currTerm.getTermName().charAt(0) != '/' || currTerm.getTermName().charAt(0) != '\\')
                         charAt0 = ("" + currTerm.getTermName().charAt(0)).toLowerCase();
                     else
                         charAt0 = "slash";
@@ -174,21 +204,13 @@ public class Indexer {
                     str = str + "/" + iteration + ".txt";
                     File termPostingFile = new File(str);
                     termPostingFile.createNewFile();
-                    //fis = new FileInputStream(termPostingFile);
-                    //postingFileEditer = Jsoup.parse(fis, null, "", Parser.xmlParser());//--------------------------------
-                    //root = postingFileEditer.createElement("root");//------------------------------------------------
                     needWrite = true;
                 }
-                //Element termNode = root.appendElement("term").attr("TERMNAME", currTerm.getTermName());//----------------------------
                 HashMap<String, Integer> docs = currTerm.getDocs();
-                HashMap<String, List<Integer>> positionsList = currTerm.getPositions();
-                toWrite += currTerm.getTermName() + "[" + docs.size() + "]";//******************************************************************
-                //termNode.appendElement("df").appendText("" + docs.size());//----------------------------------------
-                //Element docsNode = termNode.appendElement("docs");//---------------------------------------------------------
+                HashMap<String, String> positionsList = currTerm.getPositions();
+                toWrite += currTerm.getTermName() + "[" + docs.size() + "]";
                 for (Map.Entry<String, Integer> entry : docs.entrySet()) {
-                    //Element docNode = docsNode.appendElement("doc").attr("DOCNAME", entry.getKey());//-----------------------------------------------
-                    toWrite += "[" + entry.getKey() + "," + entry.getValue() + ",";//****************************************
-                    //docNode.appendElement("TF").appendText("" + entry.getValue());//---------------------------------------------------------
+                    toWrite += "[" + entry.getKey() + "," + entry.getValue() + ",";
                     if (!dictionary.containsKey(currTerm.getTermName())) {
                         dictionary.put(currTerm.getTermName(), this.path + "\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt" + "," + entry.getValue());
                     } else {
@@ -196,21 +218,14 @@ public class Indexer {
                         int tf = Integer.parseInt(vals[1]) + Integer.parseInt("" + entry.getValue());
                         dictionary.replace(currTerm.getTermName(), this.path + "\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt" + "," + tf);
                     }
-                    String positions = "";
-                    for (Integer pos : positionsList.get(entry.getKey())) {
-                        positions += pos + ",";
-                    }
-                    //docNode.appendElement("Positions").appendText(positions);//-------------------------------------------
-                    toWrite += positions + "]";//***************************************************************
+                    String positions = positionsList.get(entry.getKey());
+                    toWrite += positions + "]";
                 }
                 toWrite += "\n";
                 if (!it.hasNext()) {
                     BufferedWriter writer = new BufferedWriter(new FileWriter(str));
-                    //writer.write(root.outerHtml());//------------------------------
-                    writer.write(toWrite);//*************************************
+                    writer.write(toWrite);
                     writer.close();
-                    //fis.close();
-                    writes++;
                 }
             }
         } catch (IOException e) {
@@ -218,6 +233,11 @@ public class Indexer {
         }
     }
 
+
+    /**
+     * Method saves the documents of this iterations to the documents posting file
+     * @param documentsPosting
+     */
     private void writeDocsToPosting(ConcurrentHashMap<String, Document> documentsPosting) {
         try {
             Path path = Paths.get(this.path + "/DocumentsPosting");
@@ -226,42 +246,40 @@ public class Indexer {
                 postingFolder.mkdir();
             }
             String str;
-            FileInputStream fis = null;
             synchronized (this) {
                 File termPostingFolder = new File(this.path + "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1));
                 termPostingFolder.mkdir();
                 str = this.path + "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + "/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + ".txt";
                 File termPostingFile = new File(termPostingFolder.getAbsolutePath(), (docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1)) + ".txt");
                 termPostingFile.createNewFile();
-                fis = new FileInputStream(termPostingFile);//---------------------
                 docDirectoryNum += maxDoc;
             }
-            //org.jsoup.nodes.Document postingFileEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());//------------------
-            //Element root = postingFileEditor.createElement("root");//-------------------------
             BufferedWriter writer = new BufferedWriter(new FileWriter(str));
             String toWrite = "";
             for (Map.Entry<String, Document> stringIntegerEntry : documentsPosting.entrySet()) {
                 HashMap.Entry pair = stringIntegerEntry;
                 Document document = (Document) pair.getValue();
-                //Element docAtt = postingFileEditor.createElement(document.getDocName());//-----------------
                 if (document == null || document.getMax_Term_name() == null)
                     System.out.printf("ohhh nooo document is null");
-                //docAtt.appendElement("maxTf").appendText("" + document.getMax_tf());//------------------------
-                //docAtt.appendElement("maxTfName").appendText(""+document.getMax_Term_name());//--------------------------
-                //docAtt.appendElement("uniqueTerms").appendText("" + document.getUniqueTermsNum());//-------------------------
-                //root.appendChild(docAtt);//-----------------------------
                 toWrite += document.getDocName() + "," + document.getMax_tf() + "," + document.getMax_Term_name() + "," + document.getUniqueTermsNum() + "\n";
             }
-            //writer.write(root.html());//------------------------------
             writer.write(toWrite);
             writer.close();
-            //fis.close();
             documentsPosting.clear();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Method accepts a potential entity and accepts it as a term if it had been seen in at least
+     * one other documents, or saves it in the entity database if it seen it only in one document
+     * but dosent accept it as a term
+     * @param Name
+     * @param docNo
+     * @param position
+     * @return true if the entity is accepted as a term or false otherwise
+     */
     public boolean addEntToDic(String Name, String docNo, int position) {
         //its an entity that showed up only once and now its its second time
         if (entities.containsKey(Name) && !entities.get(Name).getDocs().containsKey(docNo)) {
@@ -272,36 +290,12 @@ public class Indexer {
             //the dictionary hasn't been written yet
             if (!documentsDictionary.containsKey(oldDoc)) {
                 Document document = documentsPosting.get(oldDoc);
-                if (ent.getDocs().get(oldDoc) == null || document == null)
-                    System.out.println("sd");
                 document.addTermWithTF(Name, ent.getDocs().get(oldDoc));
                 document.closeDoc();
-            } else {
-                String path = documentsDictionary.get(oldDoc);
-                File termPostingFile = new File(path);
-                FileInputStream fis;
-//                    try {
-//                        fis = new FileInputStream(termPostingFile);
-//                        org.jsoup.nodes.Document postingFileEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());
-//                        fis.close();
-//                        Element doc=postingFileEditor.selectFirst(oldDoc);
-//                        int maxTf=Integer.parseInt(doc.selectFirst("maxtf").text());
-//                        if(ent.getDocs().get(oldDoc)>maxTf){
-//                            doc.selectFirst("maxtf").text(""+ent.getDocs().get(oldDoc));
-//                            doc.selectFirst("maxtfname").text(ent.getTermName());
-//                            BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-//                            writer.write(postingFileEditor.html());
-//                            writer.close();
-//                        }
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
             }
             return true;
         }
-        //its entity that appeared more than once but we didnt write it yet
+        //its entity that appeared more than once but we did'nt write it yet
         else if (posting.containsKey(Name.toLowerCase())) {
             Term ent = posting.get(Name.toLowerCase());
             ent.addDocPosition(docNo, position);
@@ -320,6 +314,11 @@ public class Indexer {
         }
     }
 
+    /**
+     * Method accepts a document and adds it to the documents dictionary and the document posting held in the ram in this iteration.
+     * if we pass the documents threshold we clear the documents and terms position file to the disk and start a new iteration
+     * @param doc
+     */
     public void addDocToDic(Document doc) {
         documentsPosting.put(doc.getDocName(), doc);
         if (documentsPosting.size() >= maxDoc) {
@@ -346,6 +345,12 @@ public class Indexer {
         }
     }
 
+    /**
+     * Method waits for all the iterations to finish saving their terms to the temporary posting file,
+     * checks if there are anymore documents or terms to save to the disk, and saves the if there are
+     * saves the terms and documents dictionaries to the disk
+     * and calls for the merging function of the temporary posting files
+     */
     public void closeIndexer() {
         this.executor.shutdown();
         try {
@@ -378,7 +383,11 @@ public class Indexer {
         mergePostingToOne(this.path + "\\Posting");
     }
 
-    // all the files of the first letter
+    /**
+     * Method accepts the path to the temporary posting and sends all the files according
+     * to their first and second letter that need to be merged
+     * @param filePath
+     */
     private void mergePostingToOne(String filePath) {
         File file = new File(filePath);
         File[] firstLetters = file.listFiles();
@@ -388,7 +397,7 @@ public class Indexer {
             Runnable runnable = () -> {
                 for (File secLetter : secondLetters) {
                     if (secLetter.isDirectory()) {
-                        mergeToOne2(secLetter);
+                        mergeToOne(secLetter);
                     }
                 }
                 for (int i = 0; i < secondLetters.length; i++) {
@@ -406,8 +415,11 @@ public class Indexer {
         }
     }
 
-    // merge all the files
-    private void mergeToOne2(File secondLetters) {
+    /**
+     * Method accepts all the files that needs to be merged
+     * @param secondLetters
+     */
+    private void mergeToOne(File secondLetters) {
         try {
             File[] iters = secondLetters.listFiles();
             if (iters.length != 0) {
@@ -429,8 +441,6 @@ public class Indexer {
                         while (elementIter.hasNext()) {
                             String term = (String) elementIter.next();
                             String[] seperated2 = term.split("[\\[\\]]");
-                            if (seperated1.length == 0 || seperated2.length == 0)
-                                System.out.println("sdf");
                             if (seperated2[0].toLowerCase().equals(seperated1[0].toLowerCase())) {
                                 String termName;
                                 if (Character.isUpperCase(seperated2[0].charAt(0)) && Character.isLowerCase(seperated1[0].charAt(0))) {
@@ -478,97 +488,12 @@ public class Indexer {
         }
     }
 
-
-    private void mergeToOne(File secondLetters) {
-        try {
-            File[] iters = secondLetters.listFiles();
-            if (iters.length != 0) {
-                File termPostingFile = new File(secondLetters.getAbsolutePath() + ".txt");
-                termPostingFile.createNewFile();
-                FileInputStream fis = new FileInputStream(termPostingFile);
-                org.jsoup.nodes.Document postingFileEditor = Jsoup.parse(fis, null, "", Parser.xmlParser());
-                fis.close();
-                Element root = postingFileEditor.createElement("root");
-                //go over all the 1-n.txt files
-                for (int i = 0; i < iters.length; i++) {
-                    FileInputStream fis2 = new FileInputStream(iters[i]);
-                    org.jsoup.nodes.Document tempEditor = Jsoup.parse(fis2, null, "", Parser.xmlParser());
-                    fis2.close();
-                    //
-                    Elements terms = tempEditor.select("term");
-                    Elements currTerms = root.select("term");
-                    Iterator elementIter = currTerms.iterator();
-                    int k = terms.size();
-                    for (int j = 0; j < k; j++) {
-                        Element term = terms.first();
-                        String name = term.attr("TERMNAME");
-                        Element currTerm = null;
-                        boolean isNew = true;
-                        boolean appended = false;
-                        while (elementIter.hasNext()) {
-                            currTerm = (Element) elementIter.next();
-                            if (currTerm.attr("TERMNAME").toLowerCase().equals(name.toLowerCase())) {
-                                isNew = false;
-                                break;
-                            } else if (currTerm.attr("TERMNAME").toLowerCase().compareTo(name.toLowerCase()) > 0) {
-                                currTerm.before(term.outerHtml());
-                                terms.remove(term);
-                                appended = true;
-                                break;
-                            }
-                        }
-                        if (isNew && !appended) {
-                            root.appendChild(term);
-                            terms.remove(term);
-                            continue;
-                        } else if (isNew && appended) {
-                            terms.remove(term);
-                            continue;
-                        } else {
-                            if (Character.isUpperCase(currTerm.attr("TERMNAME").charAt(0)) && Character.isLowerCase(name.charAt(0))) {
-                                currTerm.attr("TERMNAME", name);
-                            }
-                            //update df
-                            int dfCurr = Integer.parseInt(currTerm.select("df").first().text());
-                            int dfMerge = Integer.parseInt(term.select("df").first().text());
-                            currTerm.select("df").first().text("" + (dfCurr + dfMerge));
-                            //update the tf
-                            Elements docsCurr = currTerm.select("doc");
-                            Elements docsMerge = term.select("doc");
-                            currTerm.selectFirst("docs").insertChildren(-1, docsMerge);
-                            terms.remove(term);
-                        }
-                    }
-                }
-                for (int i = 0; i < iters.length; i++) {
-                    iters[i].delete();
-                }
-                Elements all = root.select("term");
-                String toSave = "";
-                BufferedWriter writer = new BufferedWriter(new FileWriter(secondLetters.getAbsolutePath() + ".txt"));
-                while (!all.isEmpty()) {
-                    for (int i = 0; i < 100; i++) {
-                        if (!all.isEmpty()) {
-                            toSave += all.first().outerHtml();
-                        } else {
-                            break;
-                        }
-                        all.remove(all.first());
-                    }
-                    writer.write(toSave);
-                    writer.newLine();
-                    writer.flush();
-                    toSave = "";
-                }
-                root.empty();
-                writer.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        }
-    }
-
+    /**
+     *Method accepts the dictionary name and a hash map data base, and
+     * saves the to the disk as a serializable file
+     * @param dicName
+     * @param dictionary
+     */
     private void writeDictionary(String dicName, ConcurrentHashMap<String, String> dictionary) {
         Path path = Paths.get(this.path + "/" + dicName);
         if (!Files.isDirectory(path)) {
@@ -589,6 +514,14 @@ public class Indexer {
         }
     }
 
+    /**
+     *Method accepts a path to the terms dictionary that needs to be uploaded and
+     *which one needs to be uploaded, the stemmed dictionary or the unstemmed one
+     *(true for stemmed and false for unstemmed)
+     * @param stem
+     * @param path
+     * @return
+     */
     public LinkedHashMap<String, String> uploadDictionary(boolean stem, String path) {
         setStem(stem);
         setPath(path);

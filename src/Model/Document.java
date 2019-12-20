@@ -19,8 +19,8 @@ public class Document {
     private String doc_name;
 
     /**
-     * Constructor of the docu
-     * @param doc_name
+     * Constructor of the document
+     * @param doc_name - the doc Id
      */
     public Document(String doc_name) {
         max_tf =0;
@@ -30,22 +30,41 @@ public class Document {
         this.doc_name = doc_name;
     }
 
+    /**
+     * getter to the doc ID
+     * @return
+     */
     public String getDocName(){
         return doc_name;
     }
 
+    /**
+     * getter to the doc number of the unique words
+     * @return
+     */
     public int getUniqueTermsNum(){
         return uniqueTermsNum;
     }
 
+    /**
+     * getter to the max tf of the doc
+     * @return
+     */
     public int getMax_tf() {
         return max_tf;
     }
-
+    /**
+     * getter to the name with the most frequency
+     * @return
+     */
     public String getMax_Term_name() {
         return max_Term_name;
     }
 
+    /**
+     * Method adds a word to the dictionary and updates all the parameters according to it
+     * @param term - the new word
+     */
     public void addTerm(String term){
         String lowerTerm = term.toLowerCase();
         if(term_frq.containsKey(lowerTerm)){
@@ -58,6 +77,11 @@ public class Document {
         }
     }
 
+    /**
+     * Method adds a word with its Tf to this document to the dictionary and updates all the parameters according to it
+     * @param term - the new word
+     * @param tf - thw words tf
+     */
     public void addTermWithTF(String term, int tf){
         String lowerTerm = term.toLowerCase();
         if(term_frq.containsKey(lowerTerm)){
@@ -70,6 +94,9 @@ public class Document {
         }
     }
 
+    /**
+     * Method called when the parser is done with the whole document, it's updates the number of the unique words.
+     */
     public void closeDoc(){
         uniqueTermsNum = term_frq.size();
     }

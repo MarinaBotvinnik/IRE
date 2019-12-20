@@ -1,3 +1,4 @@
+
 package View;
 
 import ViewModel.ViewModel;
@@ -7,9 +8,15 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
+/**
+ * Class in charge of controlling the gui
+ */
 public class mainMenuController {
 
     public TextField tf_corpusPath;
@@ -27,6 +34,12 @@ public class mainMenuController {
     private boolean isUploaded;
     private String postPath;
 
+    /**
+     * Method that initializing the view model to the view
+     * @param model
+     * @param primaryS
+     * @param scene
+     */
     public void initialize(ViewModel model, Stage primaryS, Scene scene){
         this.viewModel = model;
         this.stage = primaryS;
@@ -34,7 +47,13 @@ public class mainMenuController {
         isUploaded = false;
     }
 
-    //when GO! pressed
+    /**
+     * Method that begins when the "GO" button is pressed.
+     * The method takes the texts of the paths from the text fields and starts the posting proccess if it didnt make it before
+     * in the same path.
+     * After the posting completed , it will show a message with the neede information.
+     * then , it will show the next pane.
+     */
     public void setPane2() {
         String corpusPath = tf_corpusPath.getText();
         String postingPath = tf_postingPath.getText();
@@ -74,7 +93,7 @@ public class mainMenuController {
             alert.setContentText("Please wait while the posting files are created");
             alert.show();
             alert.getDialogPane().setDisable(true);
-            long startTime 	= System.nanoTime();
+            long startTime     = System.nanoTime();
             viewModel.start(corpusPath,postingPath,isStem);
             long endTime = System.nanoTime();
             long div = 1000000;
@@ -94,6 +113,9 @@ public class mainMenuController {
         }
     }
 
+    /**
+     * Method that replace the second pane with the third one
+     */
     public void setPane3(){
         p_second.setVisible(false);
         p_second.setDisable(true);
@@ -101,6 +123,9 @@ public class mainMenuController {
         p_dictionary.setDisable(false);
     }
 
+    /**
+     * Method that replace pane 3 with pane 2
+     */
     public void setBackPane2(){
         p_dictionary.setVisible(false);
         p_dictionary.setDisable(true);
@@ -108,14 +133,26 @@ public class mainMenuController {
         p_second.setDisable(false);
     }
 
+    /**
+     * Method that begins when "browse" of corpus is pressed
+     * it will put text of the chosen path to the text field
+     */
     public void browseCorpus(){
         getPath(tf_corpusPath);
     }
 
+    /**
+     * Method that begins when "browse" of posting is pressed
+     * it will put text of the chosen path to the text field
+     */
     public void browsePost(){
         getPath(tf_postingPath);
     }
 
+    /**
+     * Method that accepts a text filed and fills it with the path from the file chooser 
+     * @param tf
+     */
     private void getPath(TextField tf) {
         tf.clear();
         JFileChooser fileChooser = new JFileChooser();
@@ -128,6 +165,9 @@ public class mainMenuController {
         }
     }
 
+    /**
+     * This method uploads the dictionary to the ViewModel and shows a proper message
+     */
     public void uploadDictionary(){
         viewModel.uploadDictionary(cb_stem.isSelected(),postPath);
         isUploaded = true;
@@ -135,6 +175,9 @@ public class mainMenuController {
         alert.show();
     }
 
+    /**
+     * This method shows in the third pane the dictionary that was uploaded
+     */
     public void showDictionary() {
         if (isUploaded) {
             LinkedHashMap<String, String> dic = viewModel.getDictionary();
@@ -153,6 +196,10 @@ public class mainMenuController {
         }
     }
 
+    /**
+     * Method that sends a request to the ViewModel to reset the system.
+     * after the function is complete it will show the proper message
+     */
     public void reset(){
         viewModel.reset();
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "you reset the system , all posting files were deleted!");
@@ -160,11 +207,18 @@ public class mainMenuController {
         setPane1();
     }
 
+    /**
+     * Method that sets back pane one
+     */
     public void setPane1(){
+        isUploaded = false;
+        tf_corpusPath.clear();
+        tf_postingPath.clear();
         p_second.setDisable(true);
         p_second.setVisible(false);
         p_first.setVisible(true);
         p_first.setDisable(false);
     }
+
 
 }

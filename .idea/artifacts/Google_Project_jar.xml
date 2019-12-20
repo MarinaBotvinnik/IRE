@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Google Project:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Google_Project_jar</output-path>
+    <root id="archive" name="Google Project.jar">
+      <element id="module-output" name="Google Project" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Resource/jsoup-1.12.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
