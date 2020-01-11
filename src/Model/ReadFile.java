@@ -6,9 +6,7 @@ import org.jsoup.parser.Parser;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.io.*;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * This class in charge of reading all the documents in the corpus.
@@ -73,6 +71,25 @@ public class ReadFile {
         }
         catch (Exception e){
             System.out.println(e.getMessage());
+        }
+    }
+
+    public LinkedHashMap<String,Integer> readDoc(String docPath, String docNO, HashSet<String> entities){
+        try {
+            FileInputStream fis = new FileInputStream(new File(docPath));
+            Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
+            Elements Documents=file.select("DOC");
+            for(Element doc : Documents){
+                String docNo = doc.select("DOCNO").text();
+                if(docNO.equals(docNo) && doc.select("TEXT").first()!=null){
+                    return parser.findEntities(doc.select("TEXT").text(),entities);
+                }
+            }
+            return null;
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 

@@ -28,6 +28,7 @@ public class Indexer {
 
     /**
      * Constructor of the class, sets if the words need to be stemmed
+     *
      * @param stem - true if words should be stemmed, false otherwise
      */
     public Indexer(boolean stem) {
@@ -48,6 +49,7 @@ public class Indexer {
 
     /**
      * Method to set the stemmer on so the terms will be stemmed
+     *
      * @param stem - true if words should be stemmed, false otherwise
      */
     public void setStem(boolean stem) {
@@ -56,6 +58,7 @@ public class Indexer {
 
     /**
      * Method returns the number of documents parsed so far
+     *
      * @return
      */
     public int getNumOfDocs() {
@@ -64,6 +67,7 @@ public class Indexer {
 
     /**
      * Method returns the number of documents parsed so far
+     *
      * @return numOfTerms
      */
     public int getNumOfTerm() {
@@ -87,6 +91,7 @@ public class Indexer {
 
     /**
      * Method deletes all the files from the given path
+     *
      * @param filepath
      */
     private void deleteAll(String filepath) {
@@ -104,6 +109,7 @@ public class Indexer {
 
     /**
      * Method sets the posting file path, where to save the posting files
+     *
      * @param path
      */
     public void setPath(String path) {
@@ -117,6 +123,7 @@ public class Indexer {
 
     /**
      * Method adds parsed terms to the dictionary and stems the term if the stem is set to true
+     *
      * @param Name
      * @param docNo
      * @param position
@@ -152,6 +159,7 @@ public class Indexer {
     /**
      * Method saves the terms in the sorted tree map to a temporary posting file which will be merged later on
      * to the final posting file with the other iterations
+     *
      * @param iteration
      * @param sortedPosting
      */
@@ -236,6 +244,7 @@ public class Indexer {
 
     /**
      * Method saves the documents of this iterations to the documents posting file
+     *
      * @param documentsPosting
      */
     private void writeDocsToPosting(ConcurrentHashMap<String, Document> documentsPosting) {
@@ -275,6 +284,7 @@ public class Indexer {
      * Method accepts a potential entity and accepts it as a term if it had been seen in at least
      * one other documents, or saves it in the entity database if it seen it only in one document
      * but dosent accept it as a term
+     *
      * @param Name
      * @param docNo
      * @param position
@@ -317,6 +327,7 @@ public class Indexer {
     /**
      * Method accepts a document and adds it to the documents dictionary and the document posting held in the ram in this iteration.
      * if we pass the documents threshold we clear the documents and terms position file to the disk and start a new iteration
+     *
      * @param doc
      */
     public void addDocToDic(Document doc) {
@@ -386,6 +397,7 @@ public class Indexer {
     /**
      * Method accepts the path to the temporary posting and sends all the files according
      * to their first and second letter that need to be merged
+     *
      * @param filePath
      */
     private void mergePostingToOne(String filePath) {
@@ -417,6 +429,7 @@ public class Indexer {
 
     /**
      * Method accepts all the files that needs to be merged
+     *
      * @param secondLetters
      */
     private void mergeToOne(File secondLetters) {
@@ -489,8 +502,9 @@ public class Indexer {
     }
 
     /**
-     *Method accepts the dictionary name and a hash map data base, and
+     * Method accepts the dictionary name and a hash map data base, and
      * saves the to the disk as a serializable file
+     *
      * @param dicName
      * @param dictionary
      */
@@ -515,9 +529,10 @@ public class Indexer {
     }
 
     /**
-     *Method accepts a path to the terms dictionary that needs to be uploaded and
-     *which one needs to be uploaded, the stemmed dictionary or the unstemmed one
-     *(true for stemmed and false for unstemmed)
+     * Method accepts a path to the terms dictionary that needs to be uploaded and
+     * which one needs to be uploaded, the stemmed dictionary or the unstemmed one
+     * (true for stemmed and false for unstemmed)
+     *
      * @param stem
      * @param path
      * @return
@@ -544,6 +559,51 @@ public class Indexer {
                 ordered.put(name, dictionary.get(name));
             }
             return ordered;
+        } catch (Exception e) {
+            e.getStackTrace();
+            return null;
+        }
+    }
+
+    public HashMap<String, String> getTermDic(boolean stem, String path) {
+        try {
+            setStem(stem);
+            setPath(path);
+            Map<String, String> dic;
+            FileInputStream fis = new FileInputStream(new File(this.path + "/TermDictionary/TermDictionary.ser"));
+            ObjectInputStream inputStream = new ObjectInputStream(fis);
+            dic = (Map) inputStream.readObject();
+            HashMap<String, String> termDicBeforeRemove = new HashMap<>(dic);
+            HashMap<String, String> termDicFinal = new HashMap<>();
+            for (Map.Entry<String, String> stringIntegerEntry : termDicBeforeRemove.entrySet()) {
+                HashMap.Entry pair = stringIntegerEntry;
+                String termValue = (String) pair.getValue();
+                String[] vals = termValue.split(" ");
+                String termPath = vals[0];
+                termDicFinal.put((String) pair.getKey(), termPath);
+            }
+            fis.close();
+            inputStream.close();
+            return termDicFinal;
+
+        } catch (Exception e) {
+            e.getStackTrace();
+            return null;
+        }
+    }
+
+    public HashMap<String, String> getDocDic(boolean stem, String path) {
+        try {
+            setStem(stem);
+            setPath(path);
+            Map<String, String> dic;
+            FileInputStream fis = new FileInputStream(new File(this.path + "/DocumentsDictionary/DocumentsDictionary.ser"));
+            ObjectInputStream inputStream = new ObjectInputStream(fis);
+            dic = (Map) inputStream.readObject();
+            HashMap<String, String> docDic = new HashMap<>(dic);
+            fis.close();
+            inputStream.close();
+            return docDic;
         } catch (Exception e) {
             e.getStackTrace();
             return null;
