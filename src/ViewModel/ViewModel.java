@@ -1,9 +1,17 @@
 
 package ViewModel;
 import Model.Model;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.TreeMap;
+import java.util.LinkedHashSet;
 
 /**
  * Class that controls between the view and the model lairs
@@ -82,5 +90,37 @@ public class ViewModel {
      */
     public void reset(){
         model.reset();
+    }
+
+    public void searchQuery(String query, boolean isPath, boolean isStem, boolean isSemantic, String postPath, String corpusPath) {
+        LinkedHashSet<String> queries = new LinkedHashSet<>();
+        if(isPath){
+            queries = getQueries(query);
+        }
+        else{
+            queries.add(query);
+        }
+        model.search(queries,isStem,isSemantic,postPath,corpusPath);
+    }
+
+    private LinkedHashSet<String> getQueries(String path){
+        try {
+            LinkedHashSet<String> finalQueries = new LinkedHashSet<>();
+            FileInputStream fis = new FileInputStream(new File(path));
+            Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
+            Elements queries=file.select("top");
+            for(Element doc : queries){
+                finalQueries.add(doc.text());
+            }
+            return finalQueries;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public HashMap<String, HashMap<String, LinkedHashMap<String, Integer>>> getAnswers() {
+        return model.getAnswers();
     }
 }
