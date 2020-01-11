@@ -2,6 +2,7 @@
 package View;
 
 import ViewModel.ViewModel;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
@@ -9,10 +10,7 @@ import javafx.stage.Stage;
 
 import javax.swing.*;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Class in charge of controlling the gui
@@ -21,11 +19,20 @@ public class mainMenuController {
 
     public TextField tf_corpusPath;
     public TextField tf_postingPath;
+    public TextField tf_OptionA;
+    public TextField tf_OptionB;
     public CheckBox cb_stem;
+    public CheckBox cb_semantic;
     public Pane p_first;
     public Pane p_second;
     public Pane p_dictionary;
+    public Pane p_Query;
+    public Pane p_Options;
+    public Pane p_Answers;
     public TextArea c_Posting;
+    public TextArea c_docsAndEnt;
+    public ChoiceBox<String> ch_queryOp;
+    public ChoiceBox<String> ch_queries;
 
 
     private ViewModel viewModel;
@@ -33,6 +40,8 @@ public class mainMenuController {
     private Scene scene;
     private boolean isUploaded;
     private String postPath;
+    private boolean isStem;
+    private String corpusPath;
 
     /**
      * Method that initializing the view model to the view
@@ -58,6 +67,7 @@ public class mainMenuController {
         String corpusPath = tf_corpusPath.getText();
         String postingPath = tf_postingPath.getText();
         postPath = postingPath;
+        this.corpusPath = corpusPath;
         if (corpusPath.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "You didn't enter a corpus path, Please enter a path before continue");
             alert.show();
@@ -68,6 +78,7 @@ public class mainMenuController {
         //the two text boxes are filled
         else {
             boolean isStem = cb_stem.isSelected();
+            this.isStem = isStem;
             File withStem=new File(postingPath +"/Stemming");
             File withoutStem=new File(postingPath+"/noStemming");
             if(withStem.exists() && isStem){
@@ -134,6 +145,103 @@ public class mainMenuController {
     }
 
     /**
+     * Method that replace pane 2 with pane 4
+     */
+    public void setQueryPane(){
+        p_second.setVisible(false);
+        p_second.setDisable(true);
+        p_Query.setVisible(true);
+        p_Query.setDisable(false);
+    }
+
+    public void setQueryPaneBack(){
+        p_Options.setDisable(true);
+        p_Options.setVisible(false);
+        p_Query.setVisible(true);
+        p_Query.setDisable(false);
+    }
+
+    public void setOptionsPane(){
+        p_Query.setVisible(false);
+        p_Query.setDisable(true);
+        p_Options.setDisable(false);
+        p_Options.setVisible(true);
+    }
+
+    public void setOptionsPaneBack(){
+        p_Answers.setVisible(false);
+        p_Answers.setDisable(true);
+        p_Options.setDisable(false);
+        p_Options.setVisible(true);
+    }
+
+    public void setP_Answers(){
+        ch_queries = new ChoiceBox<>();
+        HashSet<String> queries = new HashSet<>(viewModel.getAnswers().keySet());
+        for (String query: queries) {
+            ch_queries.getItems().add(query);
+        }
+
+        p_Options.setDisable(true);
+        p_Options.setVisible(false);
+        p_Answers.setVisible(true);
+        p_Answers.setDisable(false);
+
+    }
+
+    public void startSearch(){
+        String choose = ch_queryOp.getValue();
+        boolean isSemantic = cb_semantic.isSelected();
+        // if there is a document of queries
+        if(choose.equals("OPTION A")){
+            String optionAText = tf_OptionA.getText();
+            if (optionAText.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "You need to enter a path, or choose another option");
+                alert.show();
+            }
+            else{
+                viewModel.searchQuery(optionAText,true,isStem,isSemantic,postPath,corpusPath);
+            }
+        }
+        // the user entered his own query
+        else{
+            String optionBText = tf_OptionB.getText();
+            if (optionBText.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "You need to enter a query, or choose another option");
+                alert.show();
+            }
+            else{
+                viewModel.searchQuery(optionBText,false,isStem, isSemantic, postPath,corpusPath);
+            }
+        }
+        setOptionsPane();
+    }
+
+    public void showAnswers(){
+        c_docsAndEnt.clear();
+        HashMap<String,HashMap<String,LinkedHashMap<String,Integer>>> d_docsAndEntitiesForQuery = viewModel.getAnswers();
+        String query = ch_queries.getValue();
+        if(query.isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please choose a query!");
+            alert.show();
+        }
+        else{
+            HashMap<String,LinkedHashMap<String,Integer>> docs = d_docsAndEntitiesForQuery.get(query);
+            StringBuilder str1 = new StringBuilder();
+            for (Map.Entry<String, LinkedHashMap<String,Integer>> entry : docs.entrySet()) {
+                String docNo = entry.getKey();
+                LinkedHashMap<String,Integer> entities = entry.getValue();
+                str1.append(docNo).append(" -------> ");
+                for (Map.Entry<String, Integer> entry1: entities.entrySet()){
+                    String entity = entry1.getKey();
+                    str1.append(entity).append(", ");
+                }
+                str1.append("\n");
+            }
+            c_docsAndEnt.textProperty().set(str1.toString());
+        }
+    }
+    /**
      * Method that begins when "browse" of corpus is pressed
      * it will put text of the chosen path to the text field
      */
@@ -147,6 +255,18 @@ public class mainMenuController {
      */
     public void browsePost(){
         getPath(tf_postingPath);
+    }
+
+    public void browseQuery(){
+        tf_OptionA.clear();
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.showOpenDialog(null);
+        File file = fileChooser.getSelectedFile();
+        if(file!=null) {
+            String p = file.getAbsolutePath();
+            tf_OptionA.appendText(p);
+        }
     }
 
     /**
