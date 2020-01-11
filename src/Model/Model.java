@@ -1,13 +1,16 @@
 
 package Model;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 
 /**
  * Class that in charge of taking the requests from the ViewModel layer and implements them in the proper classes in the Model layer. 
  */
 public class Model {
     private ReadFile readFile;
+    private Searcher searcher;
 
     /**
      * Constructor of the class that initializes the readFile class with the stem value
@@ -66,5 +69,14 @@ public class Model {
      */
     public void reset(){
         readFile.reset();
+    }
+
+    public void search(LinkedHashSet<String> queries, boolean isStem, boolean isSemantic, String postingPath, String corpusPath) {
+        searcher = new Searcher(isStem,postingPath,isSemantic,corpusPath);
+        searcher.search(queries);
+    }
+
+    public HashMap<String, HashMap<String, LinkedHashMap<String, Integer>>> getAnswers() {
+        return searcher.getDocsAndEntitiesForQuery();
     }
 }

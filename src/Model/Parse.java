@@ -40,6 +40,236 @@ public class Parse {
         indexer = new Indexer(stem);
     }
 
+    public String parseQuery(String text){
+        String parsed="";
+        String[] splitText = deleteStopWords(text);
+        int textLength = splitText.length;
+        for (int i = 0; i < textLength; i++) {
+            String termTxt = splitText[i];
+            if (termTxt.length() > 1 && termTxt.charAt(0) == '.' && Character.isDigit(termTxt.charAt(1))) {
+                termTxt = 0 + termTxt;
+                splitText[i] = 0 + termTxt;
+            }
+            if (termTxt.length() == 0)
+                continue;
+            ////if the word is a PURE NUMBER
+            if (isNum(splitText[i])) {
+                ////if the word is Kg - (skip 1 word ahead + check if there is i+1 word)
+                if (i + 1 < textLength && (splitText[i + 1].equals("kg") || splitText[i + 1].equals("Kg") || splitText[i + 1].equals("KG") || splitText[i + 1].equals("kilogram")
+                        || splitText[i + 1].equals("Kilogram") || splitText[i + 1].equals("kilograms") || splitText[i + 1].equals("Kilograms")
+                        || splitText[i + 1].equals("Kgs") || splitText[i + 1].equals("kgs"))) {
+                    termTxt = splitText[i] + " kg";
+                    parsed= parsed +" "+ termTxt;
+                    i++;
+                    continue;
+                }
+                if (i + 1 < textLength && (splitText[i + 1].equals("gr") || splitText[i + 1].equals("gram") || splitText[i + 1].equals("Gram") || splitText[i + 1].equals("GRAM")
+                        || splitText[i + 1].equals("grams") || splitText[i + 1].equals("Grams") || splitText[i + 1].equals("GRAMS"))) {
+                    termTxt = splitText[i] + " gr";
+                    parsed= parsed +" "+ termTxt;
+                    i++;
+                    continue;
+                }
+                if (i + 1 < textLength && (splitText[i + 1].equals("ton") || splitText[i + 1].equals("Ton") || splitText[i + 1].equals("TON") || splitText[i + 1].equals("tons")
+                        || splitText[i + 1].equals("Tons") || splitText[i + 1].equals("TONS"))) {
+                    termTxt = splitText[i] + "K kg";
+                    parsed= parsed +" "+ termTxt;
+                    i++;
+                    continue;
+                }
+                ////if the word is Km - (skip 1 word ahead + check if there is i+1 word)
+                if (i + 1 < textLength && (splitText[i + 1].equals("km") || splitText[i + 1].equals("Km") || splitText[i + 1].equals("KM") || splitText[i + 1].equals("kilometer")
+                        || splitText[i + 1].equals("Kilometer") || splitText[i + 1].equals("kilometers") || splitText[i + 1].equals("Kilometers"))) {
+                    termTxt = splitText[i] + "K meters";
+                    parsed= parsed +" "+ termTxt;
+                    i++;
+                    continue;
+                }
+
+                ////if the word is meter - (skip 1 word ahead + check if there is i+1 word)
+                if (i + 1 < textLength && (splitText[i + 1].equals("meter") || splitText[i + 1].equals("Meter") || splitText[i + 1].equals("Meters") || splitText[i + 1].equals("meters"))) {
+                    termTxt = splitText[i] + " meters";
+                    parsed= parsed +" "+ termTxt;
+                    i++;
+                    continue;
+                }
+
+                if (i + 1 < textLength && (splitText[i + 1].equals("Centimeter") || splitText[i + 1].equals("centimeter") || splitText[i + 1].equals("Centimeters")
+                        || splitText[i + 1].equals("centimeters") || splitText[i + 1].equals("cm"))) {
+                    termTxt = splitText[i] + " cm";
+                    parsed= parsed +" "+ termTxt;
+                    i++;
+                    continue;
+                }
+                ////if the number is PERCENT  - (skip 1 word ahead + check if there is i+1 word)
+                if (i + 1 < textLength && (splitText[i + 1].equals("percent") || splitText[i + 1].equals("percentage") || splitText[i + 1].equals("%"))) {
+                    termTxt = splitText[i] + "%";
+                    parsed= parsed +" "+ termTxt;
+                    i++;
+                    continue;
+                }
+
+                ////if the words of type PRICE M\B\T U.S DOLLARS - (skip 3 word ahead + check if there is i+3 word)
+                if (i + 3 < textLength && (splitText[i + 2].equals("U.S") && (splitText[i + 3].equals("dollars") || splitText[i + 3].equals("Dollars")))) {
+                    termTxt = getAmount(splitText, i, termTxt);
+                    parsed= parsed +" "+ termTxt;
+                    i += 3;
+                    continue;
+                }
+
+                // if the word is of type price m/bn Dollars
+                if (i + 2 < textLength && (splitText[i + 2].equals("dollars") || splitText[i + 2].equals("Dollars"))) {
+                    if (splitText[i + 1].equals("m") || splitText[i + 1].equals("M"))
+                        termTxt = splitText[i] + "M Dollars";
+                    if (splitText[i + 1].equals("bn") || splitText[i + 1].equals("BN")) {
+                        double newVal = Double.parseDouble(splitText[i]);
+                        newVal = newVal * 1000;
+                        termTxt = newVal + "M Dollars";
+                    }
+                    parsed= parsed +" "+ termTxt;
+                    i += 2;
+                    continue;
+                }
+
+                // if the word is of type PRICE DOLLARS
+                if (i + 1 < textLength && (splitText[i + 1].equals("Dollars") || splitText[i + 1].equals("dollars"))) {
+                    String price = termNum(Double.parseDouble(splitText[i]));
+                    if (price.charAt(price.length() - 1) == 'B') {
+                        double newVal = Double.parseDouble(splitText[i]);
+                        newVal = newVal / 1000;
+                        termTxt = newVal + "M Dollars";
+                    } else {
+                        termTxt = price + " Dollars";
+                    }
+                    parsed= parsed +" "+ termTxt;
+                    i++;
+                    continue;
+                }
+
+                //if there is a FRACTION after the number
+                if (i + 1 < textLength && isFraction(splitText[i + 1])) {
+                    if (i + 2 < textLength && (splitText[i + 2].equals("dollars") || splitText[i + 2].equals("Dollars"))) {
+                        termTxt = splitText[i] + " " + splitText[i + 1] + " Dollars";
+                        i += 2;
+                    } else {
+                        termTxt = splitText[i] + " " + splitText[i + 1];
+                        i++;
+                    }
+                    parsed= parsed +" "+ termTxt;
+                    continue;
+                }
+
+                //if the number is part of a date
+                if (i + 1 < textLength && isMonth(splitText[i + 1])) {
+                    int month = (int) Double.parseDouble(splitText[i]);
+                    if (month < 10)
+                        termTxt = monthNum(splitText[i + 1]) + "-0" + splitText[i];
+                    else
+                        termTxt = monthNum(splitText[i + 1]) + "-" + splitText[i];
+                    parsed= parsed +" "+ termTxt;
+                    continue;
+                }
+                String termNum = termNum(Double.parseDouble(splitText[i]));
+                parsed= parsed +" "+ termTxt;
+            }
+            //its a word or its a number with something attached to this
+            else {
+                if (splitText[i].charAt(0) == '$') { //if a $ is attached in the beginning
+                    termTxt = getDollars(splitText, textLength, i, termTxt);
+                    parsed= parsed +" "+ termTxt;
+                    i++;
+                    continue;
+                }
+
+                //if a % is attached in the beginning
+                if (splitText[i].charAt(splitText[i].length() - 1) == '%') {
+                    termTxt = splitText[i];
+                    parsed= parsed +" "+ termTxt;
+                    continue;
+                }
+
+                //the term is a month
+                if (i + 1 < textLength && isMonth(splitText[i]) && isNum(splitText[i + 1])) {
+                    int datePart = (int) Double.parseDouble(splitText[i + 1]);
+                    //checking if the number indicates a day
+                    if (datePart <= 31) {
+                        if (datePart < 10)
+                            termTxt = monthNum(splitText[i]) + "-0" + splitText[i + 1];
+                        else
+                            termTxt = monthNum(splitText[i]) + "-" + splitText[i + 1];
+                    }
+                    //else, then the number indicates years
+                    else
+                        termTxt = splitText[i + 1] + "-" + monthNum(splitText[i]);
+                    parsed= parsed +" "+ termTxt;
+                    i++;
+                    continue;
+                }
+
+                //if its the type WORD - WORD or WORD - WORD - WORD
+                if (splitText[i].indexOf("-") >= 0 && !termTxt.equals("--") && !termTxt.equals("---")) {
+                    String[] numbers = splitToNumbers(splitText[i]);
+                    if (numbers[0].equals("true")) {
+                        parsed= parsed +" "+ numbers[1];
+                        parsed= parsed +" "+ numbers[2];
+                        continue;
+                    }
+                    if (!numbers[0].equals("false")) {
+                        termTxt = numbers[1] + " " + numbers[0];
+                        parsed= parsed +" "+ termTxt;
+                        continue;
+                    } else {
+                        termTxt = termTxt.replace(".", "");
+                        parsed= parsed +" "+ termTxt;
+                        continue;
+                    }
+
+                }
+
+                //if its the type BETWEEN NUMBER AND NUMBER
+                if (i + 3 < textLength && (splitText[i].equals("Between") || splitText[i].equals("between")) && isNum(splitText[i + 1]) && splitText[i + 2].equals("and") && isNum(splitText[i + 3])) {
+                    if (splitText[i + 1].charAt(0) == '.') {
+                        splitText[i + 1] = 0 + splitText[i + 1];
+                    }
+                    if (splitText[i + 3].charAt(0) == '.') {
+                        splitText[i + 3] = 0 + splitText[i + 3];
+                    }
+                    parsed= parsed +" "+ splitText[i] + " " + splitText[i + 1] + " " + splitText[i + 2] + " " + splitText[i + 3];
+                    parsed= parsed +" "+ splitText[i + 1];
+                    parsed= parsed +" "+ splitText[i + 3];
+                    i += 3;
+                }
+                //it is a REGULAR WORD - the dictionary will save it correctly
+                else {
+                    termTxt = splitText[i].replace(".", "");
+                    termTxt = termTxt.replace("/", "");
+                    if (termTxt.length() > 1 && !termTxt.equals("--") && !termTxt.equals("---") && !termTxt.equals("and") && !termTxt.equals("And") && !termTxt.equals("AND")) {
+                        parsed= parsed +" "+ termTxt;
+                    }
+                }
+            }
+        }
+        return parsed;
+
+    }
+
+    private String getAmount(String[] splitText, int i, String termTxt) {
+        if (splitText[i + 1].equals("million") || splitText[i + 1].equals("Million") || splitText[i + 1].equals("M") || splitText[i + 1].equals("m")) {
+            termTxt = splitText[i] + "M Dollars";
+        }
+        if (splitText[i + 1].equals("billion") || splitText[i + 1].equals("Billion") || splitText[i + 1].equals("bn")) {
+            double num = Double.parseDouble(splitText[i]);
+            num = num * 1000;
+            termTxt = num + "M Dollars";
+        }
+        if (splitText[i + 1].equals("trillion") || splitText[i + 1].equals("Trillion") || splitText[i + 1].equals("tn")) {
+            double num = Double.parseDouble(splitText[i]);
+            num = num * 1000000;
+            termTxt = num + "M Dollars";
+        }
+        return termTxt;
+    }
+
     /**
      * Method that gets a text and the DOCNO of the text and parses the text.
      * it deletes all the stop words, and the unnecessary punctuations.
@@ -128,19 +358,7 @@ public class Parse {
 
                 ////if the words of type PRICE M\B\T U.S DOLLARS - (skip 3 word ahead + check if there is i+3 word)
                 if (i + 3 < textLength && (splitText[i + 2].equals("U.S") && (splitText[i + 3].equals("dollars") || splitText[i + 3].equals("Dollars")))) {
-                    if (splitText[i + 1].equals("million") || splitText[i + 1].equals("Million") || splitText[i + 1].equals("M") || splitText[i + 1].equals("m")) {
-                        termTxt = splitText[i] + "M Dollars";
-                    }
-                    if (splitText[i + 1].equals("billion") || splitText[i + 1].equals("Billion") || splitText[i + 1].equals("bn")) {
-                        double num = Double.parseDouble(splitText[i]);
-                        num = num * 1000;
-                        termTxt = num + "M Dollars";
-                    }
-                    if (splitText[i + 1].equals("trillion") || splitText[i + 1].equals("Trillion") || splitText[i + 1].equals("tn")) {
-                        double num = Double.parseDouble(splitText[i]);
-                        num = num * 1000000;
-                        termTxt = num + "M Dollars";
-                    }
+                    termTxt = getAmount(splitText, i, termTxt);
                     addTermToDoc(document, termTxt);
                     addTermToIndx(termTxt, docNo, i);
                     i += 3;
@@ -226,27 +444,7 @@ public class Parse {
                 }
 
                 if (splitText[i].charAt(0) == '$') { //if a $ is attached in the beginning
-                    String value = splitText[i].substring(1);
-                    if (value.length() > 1 && value.charAt(0) == '.' && Character.isDigit(value.charAt(1))) {
-                        value = 0 + value;
-                    }
-                    if (isNum(value)) {
-                        if (i + 1 < textLength && (splitText[i + 1].equals("million") || splitText[i + 1].equals("Million") || splitText[i + 1].equals("Million.")))
-                            termTxt = value + "M Dollars";
-                        else if (i + 1 < textLength && (splitText[i + 1].equals("billion") || splitText[i + 1].equals("Billion"))) {
-                            double newVal = Double.parseDouble(value);
-                            newVal = newVal * 1000;
-                            termTxt = newVal + "M Dollars";
-                        } else {
-                            double checkVal = Double.parseDouble(value);
-                            if (checkVal < 1000000)
-                                termTxt = value + " Dollars";
-                            else {
-                                checkVal = checkVal / 1000000;
-                                termTxt = checkVal + "M Dollars";
-                            }
-                        }
-                    }
+                    termTxt = getDollars(splitText, textLength, i, termTxt);
                     addTermToDoc(document, termTxt);
                     addTermToIndx(termTxt, docNo, i);
                     i++;
@@ -281,7 +479,7 @@ public class Parse {
                 }
 
                 //if its the type WORD - WORD or WORD - WORD - WORD
-                if (splitText[i].indexOf("-") >= 0 && !termTxt.equals("--") && !termTxt.equals("---")) {
+                if (splitText[i].indexOf("-") >= 0 && !termTxt.equals("--") && !termTxt.contains("---")) {
                     String[] numbers = splitToNumbers(splitText[i]);
                     if (numbers[0].equals("true")) {
                         addTermToDoc(document, numbers[1]);
@@ -324,7 +522,7 @@ public class Parse {
                 else {
                     termTxt = splitText[i].replace(".", "");
                     termTxt = termTxt.replace("/", "");
-                    if (termTxt.length() > 1 && !termTxt.equals("--") && !termTxt.equals("---") && !termTxt.equals("and") && !termTxt.equals("And") && !termTxt.equals("AND")) {
+                    if (termTxt.length() > 1 && !termTxt.equals("--") && !termTxt.contains("---") && !termTxt.equals("and") && !termTxt.equals("And") && !termTxt.equals("AND")) {
                         addTermToDoc(document, termTxt);
                         addTermToIndx(termTxt, docNo, i);
                     }
@@ -333,6 +531,31 @@ public class Parse {
         }
         document.closeDoc();
         indexer.addDocToDic(document);
+    }
+
+    private String getDollars(String[] splitText, int textLength, int i, String termTxt) {
+        String value = splitText[i].substring(1);
+        if (value.length() > 1 && value.charAt(0) == '.' && Character.isDigit(value.charAt(1))) {
+            value = 0 + value;
+        }
+        if (isNum(value)) {
+            if (i + 1 < textLength && (splitText[i + 1].equals("million") || splitText[i + 1].equals("Million") || splitText[i + 1].equals("Million.")))
+                termTxt = value + "M Dollars";
+            else if (i + 1 < textLength && (splitText[i + 1].equals("billion") || splitText[i + 1].equals("Billion"))) {
+                double newVal = Double.parseDouble(value);
+                newVal = newVal * 1000;
+                termTxt = newVal + "M Dollars";
+            } else {
+                double checkVal = Double.parseDouble(value);
+                if (checkVal < 1000000)
+                    termTxt = value + " Dollars";
+                else {
+                    checkVal = checkVal / 1000000;
+                    termTxt = checkVal + "M Dollars";
+                }
+            }
+        }
+        return termTxt;
     }
 
     /**
@@ -598,5 +821,53 @@ public class Parse {
      */
     public void setIndexerStem(boolean isStem){
         indexer.setStem(isStem);
+    }
+
+    public HashMap<String,String> getTermDic(boolean stem,String path){
+       return indexer.getTermDic(stem,path);
+    }
+    public HashMap<String, String> getDocDic(boolean stem, String path){
+        return indexer.getDocDic(stem,path);
+    }
+
+    public LinkedHashMap<String, Integer> findEntities(String text, HashSet<String> entities) {
+        HashMap<String,Integer> allEntities = new HashMap<>();
+        String parsedText = parseQuery(text);
+        String[] terms = parsedText.split(" ");
+        for (String term: terms) {
+            if(entities.contains(term)){
+                if(allEntities.containsKey(term)){
+                    allEntities.replace(term,allEntities.get(term)+1);
+                }
+                else{
+                    allEntities.put(term,1);
+                }
+            }
+        }
+        return getTopFive(allEntities);
+    }
+
+    private LinkedHashMap<String, Integer> getTopFive(HashMap<String, Integer> allEntities) {
+        // Create a list from elements of HashMap
+        List<HashMap.Entry<String, Integer> > list = new LinkedList<>(allEntities.entrySet());
+
+        // Sort the list
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
+            public int compare(Map.Entry<String, Integer> o1,
+                               Map.Entry<String, Integer> o2)
+            {
+                return -(o1.getValue()).compareTo(o2.getValue());
+            }
+        });
+
+        // put data from sorted list to hashmap (the first 50)
+        LinkedHashMap<String, Integer> temp = new LinkedHashMap<>();
+        for (Map.Entry<String, Integer> doc : list) {
+            if(temp.size()<6) {
+                temp.put(doc.getKey(), doc.getValue());
+            }
+        }
+
+        return temp;
     }
 }
