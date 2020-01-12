@@ -9,9 +9,7 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import java.util.*;
 
 /**
  * Class that controls between the view and the model lairs
@@ -19,6 +17,7 @@ import java.util.LinkedHashSet;
 public class ViewModel {
     private Model model;
     private LinkedHashMap<String ,String> dictionary;
+    private LinkedHashMap<String,String> queries;
 
     /**
      * Constructor of the class
@@ -27,6 +26,7 @@ public class ViewModel {
     {
         dictionary = new LinkedHashMap<>();
         model=null;
+        queries = new LinkedHashMap<>();
     }
 
     /**
@@ -93,7 +93,7 @@ public class ViewModel {
     }
 
     public void searchQuery(String query, boolean isPath, boolean isStem, boolean isSemantic, String postPath, String corpusPath) {
-        LinkedHashMap<String,String> queries = new LinkedHashMap();
+        this.queries.clear();
         if(isPath){
             queries = getQueries(query);
         }
@@ -123,6 +123,12 @@ public class ViewModel {
     }
 
     public HashMap<String, HashMap<String, LinkedHashMap<String, Integer>>> getAnswers() {
-        return model.getAnswers();
+        HashMap<String, HashMap<String, LinkedHashMap<String, Integer>>> queryNums =  model.getAnswers();
+        HashMap<String, HashMap<String, LinkedHashMap<String, Integer>>> queryWords = new HashMap<>();
+        for (Map.Entry<String, HashMap<String, LinkedHashMap<String, Integer>>> query: queryNums.entrySet()) {
+            String words = this.queries.get(query.getKey());
+            queryWords.put(words,query.getValue());
+        }
+        return queryWords;
     }
 }
