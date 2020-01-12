@@ -1,9 +1,8 @@
 package Model;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Class that represents a word and all the information about the word:
@@ -14,9 +13,12 @@ import java.util.List;
 public class Term {
 
     private String termName;
-    private HashMap<String,Integer> docs; //all the documents this term appears in and how many times it appeared in each of them
-    private HashMap<String, String> positions; //term position per document;
-    int idf;
+    private String documents;
+    private String currDocs;
+    private ConcurrentHashMap<String,Integer> docs; //all the documents this term appears in and how many times it appeared in each of them
+    private ConcurrentHashMap<String, String> positions; //term position per document;
+    private ConcurrentLinkedQueue<String> openDocs;
+    private int tf;
 
     /**
      * Constructor of the term that gets the name, the document it first appear in, and the position int this document
@@ -25,13 +27,17 @@ public class Term {
      * @param position - word # in the document
      */
     public Term (String name, String doc, int position){
+        openDocs=new ConcurrentLinkedQueue<String>();
+        openDocs.add(doc);
         termName = name;
-        docs = new HashMap<>();
+        docs = new ConcurrentHashMap<>();
         docs.put(doc,1);
-        positions=new HashMap<>();
+        positions=new ConcurrentHashMap<>();
         //positions.put(doc,new LinkedList<>());
         positions.put(doc,""+position);
-        idf=1;
+        currDocs=doc;
+        documents="";
+        tf=1;
     }
 
     /**
@@ -54,7 +60,7 @@ public class Term {
      * getter of the TF
      * @return
      */
-    public HashMap<String,Integer> getDocs() {
+    public ConcurrentHashMap<String,Integer> getDocs() {
         return docs;
     }
 
@@ -62,7 +68,7 @@ public class Term {
      * Getter of the positions
      * @return
      */
-    public HashMap<String, String> getPositions(){
+    public ConcurrentHashMap<String, String> getPositions(){
         return positions;
     }
 
@@ -71,14 +77,43 @@ public class Term {
      * @param doc - DOCNO of the document
      * @param position - the word # in the doc
      */
-    public void addDocPosition (String doc, int position){
-        if(docs.containsKey(doc)){
-            docs.replace(doc,docs.get(doc)+1);
-            positions.replace(doc,positions.get(doc)+","+position);
+    public void addDocPosition (String doc, int position, ConcurrentHashMap<String, String> opdocs){
+        synchronized (this) {
+            tf++;
+            String temp;
+            for (int i = 0; i < this.openDocs.size(); i++) {
+                temp = this.openDocs.remove();
+                if (opdocs.containsKey(temp))
+                    this.openDocs.add(temp);
+                else {
+                    documents += "[" + temp + "," + this.docs.get(temp) + "," + this.positions.get(temp) + "]";
+                }
+            }
+            if (docs.containsKey(doc)) {
+                docs.replace(doc, docs.get(doc) + 1);
+                positions.replace(doc, positions.get(doc) + "," + position);
+            } else {
+//            documents+="["+this.currDocs+","+this.docs.get(this.currDocs)+","+this.positions.get(this.currDocs)+"]";
+                docs.put(doc, 1);
+                positions.put(doc, "" + position);
+//            this.currDocs=doc;
+                this.openDocs.add(doc);
+            }
         }
-        else{
-            docs.put(doc,1);
-            positions.put(doc,""+position);
+    }
+
+    public int getTf(){
+        return this.tf;
+    }
+
+    public String toString() {
+        synchronized (this) {
+            String temp;
+            for (int i = 0; i < this.openDocs.size(); i++) {
+                temp = this.openDocs.remove();
+                documents += "[" + temp + "," + this.docs.get(temp) + "," + this.positions.get(temp) + "]";
+            }
+            return this.termName + "[" + docs.size() + "]" + this.documents;
         }
     }
 }
