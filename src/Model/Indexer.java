@@ -12,19 +12,20 @@ import java.util.concurrent.*;
  * and creating a posting file and a dictionary for both the terms and documents
  */
 public class Indexer {
-    private ExecutorService executor;
+//    private ExecutorService executor;
     private String path;
     private volatile int iteration;
-    private int maxDoc;
-    private int docDirectoryNum;
-    private boolean isStem;
-    private ConcurrentHashMap<String, Document> documentsPosting;
-    private ConcurrentHashMap<String, String> documentsDictionary;
+    private volatile int maxDoc;
+    private volatile int docDirectoryNum;
+    private volatile boolean isStem;
+    private volatile ConcurrentHashMap<String, Document> documentsPosting;
+    private volatile ConcurrentHashMap<String, String> documentsDictionary;
     private volatile ConcurrentHashMap<String, String> dictionary;
     private volatile ConcurrentHashMap<String, Term> posting;
-    private HashMap<String, Term> entities;
-    private int numOfTerms;
-    private int numOfDocs;
+    private volatile ConcurrentHashMap<String, Term> entities;
+    private volatile ConcurrentHashMap<String, String> openedDocs;
+    private volatile int numOfTerms;
+    private volatile int numOfDocs;
     private ArrayList<Integer> docLengths;
 
     /**
@@ -39,11 +40,12 @@ public class Indexer {
         documentsDictionary = new ConcurrentHashMap<>();
         dictionary = new ConcurrentHashMap<>();
         posting = new ConcurrentHashMap<>();
-        entities = new HashMap<>();
-        maxDoc = 1000;
+        entities = new ConcurrentHashMap<>();
+        openedDocs=new ConcurrentHashMap<>();
+        maxDoc = 10000;
         docDirectoryNum = 1;
         isStem = stem;
-        executor = Executors.newFixedThreadPool(8);
+//        executor = Executors.newFixedThreadPool(8);
         numOfDocs = 0;
         numOfTerms = 0;
         docLengths = new ArrayList<>();
@@ -131,6 +133,8 @@ public class Indexer {
      * @param position
      */
     public void addTermToDic(String Name, String docNo, int position) {
+        if(!this.openedDocs.containsKey(docNo))
+            this.openedDocs.put(docNo,docNo);
         String termName = Name;
         if (isStem) {
             boolean isUP = Character.isUpperCase(termName.charAt(0));
@@ -144,16 +148,18 @@ public class Indexer {
         //if it exists in the dictionary
         char first = termName.charAt(0);
         // the word isn't in the dictionary yet
-        if (!posting.containsKey(termName.toLowerCase())) {
-            if (Character.isUpperCase(first)) {
-                posting.put(termName.toLowerCase(), new Term(termName.toUpperCase(), docNo, position));
-            } else posting.put(termName.toLowerCase(), new Term(termName.toLowerCase(), docNo, position));
-        } else {
-            if (Character.isLowerCase(first) && Character.isUpperCase(posting.get(termName.toLowerCase()).getTermName().charAt(0))) {
-                posting.get(termName.toLowerCase()).changeName(termName.toLowerCase());
-                posting.get(termName.toLowerCase()).addDocPosition(docNo, position);
+        synchronized (this) {
+            if (!posting.containsKey(termName.toLowerCase())) {
+                if (Character.isUpperCase(first)) {
+                    posting.put(termName.toLowerCase(), new Term(termName.toUpperCase(), docNo, position));
+                } else posting.put(termName.toLowerCase(), new Term(termName.toLowerCase(), docNo, position));
             } else {
-                posting.get(termName.toLowerCase()).addDocPosition(docNo, position);
+                if (Character.isLowerCase(first) && Character.isUpperCase(posting.get(termName.toLowerCase()).getTermName().charAt(0))) {
+                    posting.get(termName.toLowerCase()).changeName(termName.toLowerCase());
+                    posting.get(termName.toLowerCase()).addDocPosition(docNo, position, this.openedDocs);
+                } else {
+                    posting.get(termName.toLowerCase()).addDocPosition(docNo, position, this.openedDocs);
+                }
             }
         }
     }
@@ -163,24 +169,24 @@ public class Indexer {
      * to the final posting file with the other iterations
      *
      * @param iteration
-     * @param sortedPosting
+     * @param queue
      */
-    private void writeToTempPosting(int iteration, TreeMap<String, Term> sortedPosting) {
+    private void writeToTempPosting(int iteration, Queue<Term> queue) {
         try {
             if (!Files.isDirectory(Paths.get(this.path + "/Posting"))) {
                 File postingFolder = new File(this.path + "/Posting");
                 postingFolder.mkdir();
             }
-            Set set = sortedPosting.entrySet();
-            Iterator it = set.iterator();
+//            Set set = sortedPosting.entrySet();
+//            Iterator it = set.iterator();
             Term currTerm;
             boolean needWrite = false;
             String charAt0 = null;
             String charAt1 = null;
             String str = null;
             String toWrite = "";
-            while (it.hasNext()) {
-                currTerm = (Term) ((Map.Entry) it.next()).getValue();
+            while (!queue.isEmpty()) {
+                currTerm = queue.remove();
                 if (!((currTerm.getTermName().charAt(0) + "").toLowerCase()).equals(charAt0) || (currTerm.getTermName().length() > 1 && !((currTerm.getTermName().charAt(1) + "").toLowerCase()).equals(charAt1))) {
                     if (needWrite) {
                         BufferedWriter writer = new BufferedWriter(new FileWriter(str));
@@ -216,23 +222,30 @@ public class Indexer {
                     termPostingFile.createNewFile();
                     needWrite = true;
                 }
-                HashMap<String, Integer> docs = currTerm.getDocs();
-                HashMap<String, String> positionsList = currTerm.getPositions();
-                toWrite += currTerm.getTermName() + "[" + docs.size() + "]";
-                for (Map.Entry<String, Integer> entry : docs.entrySet()) {
-                    toWrite += "[" + entry.getKey() + "," + entry.getValue() + ",";
-                    if (!dictionary.containsKey(currTerm.getTermName())) {
-                        dictionary.put(currTerm.getTermName(), this.path + "\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt" + "," + entry.getValue());
-                    } else {
-                        String vals[] = ("" + dictionary.get(currTerm.getTermName())).split(",");
-                        int tf = Integer.parseInt(vals[1]) + Integer.parseInt("" + entry.getValue());
+//                HashMap<String, Integer> docs = currTerm.getDocs();
+//                HashMap<String, String> positionsList = currTerm.getPositions();
+//                toWrite += currTerm.getTermName() + "[" + docs.size() + "]";
+//                for (Map.Entry<String, Integer> entry : docs.entrySet()) {
+//                    toWrite += "[" + entry.getKey() + "," + entry.getValue() + ",";
+//                    if (!dictionary.containsKey(currTerm.getTermName())) {
+//                        dictionary.put(currTerm.getTermName(), this.path + "\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt" + "," + entry.getValue());
+//                    } else {
+//                        String vals[] = ("" + dictionary.get(currTerm.getTermName())).split(",");
+//                        int tf = Integer.parseInt(vals[1]) + Integer.parseInt("" + entry.getValue());
+//                        dictionary.replace(currTerm.getTermName(), this.path + "\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt" + "," + tf);
+//                    }
+//                    String positions = positionsList.get(entry.getKey());
+//                    toWrite += positions + "]";
+//                }
+                if (!dictionary.containsKey(currTerm.getTermName())) {
+                    dictionary.put(currTerm.getTermName(), this.path + "\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt" + "," + currTerm.getTf());
+                } else{
+                    String vals[] = ("" + dictionary.get(currTerm.getTermName())).split(",");
+                        int tf = Integer.parseInt(vals[1]) + Integer.parseInt("" + currTerm.getTf());
                         dictionary.replace(currTerm.getTermName(), this.path + "\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt" + "," + tf);
-                    }
-                    String positions = positionsList.get(entry.getKey());
-                    toWrite += positions + "]";
                 }
-                toWrite += "\n";
-                if (!it.hasNext()) {
+                toWrite +=currTerm.toString()+"\n";
+                if (queue.isEmpty()) {
                     BufferedWriter writer = new BufferedWriter(new FileWriter(str));
                     writer.write(toWrite);
                     writer.close();
@@ -294,36 +307,47 @@ public class Indexer {
      * @return true if the entity is accepted as a term or false otherwise
      */
     public boolean addEntToDic(String Name, String docNo, int position) {
-        //its an entity that showed up only once and now its its second time
-        if (entities.containsKey(Name) && !entities.get(Name).getDocs().containsKey(docNo)) {
-            Term ent = entities.remove(Name);
-            String oldDoc = ent.getDocs().keySet().iterator().next();
-            ent.addDocPosition(docNo, position);
-            posting.put(Name.toLowerCase(), ent);
-            //the dictionary hasn't been written yet
-            if (!documentsDictionary.containsKey(oldDoc)) {
-                Document document = documentsPosting.get(oldDoc);
-                document.addTermWithTF(Name, ent.getDocs().get(oldDoc));
-                document.closeDoc();
+        synchronized (this) {
+            //its an entity that showed up only once and now its its second time
+            if (!this.openedDocs.containsKey(docNo))
+                this.openedDocs.put(docNo, docNo);
+            if (entities.containsKey(Name) && !entities.get(Name).getDocs().containsKey(docNo)) {
+                Term ent = entities.remove(Name);
+                String oldDoc = ent.getDocs().keySet().iterator().next();
+                ent.addDocPosition(docNo, position, this.openedDocs);
+                posting.put(Name.toLowerCase(), ent);
+                //the dictionary hasn't been written yet
+                if (!documentsDictionary.containsKey(oldDoc)) {
+                    Document document = documentsPosting.get(oldDoc);
+                    if(document!=null) {
+                        document.addTermWithTF(Name, ent.getDocs().get(oldDoc));
+                        document.closeDoc();
+                    }
+                }
+                entities.remove(Name);
+                return true;
             }
-            return true;
-        }
-        //its entity that appeared more than once but we did'nt write it yet
-        else if (posting.containsKey(Name.toLowerCase())) {
-            Term ent = posting.get(Name.toLowerCase());
-            ent.addDocPosition(docNo, position);
-            return true;
-        }
-        //its an entity that has been written before so we need to update it
-        else if (dictionary.containsKey(Name.toUpperCase())) {
-            posting.put(Name.toLowerCase(), new Term(Name.toUpperCase(), docNo, position));
-            return true;
-        }
-        //its completely new entity!
-        else {
-            Term term = new Term(Name, docNo, position);
-            entities.put(Name, term);
-            return false;
+            //its entity that appeared more than once but we did'nt write it yet
+            else if (posting.containsKey(Name.toLowerCase())) {
+                Term ent = posting.get(Name.toLowerCase());
+                ent.addDocPosition(docNo, position, this.openedDocs);
+                return true;
+            }
+            //its an entity that has been written before so we need to update it
+            else if (dictionary.containsKey(Name.toUpperCase())) {
+                posting.put(Name.toLowerCase(), new Term(Name.toUpperCase(), docNo, position));
+                return true;
+            }
+            //its completely new entity!
+            else {
+                if (entities.containsKey(Name)) {
+                    entities.get(Name).addDocPosition(docNo, position, this.openedDocs);
+                } else {
+                    Term term = new Term(Name, docNo, position);
+                    entities.put(Name, term);
+                }
+                return false;
+            }
         }
     }
 
@@ -335,28 +359,89 @@ public class Indexer {
      */
     public void addDocToDic(Document doc) {
         documentsPosting.put(doc.getDocName(), doc);
-        if (documentsPosting.size() >= maxDoc) {
-            for (Map.Entry<String, Document> stringIntegerEntry : documentsPosting.entrySet()) {
-                HashMap.Entry pair = stringIntegerEntry;
-                Document document = (Document) pair.getValue();
-                String str = this.path + "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + "/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + ".txt";
-                documentsDictionary.put(document.getDocName(), str);
-            }
-            ConcurrentHashMap<String, Document> copy = new ConcurrentHashMap<>(documentsPosting);
-            this.documentsPosting.clear();
-            Runnable runnable1 = () -> {
-                writeDocsToPosting(copy);
-            };
-            this.executor.execute(runnable1);
-            iteration++;
-            ConcurrentHashMap<String, Term> copy2 = new ConcurrentHashMap<>(this.posting);
-            this.posting.clear();
-            Runnable runnable2 = () -> {
-                TreeMap<String, Term> sortedPosting = new TreeMap<>(copy2);
-                writeToTempPosting(this.iteration, sortedPosting);
-            };
-            this.executor.execute(runnable2);
+        this.openedDocs.remove(doc.getDocName());
+//        if (documentsPosting.size() >= maxDoc) {
+//            for (Map.Entry<String, Document> stringIntegerEntry : documentsPosting.entrySet()) {
+//                HashMap.Entry pair = stringIntegerEntry;
+//                Document document = (Document) pair.getValue();
+//                String str = this.path + "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + "/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + ".txt";
+//                documentsDictionary.put(document.getDocName(), str);
+//            }
+//            ConcurrentHashMap<String, Document> copy = new ConcurrentHashMap<>(documentsPosting);
+//            this.documentsPosting.clear();
+//            Runnable runnable1 = () -> {
+//                writeDocsToPosting(copy);
+//            };
+//            this.executor.execute(runnable1);
+//            iteration++;
+//            ConcurrentHashMap<String, Term> copy2 = new ConcurrentHashMap<>(this.posting);
+//            this.posting.clear();
+//            Runnable runnable2 = () -> {
+//                TreeMap<String, Term> sortedPosting = new TreeMap<>(copy2);
+//                writeToTempPosting(this.iteration, sortedPosting);
+//            };
+//            this.executor.execute(runnable2);
+//        }
+    }
+
+    public void write() {
+        for (Map.Entry<String, Document> stringIntegerEntry : documentsPosting.entrySet()) {
+            HashMap.Entry pair = stringIntegerEntry;
+            Document document = (Document) pair.getValue();
+            String str = this.path + "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + "/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + ".txt";
+            documentsDictionary.put(document.getDocName(), str);
         }
+        ConcurrentHashMap<String, Document> copy = new ConcurrentHashMap<>(documentsPosting);
+        ConcurrentHashMap<String, Term> copy2 = new ConcurrentHashMap<>(this.posting);
+        this.posting.clear();
+        this.documentsPosting.clear();
+//        Thread thread=new Thread(()-> {
+//        Runnable runnable1 = () -> {
+        writeDocsToPosting(copy);
+//        };
+//        this.executor.execute(runnable1);
+        iteration++;
+//        Runnable runnable2 = () -> {
+        TreeMap<String, Term> sortedPosting = new TreeMap<>(copy2);
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        Term currTerm;
+        boolean needWrite = false;
+        String charAt0 = null;
+        Queue<Term> queue = new LinkedList<Term>();
+        while (!sortedPosting.isEmpty()) {
+            currTerm = sortedPosting.remove(sortedPosting.firstKey());
+            if (!((currTerm.getTermName().charAt(0) + "").toLowerCase()).equals(charAt0)) {
+                if (needWrite) {
+                    Queue<Term> temp=new LinkedList<Term>(queue);
+                    Runnable runnable = () -> {
+                        writeToTempPosting(this.iteration, temp);
+                    };
+                    executor.execute(runnable);
+                    queue.clear();
+                }
+                charAt0 = ("" + currTerm.getTermName().charAt(0)).toLowerCase();
+                needWrite = true;
+            }
+            queue.add(currTerm);
+            if (sortedPosting.isEmpty()) {
+                Queue<Term> temp=new LinkedList<Term>(queue);
+                Runnable runnable = () -> {
+                    writeToTempPosting(this.iteration, temp);
+                };
+                executor.execute(runnable);
+                queue.clear();
+            }
+        }
+        executor.shutdown();
+        try {
+            executor.awaitTermination(1, TimeUnit.HOURS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+//        };
+//        this.executor.execute(runnable2);
+//        });
+//        thread.start();
     }
 
     /**
@@ -366,12 +451,12 @@ public class Indexer {
      * and calls for the merging function of the temporary posting files
      */
     public void closeIndexer() {
-        this.executor.shutdown();
-        try {
-            this.executor.awaitTermination(1, TimeUnit.HOURS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        this.executor.shutdown();
+//        try {
+//            this.executor.awaitTermination(1, TimeUnit.HOURS);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         if (!posting.isEmpty() || !documentsPosting.isEmpty()) {
             for (Map.Entry<String, Document> stringIntegerEntry : documentsPosting.entrySet()) {
                 HashMap.Entry pair = stringIntegerEntry;
@@ -380,13 +465,46 @@ public class Indexer {
                 documentsDictionary.put(document.getDocName(), str);
             }
             ConcurrentHashMap<String, Document> copy = documentsPosting;
-            Thread thread1 = new Thread(() -> writeDocsToPosting(copy));
-            thread1.start();
+            writeDocsToPosting(copy);
             iteration++;
             TreeMap<String, Term> sortedPosting = new TreeMap<>(this.posting);
             this.posting.clear();
             this.documentsPosting.clear();
-            writeToTempPosting(this.iteration, sortedPosting);
+            ExecutorService executor = Executors.newFixedThreadPool(3);
+            Term currTerm;
+            boolean needWrite = false;
+            String charAt0 = null;
+            Queue<Term> queue = new LinkedList<Term>();
+            while (!sortedPosting.isEmpty()) {
+                currTerm = sortedPosting.remove(sortedPosting.firstKey());
+                if (!((currTerm.getTermName().charAt(0) + "").toLowerCase()).equals(charAt0)) {
+                    if (needWrite) {
+                        Queue<Term> temp=new LinkedList<Term>(queue);
+                        Runnable runnable = () -> {
+                            writeToTempPosting(this.iteration, temp);
+                        };
+                        executor.execute(runnable);
+                        queue.clear();
+                    }
+                    charAt0 = ("" + currTerm.getTermName().charAt(0)).toLowerCase();
+                    needWrite = true;
+                }
+                queue.add(currTerm);
+                if (sortedPosting.isEmpty()) {
+                    Queue<Term> temp=new LinkedList<Term>(queue);
+                    Runnable runnable = () -> {
+                        writeToTempPosting(this.iteration, temp);
+                    };
+                    executor.execute(runnable);
+                    queue.clear();
+                }
+            }
+            executor.shutdown();
+            try {
+                executor.awaitTermination(1, TimeUnit.HOURS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         writeDictionary("TermDictionary", dictionary);
         numOfTerms = dictionary.size();

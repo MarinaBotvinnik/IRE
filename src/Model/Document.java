@@ -2,6 +2,7 @@ package Model;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Class that represents a document with the following definitions:
@@ -14,7 +15,7 @@ public class Document {
 
     private int max_tf;
     private String max_Term_name;
-    private HashMap<String,Integer> term_frq;
+    private ConcurrentHashMap<String,Integer> term_frq;
     private int uniqueTermsNum;
     private int length;
     private String doc_name;
@@ -27,7 +28,7 @@ public class Document {
     public Document(String doc_name, String doc_folder) {
         max_tf =0;
         max_Term_name = null;
-        term_frq = new HashMap<>();
+        term_frq = new ConcurrentHashMap<>();
         uniqueTermsNum =0;
         length = 0;
         this.doc_name = doc_name;
@@ -43,7 +44,9 @@ public class Document {
      * @return
      */
     public String getDocName(){
-        return doc_name;
+        synchronized (this) {
+            return doc_name;
+        }
     }
 
     /**
@@ -51,7 +54,9 @@ public class Document {
      * @return
      */
     public int getUniqueTermsNum(){
-        return uniqueTermsNum;
+        synchronized (this) {
+            return uniqueTermsNum;
+        }
     }
 
     /**
@@ -59,14 +64,18 @@ public class Document {
      * @return
      */
     public int getMax_tf() {
-        return max_tf;
+        synchronized (this) {
+            return max_tf;
+        }
     }
     /**
      * getter to the name with the most frequency
      * @return
      */
     public String getMax_Term_name() {
-        return max_Term_name;
+        synchronized (this) {
+            return max_Term_name;
+        }
     }
 
     /**
@@ -74,15 +83,16 @@ public class Document {
      * @param term - the new word
      */
     public void addTerm(String term){
-        length++;
-        String lowerTerm = term.toLowerCase();
-        if(term_frq.containsKey(lowerTerm)){
-            term_frq.replace(lowerTerm,term_frq.get(lowerTerm)+1);
-        }
-        else term_frq.put(lowerTerm,1);
-        if(term_frq.get(lowerTerm)>this.max_tf){
-            this.max_tf=term_frq.get(lowerTerm);
-            max_Term_name=lowerTerm;
+        synchronized (this) {
+            length++;
+            String lowerTerm = term.toLowerCase();
+            if (term_frq.containsKey(lowerTerm)) {
+                term_frq.replace(lowerTerm, term_frq.get(lowerTerm) + 1);
+            } else term_frq.put(lowerTerm, 1);
+            if (term_frq.get(lowerTerm) > this.max_tf) {
+                this.max_tf = term_frq.get(lowerTerm);
+                max_Term_name = lowerTerm;
+            }
         }
     }
 
@@ -92,14 +102,15 @@ public class Document {
      * @param tf - thw words tf
      */
     public void addTermWithTF(String term, int tf){
-        String lowerTerm = term.toLowerCase();
-        if(term_frq.containsKey(lowerTerm)){
-            term_frq.replace(lowerTerm,tf);
-        }
-        else term_frq.put(lowerTerm,tf);
-        if(term_frq.get(lowerTerm)>this.max_tf){
-            this.max_tf=term_frq.get(lowerTerm);
-            max_Term_name=lowerTerm;
+        synchronized (this) {
+            String lowerTerm = term.toLowerCase();
+            if (term_frq.containsKey(lowerTerm)) {
+                term_frq.replace(lowerTerm, tf);
+            } else term_frq.put(lowerTerm, tf);
+            if (term_frq.get(lowerTerm) > this.max_tf) {
+                this.max_tf = term_frq.get(lowerTerm);
+                max_Term_name = lowerTerm;
+            }
         }
     }
 
@@ -111,6 +122,8 @@ public class Document {
      * Method called when the parser is done with the whole document, it's updates the number of the unique words.
      */
     public void closeDoc(){
-        uniqueTermsNum = term_frq.size();
+        synchronized (this) {
+            uniqueTermsNum = term_frq.size();
+        }
     }
 }

@@ -3,6 +3,7 @@ package Model;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Class that in charge of parsing texts.
@@ -11,7 +12,7 @@ import java.util.*;
 public class Parse {
 
     private HashSet<String> stopWords;
-    private HashMap<String, String> months;
+    private ConcurrentHashMap<String, String> months;
     private Indexer indexer;
 
     /**
@@ -38,7 +39,7 @@ public class Parse {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        months = new HashMap<>();
+        months = new ConcurrentHashMap<>();
         indexer = new Indexer(stem);
     }
 
@@ -698,20 +699,22 @@ public class Parse {
      */
     private boolean isMonth(String str) {
         if (months.isEmpty()) {
-            String[] months = {"January", "JANUARY", "Jan", "JAN", "january",
-                    "February", "FEBRUARY", "Feb", "FEB", "february",
-                    "March", "MARCH", "Mar", "MAR", "march",
-                    "April", "APRIL", "Apr", "april", "APR",
-                    "May", "MAY", "may",
-                    "June", "JUNE", "Jun", "JUN", "june",
-                    "July", "JULY", "Jul", "JUL", "july",
-                    "August", "AUGUST", "Aug", "august", "AUG",
-                    "September", "SEPTEMBER", "Sep", "SEP", "september",
-                    "October", "OCTOBER", "Oct", "OCT", "october",
-                    "November", "NOVEMBER", "Nov", "NOV", "november",
-                    "December", "DECEMBER", "Dec", "DEC", "december"};
-            for (String month : months) {
-                this.months.put(month, month.substring(0, 3).toLowerCase());
+            synchronized (this) {
+                String[] months = {"January", "JANUARY", "Jan", "JAN", "january",
+                        "February", "FEBRUARY", "Feb", "FEB", "february",
+                        "March", "MARCH", "Mar", "MAR", "march",
+                        "April", "APRIL", "Apr", "april", "APR",
+                        "May", "MAY", "may",
+                        "June", "JUNE", "Jun", "JUN", "june",
+                        "July", "JULY", "Jul", "JUL", "july",
+                        "August", "AUGUST", "Aug", "august", "AUG",
+                        "September", "SEPTEMBER", "Sep", "SEP", "september",
+                        "October", "OCTOBER", "Oct", "OCT", "october",
+                        "November", "NOVEMBER", "Nov", "NOV", "november",
+                        "December", "DECEMBER", "Dec", "DEC", "december"};
+                for (String month : months) {
+                    this.months.put(month, month.substring(0, 3).toLowerCase());
+                }
             }
         }
         return months.containsKey(str);
@@ -823,6 +826,10 @@ public class Parse {
      */
     public void setIndexerStem(boolean isStem){
         indexer.setStem(isStem);
+    }
+
+    public void write(){
+        this.indexer.write();
     }
 
     public HashMap<String,String> getTermDic(boolean stem,String path){

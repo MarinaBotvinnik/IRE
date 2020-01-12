@@ -6,6 +6,14 @@ import org.jsoup.parser.Parser;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.io.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.TreeMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.*;
 
 /**
@@ -15,6 +23,10 @@ import java.util.*;
 public class ReadFile {
     private HashMap<String,String> docMap;
     private Parse parser;
+    private int docsSent;
+    private int max;
+    private ReentrantLock lock;
+    private ExecutorService executor;
 
     /**
      * Constructor of the class, sets if the words need to be stemmed
@@ -23,6 +35,10 @@ public class ReadFile {
     public ReadFile(boolean isStem) {
         docMap = new HashMap<>();
         parser = new Parse(isStem);
+        docsSent=0;
+        max=10000;
+        lock=new ReentrantLock();
+        executor = Executors.newFixedThreadPool(4);
     }
 
     /**
@@ -31,6 +47,12 @@ public class ReadFile {
      */
     public void readFile(String path){
         listFilesForFolder(path);
+        this.executor.shutdown();
+        try {
+            this.executor.awaitTermination(1, TimeUnit.HOURS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         parser.closeParser();
     }
 
@@ -64,10 +86,25 @@ public class ReadFile {
             Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
             Elements Documents=file.select("DOC");
             for(Element doc : Documents){
+                if(docsSent==max){
+                    this.executor.shutdown();
+                    try {
+                        this.executor.awaitTermination(1, TimeUnit.HOURS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    executor = Executors.newFixedThreadPool(4);
+                    parser.write();
+                    docsSent=0;
+                }
                 String docNo = doc.select("DOCNO").text();
                 docMap.put(docNo,docPath);
                 if(doc.select("TEXT").first()!=null) {
-                    parser.parse(doc.select("TEXT").text(), docNo,folder);
+                    Runnable runnable1 = () -> {
+                        parser.parse(doc.select("TEXT").text(), docNo,folder);
+                    };
+                    executor.execute(runnable1);
+                    this.docsSent++;
                 }
             }
         }
