@@ -36,8 +36,6 @@ public class mainMenuController {
 
 
     private ViewModel viewModel;
-    private Stage stage;
-    private Scene scene;
     private boolean isUploaded;
     private String postPath;
     private boolean isStem;
@@ -45,14 +43,9 @@ public class mainMenuController {
 
     /**
      * Method that initializing the view model to the view
-     * @param model
-     * @param primaryS
-     * @param scene
      */
     public void initialize(ViewModel model, Stage primaryS, Scene scene){
         this.viewModel = model;
-        this.stage = primaryS;
-        this.scene = scene;
         isUploaded = false;
     }
 
@@ -67,7 +60,6 @@ public class mainMenuController {
         String corpusPath = tf_corpusPath.getText();
         String postingPath = tf_postingPath.getText();
         postPath = postingPath;
-        this.corpusPath = corpusPath;
         if (corpusPath.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "You didn't enter a corpus path, Please enter a path before continue");
             alert.show();
@@ -200,7 +192,7 @@ public class mainMenuController {
                 alert.show();
             }
             else{
-                viewModel.searchQuery(optionAText,true,isStem,isSemantic,postPath,corpusPath);
+                viewModel.searchQuery(optionAText,true,isStem,isSemantic,postPath);
             }
         }
         // the user entered his own query
@@ -211,7 +203,7 @@ public class mainMenuController {
                 alert.show();
             }
             else{
-                viewModel.searchQuery(optionBText,false,isStem, isSemantic, postPath,corpusPath);
+                viewModel.searchQuery(optionBText,false,isStem, isSemantic, postPath);
             }
         }
         setOptionsPane();
@@ -270,8 +262,7 @@ public class mainMenuController {
     }
 
     /**
-     * Method that accepts a text filed and fills it with the path from the file chooser 
-     * @param tf
+     * Method that accepts a text filed and fills it with the path from the file chooser
      */
     private void getPath(TextField tf) {
         tf.clear();

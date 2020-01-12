@@ -6,14 +6,11 @@ import org.jsoup.parser.Parser;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.io.*;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+//import java.util.concurrent.locks.ReentrantLock;
 import java.util.*;
 
 /**
@@ -21,11 +18,11 @@ import java.util.*;
  * the class seperates the TEXT tag of each document.
  */
 public class ReadFile {
-    private HashMap<String,String> docMap;
+    //private HashMap<String,String> docMap;
     private Parse parser;
     private int docsSent;
     private int max;
-    private ReentrantLock lock;
+    //private ReentrantLock lock;
     private ExecutorService executor;
 
     /**
@@ -33,11 +30,11 @@ public class ReadFile {
      * @param isStem - true if words should be stemmed, false otherwise
      */
     public ReadFile(boolean isStem) {
-        docMap = new HashMap<>();
+        //docMap = new HashMap<>();
         parser = new Parse(isStem);
         docsSent=0;
         max=10000;
-        lock=new ReentrantLock();
+        //lock=new ReentrantLock();
         executor = Executors.newFixedThreadPool(4);
     }
 
@@ -62,7 +59,7 @@ public class ReadFile {
      */
     private void listFilesForFolder(String filePath){
         final File folder = new File(filePath);
-        for (final File fileEntry : folder.listFiles()) {
+        for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
             if (fileEntry.isDirectory()) {
                 listFilesForFolder(fileEntry.getPath());
             } else {//I GOT TO THE DOCUMENT
@@ -80,8 +77,6 @@ public class ReadFile {
      */
     private void readDoc(String docPath){
         try {
-            String[] pathParts = docPath.split("\\\\");
-            String folder = pathParts[pathParts.length-1];
             FileInputStream fis = new FileInputStream(new File(docPath));
             Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
             Elements Documents=file.select("DOC");
@@ -98,11 +93,9 @@ public class ReadFile {
                     docsSent=0;
                 }
                 String docNo = doc.select("DOCNO").text();
-                docMap.put(docNo,docPath);
+                //docMap.put(docNo,docPath);
                 if(doc.select("TEXT").first()!=null) {
-                    Runnable runnable1 = () -> {
-                        parser.parse(doc.select("TEXT").text(), docNo,folder);
-                    };
+                    Runnable runnable1 = () -> parser.parse(doc.select("TEXT").text(), docNo);
                     executor.execute(runnable1);
                     this.docsSent++;
                 }
@@ -134,7 +127,6 @@ public class ReadFile {
 
     /**
      *  Method set the stem value by sending it to th parser
-     * @param isStem
      */
     public void setIndexerStem(boolean isStem){
         parser.setIndexerStem(isStem);
@@ -143,7 +135,6 @@ public class ReadFile {
     /**
      * Method that gets the correct dictionary from the parser by the stem value and the path.
      * @param stem - true - if stem, false - otherwise
-     * @param path
      * @return dictionary of all the terms.
      */
     public LinkedHashMap<String,String > upload(boolean stem, String path){

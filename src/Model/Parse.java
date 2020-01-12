@@ -282,9 +282,9 @@ public class Parse {
      * @param docNo
      */
 
-    public void parse(String text, String docNo, String folder) {
+    public void parse(String text, String docNo) {
         int entityIndexer = 0;
-        Document document = new Document(docNo,folder);
+        Document document = new Document(docNo);
         String[] splitText = deleteStopWords(text);
         int textLength = splitText.length;
         for (int i = 0; i < textLength; i++) {

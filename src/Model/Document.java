@@ -19,25 +19,20 @@ public class Document {
     private int uniqueTermsNum;
     private int length;
     private String doc_name;
-    private String doc_folder;
 
     /**
      * Constructor of the document
      * @param doc_name - the doc Id
      */
-    public Document(String doc_name, String doc_folder) {
+    public Document(String doc_name) {
         max_tf =0;
         max_Term_name = null;
         term_frq = new ConcurrentHashMap<>();
         uniqueTermsNum =0;
         length = 0;
         this.doc_name = doc_name;
-        this.doc_folder = doc_folder;
     }
 
-    public String getDoc_folder() {
-        return doc_folder;
-    }
 
     /**
      * getter to the doc ID

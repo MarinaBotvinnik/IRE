@@ -13,7 +13,6 @@ public class Searcher {
     private Parse parser;
     private ReadFile readFile;
     private String postingPath;
-    private String corpusPath;
     private HashMap<String,String> d_terms;
     private HashMap<String,String> d_docs;
     private HashSet<String> d_entities;
@@ -21,12 +20,11 @@ public class Searcher {
     private boolean isSemantic;
     private double avgLength;
 
-    public Searcher(boolean stem, String path, boolean isSemantic, String corpusPath){
+    public Searcher(boolean stem, String path, boolean isSemantic){
         ranker = new Ranker();
         parser = new Parse(stem);
         postingPath = path;
         readFile = new ReadFile(stem);
-        this.corpusPath = corpusPath;
         d_terms = parser.getTermDic(stem,path);
         d_docs = parser.getDocDic(stem,path);
         d_entities = findEntities();
@@ -135,9 +133,11 @@ public class Searcher {
                     //we got the right doc from the posting file
                     if(docInfo[0].equals(docNo)){
                         //NEED TO ADD WHERE THE DOCUMENT IN THE CORPUS
-                        String corpusFile = docInfo[4];
-                        String docPath = corpusPath+ "\\" + corpusFile;
-                        LinkedHashMap<String,Integer>ents = readFile.readDoc(docPath,docNo,d_entities);
+                        //String corpusFile = docInfo[4];
+                        //String docPath = corpusPath+ "\\" + corpusFile;
+                        //LinkedHashMap<String,Integer>ents = readFile.readDoc(docPath,docNo,d_entities);
+                        LinkedHashMap<String,Integer>ents = new LinkedHashMap<>();
+                        ents.put("SHIT",10000);
                         docEntities.put(docNo,ents);
                     }
                 }

@@ -43,7 +43,6 @@ public class ViewModel {
 
     /**
      * Method returns the dictionary
-     * @return
      */
     public LinkedHashMap<String,String> getDictionary(){
         return dictionary;
@@ -71,7 +70,6 @@ public class ViewModel {
 
     /**
      * returns number of documents in the corpus
-     * @return
      */
     public int getNumOfDocs(){
         return model.getNumOfDocs();
@@ -79,7 +77,6 @@ public class ViewModel {
 
     /**
      * returns number of terms in the corpus
-     * @return
      */
     public int getNumOfTerm(){
         return model.getNumOfTerm();
@@ -92,7 +89,7 @@ public class ViewModel {
         model.reset();
     }
 
-    public void searchQuery(String query, boolean isPath, boolean isStem, boolean isSemantic, String postPath, String corpusPath) {
+    public void searchQuery(String query, boolean isPath, boolean isStem, boolean isSemantic, String postPath) {
         this.queries.clear();
         if(isPath){
             queries = getQueries(query);
@@ -100,7 +97,7 @@ public class ViewModel {
         else{
             queries.put("000",query);
         }
-        model.search(queries,isStem,isSemantic,postPath,corpusPath);
+        model.search(queries,isStem,isSemantic,postPath);
     }
 
     private LinkedHashMap<String,String> getQueries(String path){

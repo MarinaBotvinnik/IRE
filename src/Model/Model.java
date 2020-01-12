@@ -71,8 +71,8 @@ public class Model {
         readFile.reset();
     }
 
-    public void search(LinkedHashMap<String,String> queries, boolean isStem, boolean isSemantic, String postingPath, String corpusPath) {
-        searcher = new Searcher(isStem,postingPath,isSemantic,corpusPath);
+    public void search(LinkedHashMap<String,String> queries, boolean isStem, boolean isSemantic, String postingPath) {
+        searcher = new Searcher(isStem,postingPath,isSemantic);
         searcher.search(queries);
     }
 

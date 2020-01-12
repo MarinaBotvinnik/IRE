@@ -279,16 +279,16 @@ public class Indexer {
                 docDirectoryNum += maxDoc;
             }
             BufferedWriter writer = new BufferedWriter(new FileWriter(str));
-            String toWrite = "";
+            StringBuilder toWrite = new StringBuilder();
             for (Map.Entry<String, Document> stringIntegerEntry : documentsPosting.entrySet()) {
                 HashMap.Entry pair = stringIntegerEntry;
                 Document document = (Document) pair.getValue();
                 if (document == null || document.getMax_Term_name() == null)
                     System.out.printf("ohhh nooo document is null");
-                toWrite += document.getDocName() + "," + document.getMax_tf() + "," + document.getMax_Term_name() + "," + document.getLength() + ","+document.getDoc_folder()+ "\n";
+                toWrite.append(document.getDocName()).append(",").append(document.getMax_tf()).append(",").append(document.getMax_Term_name()).append(",").append(document.getLength()).append("\n");
                 docLengths.add(document.getLength());
             }
-            writer.write(toWrite);
+            writer.write(toWrite.toString());
             writer.close();
             documentsPosting.clear();
         } catch (IOException e) {
@@ -360,28 +360,6 @@ public class Indexer {
     public void addDocToDic(Document doc) {
         documentsPosting.put(doc.getDocName(), doc);
         this.openedDocs.remove(doc.getDocName());
-//        if (documentsPosting.size() >= maxDoc) {
-//            for (Map.Entry<String, Document> stringIntegerEntry : documentsPosting.entrySet()) {
-//                HashMap.Entry pair = stringIntegerEntry;
-//                Document document = (Document) pair.getValue();
-//                String str = this.path + "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + "/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + ".txt";
-//                documentsDictionary.put(document.getDocName(), str);
-//            }
-//            ConcurrentHashMap<String, Document> copy = new ConcurrentHashMap<>(documentsPosting);
-//            this.documentsPosting.clear();
-//            Runnable runnable1 = () -> {
-//                writeDocsToPosting(copy);
-//            };
-//            this.executor.execute(runnable1);
-//            iteration++;
-//            ConcurrentHashMap<String, Term> copy2 = new ConcurrentHashMap<>(this.posting);
-//            this.posting.clear();
-//            Runnable runnable2 = () -> {
-//                TreeMap<String, Term> sortedPosting = new TreeMap<>(copy2);
-//                writeToTempPosting(this.iteration, sortedPosting);
-//            };
-//            this.executor.execute(runnable2);
-//        }
     }
 
     public void write() {
@@ -395,13 +373,8 @@ public class Indexer {
         ConcurrentHashMap<String, Term> copy2 = new ConcurrentHashMap<>(this.posting);
         this.posting.clear();
         this.documentsPosting.clear();
-//        Thread thread=new Thread(()-> {
-//        Runnable runnable1 = () -> {
         writeDocsToPosting(copy);
-//        };
-//        this.executor.execute(runnable1);
         iteration++;
-//        Runnable runnable2 = () -> {
         TreeMap<String, Term> sortedPosting = new TreeMap<>(copy2);
         ExecutorService executor = Executors.newFixedThreadPool(4);
         Term currTerm;
@@ -438,10 +411,6 @@ public class Indexer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-//        };
-//        this.executor.execute(runnable2);
-//        });
-//        thread.start();
     }
 
     /**
@@ -451,12 +420,6 @@ public class Indexer {
      * and calls for the merging function of the temporary posting files
      */
     public void closeIndexer() {
-//        this.executor.shutdown();
-//        try {
-//            this.executor.awaitTermination(1, TimeUnit.HOURS);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
         if (!posting.isEmpty() || !documentsPosting.isEmpty()) {
             for (Map.Entry<String, Document> stringIntegerEntry : documentsPosting.entrySet()) {
                 HashMap.Entry pair = stringIntegerEntry;
