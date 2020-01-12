@@ -33,6 +33,8 @@ public class Parse {
                     stopWords.add(st.substring(0, 1).toUpperCase() + st.substring(1));
                 }
             }
+            stopWords.add("<P>");
+            stopWords.add("</P>");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -41,7 +43,7 @@ public class Parse {
     }
 
     public String parseQuery(String text){
-        String parsed="";
+        StringBuilder parsed= new StringBuilder();
         String[] splitText = deleteStopWords(text);
         int textLength = splitText.length;
         for (int i = 0; i < textLength; i++) {
@@ -59,21 +61,21 @@ public class Parse {
                         || splitText[i + 1].equals("Kilogram") || splitText[i + 1].equals("kilograms") || splitText[i + 1].equals("Kilograms")
                         || splitText[i + 1].equals("Kgs") || splitText[i + 1].equals("kgs"))) {
                     termTxt = splitText[i] + " kg";
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     i++;
                     continue;
                 }
                 if (i + 1 < textLength && (splitText[i + 1].equals("gr") || splitText[i + 1].equals("gram") || splitText[i + 1].equals("Gram") || splitText[i + 1].equals("GRAM")
                         || splitText[i + 1].equals("grams") || splitText[i + 1].equals("Grams") || splitText[i + 1].equals("GRAMS"))) {
                     termTxt = splitText[i] + " gr";
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     i++;
                     continue;
                 }
                 if (i + 1 < textLength && (splitText[i + 1].equals("ton") || splitText[i + 1].equals("Ton") || splitText[i + 1].equals("TON") || splitText[i + 1].equals("tons")
                         || splitText[i + 1].equals("Tons") || splitText[i + 1].equals("TONS"))) {
                     termTxt = splitText[i] + "K kg";
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     i++;
                     continue;
                 }
@@ -81,7 +83,7 @@ public class Parse {
                 if (i + 1 < textLength && (splitText[i + 1].equals("km") || splitText[i + 1].equals("Km") || splitText[i + 1].equals("KM") || splitText[i + 1].equals("kilometer")
                         || splitText[i + 1].equals("Kilometer") || splitText[i + 1].equals("kilometers") || splitText[i + 1].equals("Kilometers"))) {
                     termTxt = splitText[i] + "K meters";
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     i++;
                     continue;
                 }
@@ -89,7 +91,7 @@ public class Parse {
                 ////if the word is meter - (skip 1 word ahead + check if there is i+1 word)
                 if (i + 1 < textLength && (splitText[i + 1].equals("meter") || splitText[i + 1].equals("Meter") || splitText[i + 1].equals("Meters") || splitText[i + 1].equals("meters"))) {
                     termTxt = splitText[i] + " meters";
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     i++;
                     continue;
                 }
@@ -97,14 +99,14 @@ public class Parse {
                 if (i + 1 < textLength && (splitText[i + 1].equals("Centimeter") || splitText[i + 1].equals("centimeter") || splitText[i + 1].equals("Centimeters")
                         || splitText[i + 1].equals("centimeters") || splitText[i + 1].equals("cm"))) {
                     termTxt = splitText[i] + " cm";
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     i++;
                     continue;
                 }
                 ////if the number is PERCENT  - (skip 1 word ahead + check if there is i+1 word)
                 if (i + 1 < textLength && (splitText[i + 1].equals("percent") || splitText[i + 1].equals("percentage") || splitText[i + 1].equals("%"))) {
                     termTxt = splitText[i] + "%";
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     i++;
                     continue;
                 }
@@ -112,7 +114,7 @@ public class Parse {
                 ////if the words of type PRICE M\B\T U.S DOLLARS - (skip 3 word ahead + check if there is i+3 word)
                 if (i + 3 < textLength && (splitText[i + 2].equals("U.S") && (splitText[i + 3].equals("dollars") || splitText[i + 3].equals("Dollars")))) {
                     termTxt = getAmount(splitText, i, termTxt);
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     i += 3;
                     continue;
                 }
@@ -126,7 +128,7 @@ public class Parse {
                         newVal = newVal * 1000;
                         termTxt = newVal + "M Dollars";
                     }
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     i += 2;
                     continue;
                 }
@@ -141,7 +143,7 @@ public class Parse {
                     } else {
                         termTxt = price + " Dollars";
                     }
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     i++;
                     continue;
                 }
@@ -155,7 +157,7 @@ public class Parse {
                         termTxt = splitText[i] + " " + splitText[i + 1];
                         i++;
                     }
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     continue;
                 }
 
@@ -166,17 +168,17 @@ public class Parse {
                         termTxt = monthNum(splitText[i + 1]) + "-0" + splitText[i];
                     else
                         termTxt = monthNum(splitText[i + 1]) + "-" + splitText[i];
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     continue;
                 }
                 String termNum = termNum(Double.parseDouble(splitText[i]));
-                parsed= parsed +" "+ termTxt;
+                parsed.append(" ").append(termNum);
             }
             //its a word or its a number with something attached to this
             else {
                 if (splitText[i].charAt(0) == '$') { //if a $ is attached in the beginning
                     termTxt = getDollars(splitText, textLength, i, termTxt);
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     i++;
                     continue;
                 }
@@ -184,7 +186,7 @@ public class Parse {
                 //if a % is attached in the beginning
                 if (splitText[i].charAt(splitText[i].length() - 1) == '%') {
                     termTxt = splitText[i];
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     continue;
                 }
 
@@ -201,7 +203,7 @@ public class Parse {
                     //else, then the number indicates years
                     else
                         termTxt = splitText[i + 1] + "-" + monthNum(splitText[i]);
-                    parsed= parsed +" "+ termTxt;
+                    parsed.append(" ").append(termTxt);
                     i++;
                     continue;
                 }
@@ -210,17 +212,17 @@ public class Parse {
                 if (splitText[i].indexOf("-") >= 0 && !termTxt.equals("--") && !termTxt.equals("---")) {
                     String[] numbers = splitToNumbers(splitText[i]);
                     if (numbers[0].equals("true")) {
-                        parsed= parsed +" "+ numbers[1];
-                        parsed= parsed +" "+ numbers[2];
+                        parsed.append(" ").append(numbers[1]);
+                        parsed.append(" ").append(numbers[2]);
                         continue;
                     }
                     if (!numbers[0].equals("false")) {
                         termTxt = numbers[1] + " " + numbers[0];
-                        parsed= parsed +" "+ termTxt;
+                        parsed.append(" ").append(termTxt);
                         continue;
                     } else {
                         termTxt = termTxt.replace(".", "");
-                        parsed= parsed +" "+ termTxt;
+                        parsed.append(" ").append(termTxt);
                         continue;
                     }
 
@@ -234,9 +236,9 @@ public class Parse {
                     if (splitText[i + 3].charAt(0) == '.') {
                         splitText[i + 3] = 0 + splitText[i + 3];
                     }
-                    parsed= parsed +" "+ splitText[i] + " " + splitText[i + 1] + " " + splitText[i + 2] + " " + splitText[i + 3];
-                    parsed= parsed +" "+ splitText[i + 1];
-                    parsed= parsed +" "+ splitText[i + 3];
+                    parsed.append(" ").append(splitText[i]).append(" ").append(splitText[i + 1]).append(" ").append(splitText[i + 2]).append(" ").append(splitText[i + 3]);
+                    parsed.append(" ").append(splitText[i + 1]);
+                    parsed.append(" ").append(splitText[i + 3]);
                     i += 3;
                 }
                 //it is a REGULAR WORD - the dictionary will save it correctly
@@ -244,12 +246,12 @@ public class Parse {
                     termTxt = splitText[i].replace(".", "");
                     termTxt = termTxt.replace("/", "");
                     if (termTxt.length() > 1 && !termTxt.equals("--") && !termTxt.equals("---") && !termTxt.equals("and") && !termTxt.equals("And") && !termTxt.equals("AND")) {
-                        parsed= parsed +" "+ termTxt;
+                        parsed.append(" ").append(termTxt);
                     }
                 }
             }
         }
-        return parsed;
+        return parsed.toString();
 
     }
 
@@ -279,9 +281,9 @@ public class Parse {
      * @param docNo
      */
 
-    public void parse(String text, String docNo) {
+    public void parse(String text, String docNo, String folder) {
         int entityIndexer = 0;
-        Document document = new Document(docNo);
+        Document document = new Document(docNo,folder);
         String[] splitText = deleteStopWords(text);
         int textLength = splitText.length;
         for (int i = 0; i < textLength; i++) {
@@ -852,13 +854,7 @@ public class Parse {
         List<HashMap.Entry<String, Integer> > list = new LinkedList<>(allEntities.entrySet());
 
         // Sort the list
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
-            public int compare(Map.Entry<String, Integer> o1,
-                               Map.Entry<String, Integer> o2)
-            {
-                return -(o1.getValue()).compareTo(o2.getValue());
-            }
-        });
+        list.sort((o1, o2) -> -(o1.getValue()).compareTo(o2.getValue()));
 
         // put data from sorted list to hashmap (the first 50)
         LinkedHashMap<String, Integer> temp = new LinkedHashMap<>();

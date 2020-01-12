@@ -25,6 +25,7 @@ public class Indexer {
     private HashMap<String, Term> entities;
     private int numOfTerms;
     private int numOfDocs;
+    private ArrayList<Integer> docLengths;
 
     /**
      * Constructor of the class, sets if the words need to be stemmed
@@ -45,6 +46,7 @@ public class Indexer {
         executor = Executors.newFixedThreadPool(8);
         numOfDocs = 0;
         numOfTerms = 0;
+        docLengths = new ArrayList<>();
     }
 
     /**
@@ -270,7 +272,8 @@ public class Indexer {
                 Document document = (Document) pair.getValue();
                 if (document == null || document.getMax_Term_name() == null)
                     System.out.printf("ohhh nooo document is null");
-                toWrite += document.getDocName() + "," + document.getMax_tf() + "," + document.getMax_Term_name() + "," + document.getUniqueTermsNum() + "\n";
+                toWrite += document.getDocName() + "," + document.getMax_tf() + "," + document.getMax_Term_name() + "," + document.getLength() + ","+document.getDoc_folder()+ "\n";
+                docLengths.add(document.getLength());
             }
             writer.write(toWrite);
             writer.close();
@@ -392,6 +395,28 @@ public class Indexer {
         numOfDocs = documentsDictionary.size();
         this.documentsDictionary.clear();
         mergePostingToOne(this.path + "\\Posting");
+        writeAverage(this.path + "\\avg");
+    }
+
+    private void writeAverage(String p){
+        File avgFolder = new File(p);
+        avgFolder.mkdir();
+        double sum=0;
+        for (Integer length: docLengths) {
+            sum += length;
+        }
+        double avg = sum/docLengths.size();
+        try {
+            String str = p + "\\avg.txt";
+            File termPostingFile = new File(str);
+            termPostingFile.createNewFile();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(termPostingFile));
+            writer.write(""+avg);
+            writer.close();
+
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
     }
 
     /**

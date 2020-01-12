@@ -58,6 +58,8 @@ public class ReadFile {
      */
     private void readDoc(String docPath){
         try {
+            String[] pathParts = docPath.split("\\\\");
+            String folder = pathParts[pathParts.length-1];
             FileInputStream fis = new FileInputStream(new File(docPath));
             Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
             Elements Documents=file.select("DOC");
@@ -65,7 +67,7 @@ public class ReadFile {
                 String docNo = doc.select("DOCNO").text();
                 docMap.put(docNo,docPath);
                 if(doc.select("TEXT").first()!=null) {
-                    parser.parse(doc.select("TEXT").text(), docNo);
+                    parser.parse(doc.select("TEXT").text(), docNo,folder);
                 }
             }
         }

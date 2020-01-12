@@ -1,10 +1,14 @@
 package Model;
 
+import com.medallia.word2vec.Word2VecModel;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+
+import static java.lang.Double.parseDouble;
 
 public class Searcher {
 
@@ -129,10 +133,35 @@ public class Searcher {
         return docEntities;
     }
 
+    public void semantic(){
+        try {
+            Word2VecModel model = Word2VecModel.fromTextFile(new File("Resource/word2vec.c.output.model.txt"));
+            com.medallia.word2vec.Searcher semanticSearcher = model.forSearch();
+            int numOfResultInList = 10;
+            List<com.medallia.word2vec.Searcher.Match> matches = semanticSearcher.getMatches("term",numOfResultInList);
+            for (com.medallia.word2vec.Searcher.Match match: matches) {
+                match.match();
+            }
 
-    ///////CHANGEEEEE///////
-    private void setAvgLength(){
-        this.avgLength=10;
+        } catch (IOException | com.medallia.word2vec.Searcher.UnknownWordException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    private void setAvgLength() {
+        try {
+            File file = new File(this.postingPath + "\\avg");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String avgfile;
+            double avg=0;
+            while ((avgfile = br.readLine()) != null) {
+                avg = parseDouble(avgfile);
+            }
+            this.avgLength = avg;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private HashMap<String, Integer> getLengthofDocs(HashSet<String> docsForQuery) {

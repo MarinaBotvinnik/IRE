@@ -16,18 +16,26 @@ public class Document {
     private String max_Term_name;
     private HashMap<String,Integer> term_frq;
     private int uniqueTermsNum;
+    private int length;
     private String doc_name;
+    private String doc_folder;
 
     /**
      * Constructor of the document
      * @param doc_name - the doc Id
      */
-    public Document(String doc_name) {
+    public Document(String doc_name, String doc_folder) {
         max_tf =0;
         max_Term_name = null;
         term_frq = new HashMap<>();
         uniqueTermsNum =0;
+        length = 0;
         this.doc_name = doc_name;
+        this.doc_folder = doc_folder;
+    }
+
+    public String getDoc_folder() {
+        return doc_folder;
     }
 
     /**
@@ -66,6 +74,7 @@ public class Document {
      * @param term - the new word
      */
     public void addTerm(String term){
+        length++;
         String lowerTerm = term.toLowerCase();
         if(term_frq.containsKey(lowerTerm)){
             term_frq.replace(lowerTerm,term_frq.get(lowerTerm)+1);
@@ -92,6 +101,10 @@ public class Document {
             this.max_tf=term_frq.get(lowerTerm);
             max_Term_name=lowerTerm;
         }
+    }
+
+    public int getLength() {
+        return length;
     }
 
     /**
