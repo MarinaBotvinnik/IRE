@@ -2,10 +2,7 @@ package Model;
 
 import com.medallia.word2vec.Word2VecModel;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 import static java.lang.Double.parseDouble;
@@ -21,7 +18,6 @@ public class Searcher {
     private HashMap<String,String> d_docs;
     private HashSet<String> d_entities;
     private HashMap<String,HashMap<String,LinkedHashMap<String,Integer>>> d_docsAndEntitiesForQuery;
-    private boolean isStem;
     private boolean isSemantic;
     private double avgLength;
 
@@ -29,7 +25,6 @@ public class Searcher {
         ranker = new Ranker();
         parser = new Parse(stem);
         postingPath = path;
-        isStem = stem;
         readFile = new ReadFile(stem);
         this.corpusPath = corpusPath;
         d_terms = parser.getTermDic(stem,path);
@@ -37,6 +32,7 @@ public class Searcher {
         d_entities = findEntities();
         this.isSemantic = isSemantic;
         setAvgLength();
+        d_docsAndEntitiesForQuery = new HashMap<>();
     }
 
     private HashSet<String> findEntities() {
@@ -50,11 +46,11 @@ public class Searcher {
         return entities;
     }
 
-    public void search(LinkedHashSet<String> queries) {
+    public void search(LinkedHashMap<String,String> queries) {
         //for every query that we get DO
-        for (String query: queries) {
+        for (Map.Entry<String,String> query: queries.entrySet()) {
             //get the terms of the query
-            String t = parser.parseQuery(query);
+            String t = parser.parseQuery(query.getValue());
             String[] terms = t.split(" ");
             HashMap<String,Integer> idf = new HashMap<>(); //***First thing I need for the ranker Term-->idf ****
             HashMap<String,HashMap<String,Integer>> tf= new HashMap<>(); //***Second thing I need for the ranker Term-->DocNO->Tf***
@@ -97,12 +93,32 @@ public class Searcher {
             }
             docLengths = getLengthofDocs(docsForQuery);
             HashMap<String,Double> rankedDocs = ranker.rank(terms,d_docs.size(),idf,tf,docsForQuery,docLengths,avgLength);
-            d_docsAndEntitiesForQuery.put(query,getEntities(rankedDocs));
+            d_docsAndEntitiesForQuery.put(query.getKey(),getEntities(rankedDocs));
         }
     }
 
     public HashMap<String, HashMap<String, LinkedHashMap<String, Integer>>> getDocsAndEntitiesForQuery() {
+        writeQueriesResults();
         return d_docsAndEntitiesForQuery;
+    }
+
+    private void writeQueriesResults() {
+        try{
+            File termPostingFile = new File(this.postingPath+"\\results.txt");
+            termPostingFile.createNewFile();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(termPostingFile));
+            for (Map.Entry<String, HashMap<String, LinkedHashMap<String, Integer>>> info: d_docsAndEntitiesForQuery.entrySet()) {
+                String queryNum = info.getKey();
+                HashSet<String> docs = new HashSet<>(info.getValue().keySet());
+                for (String doc:docs) {
+                    writer.write(queryNum+" 0 "+doc+" 0 42.38 mt");
+                }
+            }
+            writer.close();
+
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
     }
 
     private HashMap<String,LinkedHashMap<String,Integer>> getEntities(HashMap<String, Double> rankedDocs) {

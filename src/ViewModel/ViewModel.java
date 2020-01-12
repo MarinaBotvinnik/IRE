@@ -93,24 +93,26 @@ public class ViewModel {
     }
 
     public void searchQuery(String query, boolean isPath, boolean isStem, boolean isSemantic, String postPath, String corpusPath) {
-        LinkedHashSet<String> queries = new LinkedHashSet<>();
+        LinkedHashMap<String,String> queries = new LinkedHashMap();
         if(isPath){
             queries = getQueries(query);
         }
         else{
-            queries.add(query);
+            queries.put("000",query);
         }
         model.search(queries,isStem,isSemantic,postPath,corpusPath);
     }
 
-    private LinkedHashSet<String> getQueries(String path){
+    private LinkedHashMap<String,String> getQueries(String path){
         try {
-            LinkedHashSet<String> finalQueries = new LinkedHashSet<>();
+            LinkedHashMap<String,String> finalQueries = new LinkedHashMap<>();
             FileInputStream fis = new FileInputStream(new File(path));
             Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
             Elements queries=file.select("top");
             for(Element doc : queries){
-                finalQueries.add(doc.text());
+                String queryNo = doc.select("num").text();
+                String query = doc.select("title").text();
+                finalQueries.put(queryNo,query);
             }
             return finalQueries;
         }
