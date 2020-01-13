@@ -4,6 +4,7 @@ import Model.Model;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
@@ -90,6 +91,9 @@ public class ViewModel {
     }
 
     public void searchQuery(String query, boolean isPath, boolean isStem, boolean isSemantic, String postPath) {
+        if(model == null){
+            model = new Model(isStem);
+        }
         this.queries.clear();
         if(isPath){
             queries = getQueries(query);
@@ -107,8 +111,17 @@ public class ViewModel {
             Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
             Elements queries=file.select("top");
             for(Element doc : queries){
-                String queryNo = doc.select("num").text();
+                String queryNo = doc.selectFirst("num").text();
+                String[] split1 = queryNo.split(" ");
+                for (String s:split1) {
+                    if(Character.isDigit(s.charAt(0))){
+                        queryNo = s;
+                        break;
+                    }
+                }
                 String query = doc.select("title").text();
+                String[] split2 = query.split("\n");
+                query = split2[0];
                 finalQueries.put(queryNo,query);
             }
             return finalQueries;

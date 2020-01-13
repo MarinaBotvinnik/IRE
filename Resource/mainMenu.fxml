@@ -9,7 +9,7 @@
 
 <AnchorPane fx:id="anchor" prefHeight="434.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.mainMenuController">
    <children>
-      <Pane fx:id="p_first" disable="true" prefHeight="434.0" prefWidth="650.0" stylesheets="View/mainMenu.css" visible="false">
+      <Pane fx:id="p_first" prefHeight="434.0" prefWidth="650.0" stylesheets="View/mainMenu.css">
          <children>
             <TextField fx:id="tf_corpusPath" layoutX="14.0" layoutY="116.0" prefHeight="38.0" prefWidth="383.0" stylesheets="View/mainMenu.css" />
             <Button fx:id="browsePostButton" layoutX="404.0" layoutY="188.0" mnemonicParsing="false" onAction="#browsePost" stylesheets="View/mainMenu.css" text="Browse">
@@ -173,7 +173,7 @@
                   <Font name="Arial Black" size="14.0" />
                </font>
             </Label>
-            <ChoiceBox fx:id="ch_queryOp" layoutX="14.0" layoutY="299.0" prefWidth="150.0" value="OPTION B">
+            <ChoiceBox fx:id="ch_queryOp" layoutX="14.0" layoutY="299.0" prefWidth="150.0" value="OPTION A">
                <items>
                   <FXCollections fx:factory="observableArrayList">
                      <String fx:value="OPTION A" />
@@ -213,7 +213,7 @@
             </font>
          </Button>
       </Pane>
-      <Pane fx:id="p_Answers" prefHeight="434.0" prefWidth="650.0">
+      <Pane fx:id="p_Answers" disable="true" prefHeight="434.0" prefWidth="650.0" visible="false">
          <children>
             <ChoiceBox fx:id="ch_queries" layoutX="50.0" layoutY="24.0" prefHeight="25.0" prefWidth="284.0" />
             <TextArea fx:id="c_docsAndEnt" layoutX="50.0" layoutY="99.0" prefHeight="224.0" prefWidth="551.0" />

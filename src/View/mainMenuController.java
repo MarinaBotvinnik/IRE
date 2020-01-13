@@ -140,10 +140,16 @@ public class mainMenuController {
      * Method that replace pane 2 with pane 4
      */
     public void setQueryPane(){
-        p_second.setVisible(false);
-        p_second.setDisable(true);
-        p_Query.setVisible(true);
-        p_Query.setDisable(false);
+        if(!isUploaded) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please upload the dictionary first");
+            alert.show();
+        }
+        else {
+            p_second.setVisible(false);
+            p_second.setDisable(true);
+            p_Query.setVisible(true);
+            p_Query.setDisable(false);
+        }
     }
 
     public void setQueryPaneBack(){

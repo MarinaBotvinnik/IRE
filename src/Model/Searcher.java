@@ -27,9 +27,9 @@ public class Searcher {
         readFile = new ReadFile(stem);
         d_terms = parser.getTermDic(stem,path);
         d_docs = parser.getDocDic(stem,path);
-        d_entities = findEntities();
+        //d_entities = findEntities();
         this.isSemantic = isSemantic;
-        setAvgLength();
+        //setAvgLength();
         d_docsAndEntitiesForQuery = new HashMap<>();
     }
 
@@ -49,7 +49,7 @@ public class Searcher {
         //for every query that we get DO
         for (Map.Entry<String,String> query: queries.entrySet()) {
             //get the terms of the query
-            String t = parser.parseQuery(query.getValue());
+            String t = parser.parseQuery(query.getValue()).substring(1);
             if(isSemantic){
                 t = semantic(t);
             }
@@ -66,7 +66,7 @@ public class Searcher {
                 if (!d_terms.containsKey(s)) {
                     continue;
                 }
-                String path = d_terms.get(s);
+                String path = d_terms.get(s).split(",")[0];
                 try {
                     File file = new File(path);
                     BufferedReader br = new BufferedReader(new FileReader(file));
@@ -90,7 +90,7 @@ public class Searcher {
                     }
 
                 } catch (IOException e) {
-                    e.getStackTrace();
+                    e.printStackTrace();
                 }
             }
             docLengths = getLengthofDocs(docsForQuery);
