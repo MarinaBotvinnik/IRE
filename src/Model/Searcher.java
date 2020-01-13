@@ -37,7 +37,8 @@ public class Searcher {
         HashSet<String> entities = new HashSet<>();
         for (Map.Entry<String, String > terms : d_terms.entrySet()) {
             String term = terms.getKey();
-            if(Character.isUpperCase(term.indexOf(0))){
+            String[] words = term.split(" ");
+            if(Character.isUpperCase(term.indexOf(0)) && words.length>1){
                 entities.add(term);
             }
         }
@@ -49,11 +50,14 @@ public class Searcher {
         for (Map.Entry<String,String> query: queries.entrySet()) {
             //get the terms of the query
             String t = parser.parseQuery(query.getValue());
+            if(isSemantic){
+                t = semantic(t);
+            }
             String[] terms = t.split(" ");
             HashMap<String,Integer> idf = new HashMap<>(); //***First thing I need for the ranker Term-->idf ****
             HashMap<String,HashMap<String,Integer>> tf= new HashMap<>(); //***Second thing I need for the ranker Term-->DocNO->Tf***
             HashMap<String,HashSet<String>> docs = new HashMap<>(); //***Third thing I need for the ranker Query-->allDocs***
-            HashMap<String,Integer> docLengths = new HashMap<>(); //***Fourth thing I need for the ranker Document-->maxTF***
+            HashMap<String,Integer> docLengths; //***Fourth thing I need for the ranker Document-->maxTF***
             HashSet<String> docsForQuery = new HashSet<>();
             //for every term in the query
             // all terms of query are complete
@@ -149,18 +153,27 @@ public class Searcher {
         return docEntities;
     }
 
-    public void semantic(){
+    public String semantic(String query){
         try {
             Word2VecModel model = Word2VecModel.fromTextFile(new File("Resource/word2vec.c.output.model.txt"));
             com.medallia.word2vec.Searcher semanticSearcher = model.forSearch();
-            int numOfResultInList = 10;
-            List<com.medallia.word2vec.Searcher.Match> matches = semanticSearcher.getMatches("term",numOfResultInList);
-            for (com.medallia.word2vec.Searcher.Match match: matches) {
-                match.match();
+            int numOfResultInList = 2;
+            String[] terms = query.split(" ");
+            StringBuilder queryBuilder = new StringBuilder(query);
+            for (String term: terms) {
+                List<com.medallia.word2vec.Searcher.Match> matches = semanticSearcher.getMatches(term, numOfResultInList);
+                for (com.medallia.word2vec.Searcher.Match match : matches) {
+                    if(match.distance()>0.97){
+                        queryBuilder.append(" ").append(match.match());
+                    }
+                }
             }
+            query = queryBuilder.toString();
+            return query;
 
         } catch (IOException | com.medallia.word2vec.Searcher.UnknownWordException e){
             e.printStackTrace();
+            return null;
         }
 
     }
