@@ -171,4 +171,8 @@ public class ReadFile {
     public void reset(){
         parser.reset();
     }
+
+    public Parse getParser() {
+        return parser;
+    }
 }

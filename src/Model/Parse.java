@@ -835,6 +835,9 @@ public class Parse {
     public HashMap<String,String> getTermDic(boolean stem,String path){
        return indexer.getTermDic(stem,path);
     }
+    public HashMap<String,String> getTermDicWithoutUpload(){
+        return indexer.getTermDicWithoutUpload();
+    }
     public HashMap<String, String> getDocDic(boolean stem, String path){
         return indexer.getDocDic(stem,path);
     }

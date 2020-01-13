@@ -138,7 +138,9 @@ public class BM25 implements RelevanceRanker {
     public double rank(int N, int docSize,double avgDocSize,  String[] terms, int[] tf, int[] n) {
         double r = 0.0;
         for (int i = 0; i < terms.length; i++) {
-            r += score(tf[i], docSize, avgDocSize, N, n[i]);
+            if(n[i]!=0) {
+                r += score(tf[i], docSize, avgDocSize, N, n[i]);
+            }
         }
 
         return r;

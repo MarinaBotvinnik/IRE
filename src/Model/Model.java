@@ -72,7 +72,7 @@ public class Model {
     }
 
     public void search(LinkedHashMap<String,String> queries, boolean isStem, boolean isSemantic, String postingPath) {
-        searcher = new Searcher(isStem,postingPath,isSemantic);
+        searcher = new Searcher(isStem,postingPath,isSemantic,readFile.getParser());
         searcher.search(queries);
     }
 

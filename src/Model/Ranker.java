@@ -17,8 +17,12 @@ public class Ranker {
             int[] idf = new int[terms.length];
             int[] tfs = new int[terms.length];
             for(int i=0; i<terms.length;i++){
-                idf[i] = idfs.get(terms[i]);
-                tfs[i] = tf.get(terms[i]).get(doc);
+                if(idfs.containsKey(terms[i])) {
+                    idf[i] = idfs.get(terms[i]);
+                }
+                if(tf.containsKey(terms[i]) && tf.get(terms[i]).containsKey(doc)) {
+                    tfs[i] = tf.get(terms[i]).get(doc);
+                }
             }
             double ranking = bmFunction.rank(allDocs,docSize,avgLength,terms,tfs,idf);
             allRankings.put(doc,ranking);
@@ -43,7 +47,7 @@ public class Ranker {
         // put data from sorted list to hashmap (the first 50)
         HashMap<String, Double> temp = new LinkedHashMap<>();
         for (Map.Entry<String, Double> doc : list) {
-            if(temp.size()<51) {
+            if(temp.size()<50) {
                 temp.put(doc.getKey(), doc.getValue());
             }
         }

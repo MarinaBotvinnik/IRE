@@ -2,6 +2,7 @@
 package View;
 
 import ViewModel.ViewModel;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -176,10 +177,11 @@ public class mainMenuController {
     public void setP_Answers(){
         ch_queries = new ChoiceBox<>();
         HashSet<String> queries = new HashSet<>(viewModel.getAnswers().keySet());
+        ObservableList<String> add = FXCollections.observableArrayList();
         for (String query: queries) {
-            ch_queries.getItems().add(query);
+            add.add(query);
         }
-
+        ch_queries.setItems(add);
         p_Options.setDisable(true);
         p_Options.setVisible(false);
         p_Answers.setVisible(true);

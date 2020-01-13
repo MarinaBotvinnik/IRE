@@ -19,11 +19,16 @@ public class Searcher {
     private boolean isSemantic;
     private double avgLength;
 
-    public Searcher(boolean stem, String path, boolean isSemantic){
+    public Searcher(boolean stem, String path, boolean isSemantic,Parse parser){
         ranker = new Ranker();
-        parser = new Parse(stem);
-        postingPath = path;
-        d_terms = parser.getTermDic(stem,path);
+        this.parser = parser;
+        if(stem) {
+            postingPath = path+"//Stemming";
+        }
+        else{
+            postingPath = path+"//noStemming";
+        }
+        d_terms = parser.getTermDicWithoutUpload();
         d_docs = parser.getDocDic(stem,path);
         d_entities = findEntities();
         this.isSemantic = isSemantic;
@@ -36,7 +41,7 @@ public class Searcher {
         for (Map.Entry<String, String > terms : d_terms.entrySet()) {
             String term = terms.getKey();
             String[] words = term.split(" ");
-            if(Character.isUpperCase(term.indexOf(0)) && words.length>1){
+            if(Character.isUpperCase(term.charAt(0)) && words.length>1){
                 entities.add(term);
             }
         }
@@ -73,7 +78,7 @@ public class Searcher {
                         String[] termInfo = term.split("[\\[\\]]");
                         //we got the right term from the posting file
                         if (termInfo[0].equalsIgnoreCase(s)) {
-                            idf.put(term, Integer.parseInt(termInfo[1]));
+                            idf.put(s, Integer.parseInt(termInfo[1]));
                             HashMap<String, Integer> allTfs = new HashMap<>();
                             for (int j = 2; j < termInfo.length; j++) {
                                 String[] doc = termInfo[j].split(",");
@@ -84,7 +89,7 @@ public class Searcher {
                                     docsForQuery.add(docNO);
                                 }
                             }
-                            tf.put(term, allTfs);
+                            tf.put(s, allTfs);
                             break;
                         }
                     }
@@ -180,7 +185,7 @@ public class Searcher {
 
     private void setAvgLength() {
         try {
-            File file = new File(this.postingPath + "\\avg");
+            File file = new File(this.postingPath + "\\avg\\avg.txt");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String avgfile;
             double avg=0;

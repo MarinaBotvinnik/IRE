@@ -671,6 +671,11 @@ public class Indexer {
         }
     }
 
+    public HashMap<String,String> getTermDicWithoutUpload(){
+        HashMap<String,String> dic = new HashMap<>(dictionary);
+        return dic;
+    }
+
     public HashMap<String, String> getTermDic(boolean stem, String path) {
         try {
             setStem(stem);
@@ -690,6 +695,7 @@ public class Indexer {
             }
             fis.close();
             inputStream.close();
+            this.dictionary = new ConcurrentHashMap<>(termDicBeforeRemove);
             return termDicFinal;
 
         } catch (Exception e) {
