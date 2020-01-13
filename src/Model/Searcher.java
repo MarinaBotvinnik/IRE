@@ -47,7 +47,7 @@ public class Searcher {
         //for every query that we get DO
         for (Map.Entry<String,String> query: queries.entrySet()) {
             //get the terms of the query
-            String t = parser.parseQuery(query.getValue());
+            String t = parser.parseQuery(query.getValue()).substring(1);
             if(isSemantic){
                 t = semantic(t);
             }
