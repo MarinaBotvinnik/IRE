@@ -11,7 +11,6 @@ public class Searcher {
 
     private Ranker ranker;
     private Parse parser;
-    private ReadFile readFile;
     private String postingPath;
     private HashMap<String,String> d_terms;
     private HashMap<String,String> d_docs;
@@ -24,12 +23,11 @@ public class Searcher {
         ranker = new Ranker();
         parser = new Parse(stem);
         postingPath = path;
-        readFile = new ReadFile(stem);
         d_terms = parser.getTermDic(stem,path);
         d_docs = parser.getDocDic(stem,path);
-        //d_entities = findEntities();
+        d_entities = findEntities();
         this.isSemantic = isSemantic;
-        //setAvgLength();
+        setAvgLength();
         d_docsAndEntitiesForQuery = new HashMap<>();
     }
 
@@ -49,7 +47,7 @@ public class Searcher {
         //for every query that we get DO
         for (Map.Entry<String,String> query: queries.entrySet()) {
             //get the terms of the query
-            String t = parser.parseQuery(query.getValue()).substring(1);
+            String t = parser.parseQuery(query.getValue());
             if(isSemantic){
                 t = semantic(t);
             }
@@ -74,15 +72,17 @@ public class Searcher {
                     while ((term = br.readLine()) != null) {
                         String[] termInfo = term.split("[\\[\\]]");
                         //we got the right term from the posting file
-                        if (termInfo[0].equals(s)) {
+                        if (termInfo[0].equalsIgnoreCase(s)) {
                             idf.put(term, Integer.parseInt(termInfo[1]));
                             HashMap<String, Integer> allTfs = new HashMap<>();
                             for (int j = 2; j < termInfo.length; j++) {
                                 String[] doc = termInfo[j].split(",");
                                 String docNO = doc[0];
-                                int docTF = Integer.parseInt(doc[1]);
-                                allTfs.put(docNO, docTF);
-                                docsForQuery.add(docNO);
+                                if(!docNO.isEmpty()) {
+                                    int docTF = Integer.parseInt(doc[1]);
+                                    allTfs.put(docNO, docTF);
+                                    docsForQuery.add(docNO);
+                                }
                             }
                             tf.put(term, allTfs);
                             break;

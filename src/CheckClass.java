@@ -17,8 +17,8 @@ public class CheckClass extends Application {
 
         //Loading Main Windows
         primaryStage.setTitle("The Engine Search");
-        primaryStage.setWidth(600);
-        primaryStage.setHeight(400);
+        primaryStage.setWidth(650);
+        primaryStage.setHeight(434);
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(getClass().getClassLoader().getResource("mainMenu.fxml").openStream());
         Scene scene = new Scene(root, 600, 400);
