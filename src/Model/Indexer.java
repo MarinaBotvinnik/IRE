@@ -525,7 +525,9 @@ public class Indexer {
 
     private void writeDocsEnts(){
         try {
-            String str = this.path + "/docsents/docsents.ser";
+            File avgFolder = new File(this.path + "\\docsents");
+            avgFolder.mkdir();
+            String str = this.path + "\\docsents\\docsents.ser";
             File docsEntsFile = new File(str);
             docsEntsFile.createNewFile();
             FileOutputStream file = new FileOutputStream(str);
@@ -633,7 +635,7 @@ public class Indexer {
                                 break;
                             } else if (seperated2[0].toLowerCase().compareTo(seperated1[0].toLowerCase()) > 0) {
                                 toWrite.add(line);
-                                toWrite.add(term);
+                                temp.addFirst(term);
                                 appended = true;
                                 break;
                             } else {
