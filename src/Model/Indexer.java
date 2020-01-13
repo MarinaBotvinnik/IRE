@@ -1,5 +1,7 @@
 package Model;
 
+import javafx.util.Pair;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +15,7 @@ import java.util.concurrent.*;
  */
 public class Indexer {
 //    private ExecutorService executor;
+    private volatile ConcurrentHashMap<String,Stack<Pair<String, Integer>>> docEnts;
     private String path;
     private volatile int iteration;
     private volatile int maxDoc;
@@ -36,6 +39,7 @@ public class Indexer {
     public Indexer(boolean stem) {
         path = "";
         iteration = 0;
+        docEnts=new ConcurrentHashMap<>();
         documentsPosting = new ConcurrentHashMap<>();
         documentsDictionary = new ConcurrentHashMap<>();
         dictionary = new ConcurrentHashMap<>();
@@ -296,6 +300,40 @@ public class Indexer {
         }
     }
 
+    private void addEntToEntDocPosting(Term ent, String doc){
+        if(!this.docEnts.containsKey(doc)){
+            this.docEnts.put(doc,new Stack<>());
+            this.docEnts.get(doc).add(new Pair(ent.getTermName(),ent.getDocs().get(doc)));
+        }
+        else{
+            Stack<Pair<String,Integer>> stack=this.docEnts.get(doc);
+            Stack<Pair<String,Integer>> temp=new Stack<>();
+            Pair<String,Integer> entPair=new Pair<>(ent.getTermName(),ent.getDocs().get(doc));
+            while(!stack.empty()){
+                Pair<String,Integer> curr=stack.pop();
+                if(curr.getValue()<=entPair.getValue()){
+                    if(!curr.getKey().equals(entPair.getKey()))
+                        temp.add(curr);
+                    if(stack.isEmpty()) {
+                        stack.add(entPair);
+                        break;
+                    }
+                }
+                else{
+                    stack.add(curr);
+                    temp.add(entPair);
+                    break;
+                }
+            }
+            while(stack.size()<5){
+                if(temp.isEmpty())
+                    break;
+                else
+                    stack.add(temp.pop());
+            }
+        }
+    }
+
     /**
      * Method accepts a potential entity and accepts it as a term if it had been seen in at least
      * one other documents, or saves it in the entity database if it seen it only in one document
@@ -325,17 +363,22 @@ public class Indexer {
                     }
                 }
                 entities.remove(Name);
+                addEntToEntDocPosting(ent,oldDoc);
+                addEntToEntDocPosting(ent,docNo);
                 return true;
             }
             //its entity that appeared more than once but we did'nt write it yet
             else if (posting.containsKey(Name.toLowerCase())) {
                 Term ent = posting.get(Name.toLowerCase());
                 ent.addDocPosition(docNo, position, this.openedDocs);
+                addEntToEntDocPosting(ent,docNo);
                 return true;
             }
             //its an entity that has been written before so we need to update it
             else if (dictionary.containsKey(Name.toUpperCase())) {
-                posting.put(Name.toLowerCase(), new Term(Name.toUpperCase(), docNo, position));
+                Term ent=new Term(Name.toUpperCase(), docNo, position);
+                posting.put(Name.toLowerCase(), ent);
+                addEntToEntDocPosting(ent,docNo);
                 return true;
             }
             //its completely new entity!
@@ -475,8 +518,26 @@ public class Indexer {
         writeDictionary("DocumentsDictionary", documentsDictionary);
         numOfDocs = documentsDictionary.size();
         this.documentsDictionary.clear();
+        writeDocsEnts();
         mergePostingToOne(this.path + "\\Posting");
         writeAverage(this.path + "\\avg");
+    }
+
+    private void writeDocsEnts(){
+        try {
+            File avgFolder = new File(this.path + "\\docsents");
+            avgFolder.mkdir();
+            String str = this.path + "\\docsents\\docsents.ser";
+            File docsEntsFile = new File(str);
+            docsEntsFile.createNewFile();
+            FileOutputStream file = new FileOutputStream(str);
+            ObjectOutputStream outputStream = new ObjectOutputStream(file);
+            outputStream.writeObject(this.docEnts);
+            outputStream.close();
+            file.close();
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
     }
 
     private void writeAverage(String p){
@@ -527,7 +588,7 @@ public class Indexer {
         }
         executor.shutdown();
         try {
-            executor.awaitTermination(1, TimeUnit.HOURS);
+            executor.awaitTermination(2, TimeUnit.HOURS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -546,9 +607,9 @@ public class Indexer {
                 termPostingFile.createNewFile();
                 LinkedList<String> toWrite = new LinkedList<>();
                 for (int i = 0; i < iters.length; i++) {
-                    LinkedList<String> temp = new LinkedList<>(toWrite);
-                    toWrite.clear();
-                    Iterator elementIter = temp.iterator();
+                    LinkedList<String> temp = toWrite;
+                    toWrite=new LinkedList<>();
+                    //Iterator elementIter = temp.iterator();
                     BufferedReader br = new BufferedReader(new FileReader(iters[i]));
                     String line;
                     while ((line = br.readLine()) != null) {
@@ -557,8 +618,8 @@ public class Indexer {
                         String[] seperated1 = line.split("[\\[\\]]");
                         boolean isNew = true;
                         boolean appended = false;
-                        while (elementIter.hasNext()) {
-                            String term = (String) elementIter.next();
+                        while (!temp.isEmpty()) {
+                            String term = temp.remove();
                             String[] seperated2 = term.split("[\\[\\]]");
                             if (seperated2[0].toLowerCase().equals(seperated1[0].toLowerCase())) {
                                 String termName;
@@ -574,7 +635,7 @@ public class Indexer {
                                 break;
                             } else if (seperated2[0].toLowerCase().compareTo(seperated1[0].toLowerCase()) > 0) {
                                 toWrite.add(line);
-                                toWrite.add(term);
+                                temp.addFirst(term);
                                 appended = true;
                                 break;
                             } else {
@@ -586,16 +647,18 @@ public class Indexer {
                         }
                     }
                     br.close();
-                    while (elementIter.hasNext()) {
-                        toWrite.add((String) elementIter.next());
+                    while (!temp.isEmpty()) {
+                        toWrite.add(temp.remove());
                     }
                 }
                 BufferedWriter writer = new BufferedWriter(new FileWriter(secondLetters.getAbsolutePath() + ".txt"));
                 String finalize = "";
                 for (String i : toWrite) {
-                    finalize += i + "\n";
+                    //finalize += i + "\n";
+                    writer.write(i);
+                    writer.newLine();
                 }
-                writer.write(finalize);
+                //writer.write(finalize);
                 writer.close();
                 for (int i = 0; i < iters.length; i++) {
                     iters[i].delete();
