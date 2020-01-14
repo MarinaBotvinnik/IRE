@@ -287,8 +287,6 @@ public class Indexer {
             for (Map.Entry<String, Document> stringIntegerEntry : documentsPosting.entrySet()) {
                 HashMap.Entry pair = stringIntegerEntry;
                 Document document = (Document) pair.getValue();
-                if (document == null || document.getMax_Term_name() == null)
-                    System.out.printf("ohhh nooo document is null");
                 toWrite.append(document.getDocName()).append(",").append(document.getMax_tf()).append(",").append(document.getMax_Term_name()).append(",").append(document.getLength()).append("\n");
                 docLengths.add(document.getLength());
             }
@@ -540,6 +538,7 @@ public class Indexer {
                 }
                 writer.newLine();
             }
+            writer.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -697,6 +696,7 @@ public class Indexer {
                 writer.write(entry.getKey()+","+entry.getValue());
                 writer.newLine();
             }
+            writer.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -721,11 +721,7 @@ public class Indexer {
             String term;
             while ((term = br.readLine()) != null) {
                 String[] info = term.split(",");
-                if(info.length==2) {
-                    System.out.println();
-                    continue;
-                }
-                termDicBeforeRemove.put(info[0],info[1]+","+info[2]);
+                termDicBeforeRemove.put(info[0],info[1]);
             }
             dictionary = termDicBeforeRemove;
             List<String> names = new ArrayList<>();
