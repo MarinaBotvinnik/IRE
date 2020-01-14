@@ -124,9 +124,9 @@ public class ViewModel {
                 String tag = split2[2];
                 String desc ="";
                 for (int i=0; i<split2.length; i++) {
-                    if (split2[i].equals("Description:")) {
+                    if (split2[i].length()>2 && split2[i].contains("Description")) {
                         i++;
-                        while (split2[i] != "Narrative:") {
+                        while (!split2[i].contains("Narrative")) {
                             desc = desc + split2[i];
                             i++;
                         }
