@@ -219,20 +219,20 @@ public class mainMenuController {
 
     public void showAnswers(){
         c_docsAndEnt.clear();
-        HashMap<String,HashMap<String,LinkedHashMap<String,Integer>>> d_docsAndEntitiesForQuery = viewModel.getAnswers();
+        HashMap<String,HashMap<String,LinkedHashMap<String,Double>>> d_docsAndEntitiesForQuery = viewModel.getAnswers();
         String query = ch_queries.getValue();
         if(query.isEmpty()){
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please choose a query!");
             alert.show();
         }
         else{
-            HashMap<String,LinkedHashMap<String,Integer>> docs = d_docsAndEntitiesForQuery.get(query);
+            HashMap<String,LinkedHashMap<String,Double>> docs = d_docsAndEntitiesForQuery.get(query);
             StringBuilder str1 = new StringBuilder();
-            for (Map.Entry<String, LinkedHashMap<String,Integer>> entry : docs.entrySet()) {
+            for (Map.Entry<String, LinkedHashMap<String,Double>> entry : docs.entrySet()) {
                 String docNo = entry.getKey();
-                LinkedHashMap<String,Integer> entities = entry.getValue();
+                LinkedHashMap<String,Double> entities = entry.getValue();
                 str1.append(docNo).append(" -------> ");
-                for (Map.Entry<String, Integer> entry1: entities.entrySet()){
+                for (Map.Entry<String, Double> entry1: entities.entrySet()){
                     String entity = entry1.getKey();
                     str1.append(entity).append(", ");
                 }
