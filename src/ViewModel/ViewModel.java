@@ -19,7 +19,7 @@ public class ViewModel {
     private Model model;
     private LinkedHashMap<String ,String> dictionary;
     private LinkedHashMap<String,String> queries;
-    private LinkedHashSet<String>queriesWithNoDesc;
+    private LinkedHashMap<String,String>queriesWithNoDesc;
 
     /**
      * Constructor of the class
@@ -29,7 +29,7 @@ public class ViewModel {
         dictionary = new LinkedHashMap<>();
         model=null;
         queries = new LinkedHashMap<>();
-        queriesWithNoDesc = new LinkedHashSet<>();
+        queriesWithNoDesc = new LinkedHashMap<>();
     }
 
     /**
@@ -137,7 +137,7 @@ public class ViewModel {
                 }
                 query = split2[0]+desc;
                 finalQueries.put(queryNo,query);
-                this.queriesWithNoDesc.add(split2[0]);
+                this.queriesWithNoDesc.put(split2[0],query);
             }
             return finalQueries;
         }
@@ -161,7 +161,7 @@ public class ViewModel {
         model.writeAns();
     }
 
-    public LinkedHashSet<String> getQueriesWithNoDesc() {
+    public LinkedHashMap<String,String> getQueriesWithNoDesc() {
         return queriesWithNoDesc;
     }
 }

@@ -177,14 +177,14 @@ public class mainMenuController {
     public void setP_Answers(){
         viewModel.writeAns();
         ch_queries = new ChoiceBox<>();
-        LinkedHashSet<String> queries = viewModel.getQueriesWithNoDesc();
+        LinkedHashMap<String,String> queries = viewModel.getQueriesWithNoDesc();
         ObservableList<String> add = FXCollections.observableArrayList();
         String defaultQ="";
-        for (String query: queries) {
+        for (Map.Entry<String,String> query: queries.entrySet()) {
             if(defaultQ.isEmpty()){
-                defaultQ = query;
+                defaultQ = query.getKey();
             }
-            add.add(query);
+            add.add(query.getKey());
         }
         ch_queries = new ChoiceBox<>(add);
         ch_queries.setValue(defaultQ);
@@ -227,13 +227,14 @@ public class mainMenuController {
     public void showAnswers(){
         c_docsAndEnt.clear();
         HashMap<String,HashMap<String,LinkedHashMap<String,Double>>> d_docsAndEntitiesForQuery = viewModel.getAnswers();
+        HashMap<String,String> bidquery = viewModel.getQueriesWithNoDesc();
         String query = ch_queries.getValue();
         if(query.isEmpty()){
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please choose a query!");
             alert.show();
         }
         else{
-            HashMap<String,LinkedHashMap<String,Double>> docs = d_docsAndEntitiesForQuery.get(query);
+            HashMap<String,LinkedHashMap<String,Double>> docs = d_docsAndEntitiesForQuery.get(bidquery.get(query));
             StringBuilder str1 = new StringBuilder();
             for (Map.Entry<String, LinkedHashMap<String,Double>> entry : docs.entrySet()) {
                 String docNo = entry.getKey();
@@ -242,7 +243,8 @@ public class mainMenuController {
                 int count =0;
                 for (Map.Entry<String, Double> entry1: entities.entrySet()){
                     String entity = entry1.getKey();
-                    str1.append(entity).append(" ").append(entry1.getValue()).append(",");
+                    Double rank = Math.floor(entry1.getValue() * 10000) / 10000;
+                    str1.append(entity).append(" ").append(rank).append(",");
                     count++;
                 }
                 if(count ==0){
