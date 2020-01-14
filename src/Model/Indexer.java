@@ -386,7 +386,7 @@ public class Indexer {
                 if (entities.containsKey(Name)) {
                     entities.get(Name).addDocPosition(docNo, position, this.openedDocs);
                 } else {
-                    Term term = new Term(Name, docNo, position);
+                    Term term = new Term(Name.toUpperCase(), docNo, position);
                     entities.put(Name, term);
                 }
                 return false;

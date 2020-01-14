@@ -78,7 +78,8 @@ public class Searcher {
                         String[] termInfo = term.split("[\\[\\]]");
                         //we got the right term from the posting file
                         if (termInfo[0].equalsIgnoreCase(s)) {
-                            idf.put(s, Integer.parseInt(termInfo[1]));
+                            int df=0;
+                            //idf.put(s, Integer.parseInt(termInfo[1]));
                             HashMap<String, Integer> allTfs = new HashMap<>();
                             for (int j = 2; j < termInfo.length; j++) {
                                 String[] doc = termInfo[j].split(",");
@@ -87,8 +88,10 @@ public class Searcher {
                                     int docTF = Integer.parseInt(doc[1]);
                                     allTfs.put(docNO, docTF);
                                     docsForQuery.add(docNO);
+                                    df++;
                                 }
                             }
+                            idf.put(s, df);
                             tf.put(s, allTfs);
                             break;
                         }
