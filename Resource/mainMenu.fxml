@@ -222,7 +222,6 @@
       </Pane>
       <Pane fx:id="p_Answers" disable="true" prefHeight="434.0" prefWidth="650.0" visible="false">
          <children>
-            <ChoiceBox fx:id="ch_queries" layoutX="50.0" layoutY="24.0" prefHeight="25.0" prefWidth="284.0" />
             <TextArea fx:id="c_docsAndEnt" layoutX="50.0" layoutY="99.0" prefHeight="224.0" prefWidth="551.0" />
             <Label layoutX="120.0" layoutY="73.0" text="Documnet ID">
                <font>
@@ -235,7 +234,7 @@
                </font>
             </Label>
             <Button layoutX="280.0" layoutY="339.0" mnemonicParsing="false" onAction="#setOptionsPaneBack" text="Back To Menu" />
-            <Button layoutX="423.0" layoutY="24.0" mnemonicParsing="false" onAction="#showAnswers" text="Show Answers" />
+            <Button layoutX="240.0" layoutY="2.0" mnemonicParsing="false" onAction="#showAnswers" text="Show Answers" />
          </children></Pane>
    </children>
 </AnchorPane>

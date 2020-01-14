@@ -175,13 +175,18 @@ public class mainMenuController {
     }
 
     public void setP_Answers(){
-        ch_queries = new ChoiceBox<>();
         HashSet<String> queries = new HashSet<>(viewModel.getAnswers().keySet());
         ObservableList<String> add = FXCollections.observableArrayList();
+        String defaultQ="";
         for (String query: queries) {
+            if(defaultQ.isEmpty()){
+                defaultQ = query;
+            }
             add.add(query);
         }
-        ch_queries.setItems(add);
+        ch_queries = new ChoiceBox<>(add);
+        ch_queries.setValue(defaultQ);
+        p_Answers.getChildren().add(ch_queries);
         p_Options.setDisable(true);
         p_Options.setVisible(false);
         p_Answers.setVisible(true);
@@ -231,7 +236,7 @@ public class mainMenuController {
             for (Map.Entry<String, LinkedHashMap<String,Integer>> entry : docs.entrySet()) {
                 String docNo = entry.getKey();
                 LinkedHashMap<String,Integer> entities = entry.getValue();
-                str1.append(docNo).append(" -------> ");
+                str1.append(docNo).append("                     ------->                   ");
                 for (Map.Entry<String, Integer> entry1: entities.entrySet()){
                     String entity = entry1.getKey();
                     str1.append(entity).append(", ");
