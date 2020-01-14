@@ -716,10 +716,15 @@ public class Indexer {
         setPath(path);
         Map<String, String> dic;
         try {
-            FileInputStream fis = new FileInputStream(new File(this.path + "/TermDictionary/TermDictionary.ser"));
-            ObjectInputStream inputStream = new ObjectInputStream(fis);
-            dic = (Map) inputStream.readObject();
-            ConcurrentHashMap<String, String> append = new ConcurrentHashMap<>(dic);
+            File file = new File(this.path + "/TermDictionary/TermDictionary.txt");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            HashMap<String, String> termDicBeforeRemove = new HashMap<>();
+            String term;
+            while ((term = br.readLine()) != null) {
+                String[] info = term.split(",");
+                termDicBeforeRemove.put(info[0],info[1]);
+            }
+            ConcurrentHashMap<String, String> append = new ConcurrentHashMap<>(termDicBeforeRemove);
             dictionary = append;
             List<String> names = new ArrayList<>();
             for (Map.Entry<String, String> stringIntegerEntry : dictionary.entrySet()) {
