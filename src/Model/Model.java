@@ -76,7 +76,7 @@ public class Model {
         searcher.search(queries);
     }
 
-    public HashMap<String, HashMap<String, LinkedHashMap<String, Integer>>> getAnswers() {
+    public HashMap<String, HashMap<String, LinkedHashMap<String, Double>>> getAnswers() {
         return searcher.getDocsAndEntitiesForQuery();
     }
 }

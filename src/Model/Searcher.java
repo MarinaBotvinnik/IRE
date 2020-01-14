@@ -1,9 +1,11 @@
 package Model;
 
 import com.medallia.word2vec.Word2VecModel;
+import javafx.util.Pair;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Double.parseDouble;
 
@@ -15,7 +17,7 @@ public class Searcher {
     private HashMap<String,String> d_terms;
     private HashMap<String,String> d_docs;
     private HashSet<String> d_entities;
-    private HashMap<String,HashMap<String,LinkedHashMap<String,Integer>>> d_docsAndEntitiesForQuery;
+    private HashMap<String,HashMap<String,LinkedHashMap<String,Double>>> d_docsAndEntitiesForQuery;
     private boolean isSemantic;
     private double avgLength;
 
@@ -107,7 +109,7 @@ public class Searcher {
         }
     }
 
-    public HashMap<String, HashMap<String, LinkedHashMap<String, Integer>>> getDocsAndEntitiesForQuery() {
+    public HashMap<String, HashMap<String, LinkedHashMap<String, Double>>> getDocsAndEntitiesForQuery() {
         writeQueriesResults();
         return d_docsAndEntitiesForQuery;
     }
@@ -117,7 +119,7 @@ public class Searcher {
             File termPostingFile = new File(this.postingPath+"\\results.txt");
             termPostingFile.createNewFile();
             BufferedWriter writer = new BufferedWriter(new FileWriter(termPostingFile));
-            for (Map.Entry<String, HashMap<String, LinkedHashMap<String, Integer>>> info: d_docsAndEntitiesForQuery.entrySet()) {
+            for (Map.Entry<String, HashMap<String, LinkedHashMap<String, Double>>> info: d_docsAndEntitiesForQuery.entrySet()) {
                 String queryNum = info.getKey();
                 HashSet<String> docs = new HashSet<>(info.getValue().keySet());
                 for (String doc:docs) {
@@ -131,8 +133,20 @@ public class Searcher {
         }
     }
 
-    private HashMap<String,LinkedHashMap<String,Integer>> getEntities(HashMap<String, Double> rankedDocs) {
-        HashMap<String,LinkedHashMap<String,Integer>> docEntities = new HashMap<>();
+    private HashMap<String, LinkedHashMap<String, Double>> getEntities(HashMap<String, Double> rankedDocs) {
+        HashMap<String,LinkedHashMap<String,Double>> docEntities = new HashMap<>();
+        ConcurrentHashMap<String,Stack<Pair<String, Integer>>> tempmap=null;
+        try {
+            FileInputStream fis = new FileInputStream(new File(this.postingPath + "\\docsents\\docsents.ser"));
+            ObjectInputStream inputStream = new ObjectInputStream(fis);
+            tempmap=(ConcurrentHashMap)inputStream.readObject();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         for (Map.Entry<String, Double > docs : rankedDocs.entrySet()) {
             String docNo = docs.getKey();
             String path = d_docs.get(docNo);
@@ -148,8 +162,13 @@ public class Searcher {
                         //String corpusFile = docInfo[4];
                         //String docPath = corpusPath+ "\\" + corpusFile;
                         //LinkedHashMap<String,Integer>ents = readFile.readDoc(docPath,docNo,d_entities);
-                        LinkedHashMap<String,Integer>ents = new LinkedHashMap<>();
-                        ents.put("SHIT",10000);
+                        int maxTf=Integer.parseInt(docInfo[1]);
+                        Stack entStack=tempmap.get(docInfo[0]);
+                        LinkedHashMap<String,Double>ents = new LinkedHashMap<>();
+                        while(!entStack.isEmpty()){
+                            Pair<String, Integer> tempEnt= (Pair<String, Integer>) entStack.pop();
+                            ents.put(tempEnt.getKey(),(((double)tempEnt.getValue())/maxTf));
+                        }
                         docEntities.put(docNo,ents);
                     }
                 }

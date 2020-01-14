@@ -132,10 +132,10 @@ public class ViewModel {
         }
     }
 
-    public HashMap<String, HashMap<String, LinkedHashMap<String, Integer>>> getAnswers() {
-        HashMap<String, HashMap<String, LinkedHashMap<String, Integer>>> queryNums =  model.getAnswers();
-        HashMap<String, HashMap<String, LinkedHashMap<String, Integer>>> queryWords = new HashMap<>();
-        for (Map.Entry<String, HashMap<String, LinkedHashMap<String, Integer>>> query: queryNums.entrySet()) {
+    public HashMap<String, HashMap<String, LinkedHashMap<String, Double>>> getAnswers() {
+        HashMap<String, HashMap<String, LinkedHashMap<String, Double>>> queryNums =  model.getAnswers();
+        HashMap<String, HashMap<String, LinkedHashMap<String, Double>>> queryWords = new HashMap<>();
+        for (Map.Entry<String, HashMap<String, LinkedHashMap<String, Double>>> query: queryNums.entrySet()) {
             String words = this.queries.get(query.getKey());
             queryWords.put(words,query.getValue());
         }
