@@ -54,6 +54,26 @@ public class Searcher {
     private void fillDictionaries() {
         d_docLength = new HashMap<>();
         d_docmaxTF = new HashMap<>();
+        File file = new File(this.postingPath+"\\DocumentsPosting");
+        File[] files = file.listFiles();
+        for (File curr : files) {
+            File[] docfiles = curr.listFiles();
+            for(File docfile : docfiles){
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(docfile));
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String[] seperated=line.split(",");
+                        d_docLength.put(seperated[0],Integer.parseInt(seperated[3]));
+                        d_docmaxTF.put(seperated[0],Integer.parseInt(seperated[1]));
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 
