@@ -287,8 +287,6 @@ public class Indexer {
             for (Map.Entry<String, Document> stringIntegerEntry : documentsPosting.entrySet()) {
                 HashMap.Entry pair = stringIntegerEntry;
                 Document document = (Document) pair.getValue();
-                if (document == null || document.getMax_Term_name() == null)
-                    System.out.printf("ohhh nooo document is null");
                 toWrite.append(document.getDocName()).append(",").append(document.getMax_tf()).append(",").append(document.getMax_Term_name()).append(",").append(document.getLength()).append("\n");
                 docLengths.add(document.getLength());
             }
@@ -540,6 +538,7 @@ public class Indexer {
                 }
                 writer.newLine();
             }
+            writer.close();
         } catch (Exception e) {
             e.getStackTrace();
         }
@@ -697,6 +696,7 @@ public class Indexer {
                 writer.write(entry.getKey()+","+entry.getValue());
                 writer.newLine();
             }
+            writer.close();
         } catch (Exception e) {
             e.getStackTrace();
         }
@@ -714,17 +714,16 @@ public class Indexer {
     public LinkedHashMap<String, String> uploadDictionary(boolean stem, String path) {
         setStem(stem);
         setPath(path);
-        Map<String, String> dic;
         try {
             File file = new File(this.path + "/TermDictionary/TermDictionary.txt");
             BufferedReader br = new BufferedReader(new FileReader(file));
-            HashMap<String, String> termDicBeforeRemove = new HashMap<>();
+            ConcurrentHashMap<String, String> termDicBeforeRemove = new ConcurrentHashMap<>();
             String term;
             while ((term = br.readLine()) != null) {
                 String[] info = term.split(",");
                 termDicBeforeRemove.put(info[0],info[1]);
             }
-            ConcurrentHashMap<String, String> append = new ConcurrentHashMap<>(termDicBeforeRemove);
+            ConcurrentHashMap<String, String> append = termDicBeforeRemove;
             dictionary = append;
             List<String> names = new ArrayList<>();
             for (Map.Entry<String, String> stringIntegerEntry : dictionary.entrySet()) {
