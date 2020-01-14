@@ -527,14 +527,19 @@ public class Indexer {
         try {
             File avgFolder = new File(this.path + "\\docsents");
             avgFolder.mkdir();
-            String str = this.path + "\\docsents\\docsents.ser";
+            String str = this.path + "\\docsents\\docsents.txt";
             File docsEntsFile = new File(str);
             docsEntsFile.createNewFile();
-            FileOutputStream file = new FileOutputStream(str);
-            ObjectOutputStream outputStream = new ObjectOutputStream(file);
-            outputStream.writeObject(this.docEnts);
-            outputStream.close();
-            file.close();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(str));
+            for (Map.Entry<String, Stack<Pair<String,Integer>>> entry : this.docEnts.entrySet()) {
+                writer.write(entry.getKey());
+                Stack temp=entry.getValue();
+                while(!temp.isEmpty()){
+                    Pair<String,Integer> tempPair=(Pair)temp.pop();
+                    writer.write(","+tempPair.getKey()+","+tempPair.getValue());
+                }
+                writer.newLine();
+            }
         } catch (Exception e) {
             e.getStackTrace();
         }
@@ -684,14 +689,14 @@ public class Indexer {
             postingFolder.mkdir();
         }
         try {
-            String str = this.path + "/" + dicName + "/" + dicName + ".ser";
+            String str = this.path + "/" + dicName + "/" + dicName + ".txt";
             File termPostingFile = new File(str);
             termPostingFile.createNewFile();
-            FileOutputStream file = new FileOutputStream(str);
-            ObjectOutputStream outputStream = new ObjectOutputStream(file);
-            outputStream.writeObject(dictionary);
-            outputStream.close();
-            file.close();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(str));
+            for (Map.Entry<String, String> entry : dictionary.entrySet()) {
+                writer.write(entry.getKey()+","+entry.getValue());
+                writer.newLine();
+            }
         } catch (Exception e) {
             e.getStackTrace();
         }
