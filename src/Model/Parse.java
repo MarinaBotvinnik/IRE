@@ -43,12 +43,18 @@ public class Parse {
         indexer = new Indexer(stem);
     }
 
-    public String parseQuery(String text){
+    public String parseQuery(String text,boolean isStem){
         StringBuilder parsed= new StringBuilder();
         String[] splitText = deleteStopWords(text);
         int textLength = splitText.length;
         for (int i = 0; i < textLength; i++) {
             String termTxt = splitText[i];
+            if(isStem){
+                Stemmer stemmer = new Stemmer();
+                stemmer.add(termTxt.toCharArray(), termTxt.length());
+                stemmer.stem();
+                termTxt = stemmer.toString();
+            }
             if (termTxt.length() > 1 && termTxt.charAt(0) == '.' && Character.isDigit(termTxt.charAt(1))) {
                 termTxt = 0 + termTxt;
                 splitText[i] = 0 + termTxt;
@@ -832,32 +838,13 @@ public class Parse {
         this.indexer.write();
     }
 
-    public HashMap<String,String> getTermDic(boolean stem,String path){
-       return indexer.getTermDic(stem,path);
-    }
+//    public HashMap<String,String> getTermDic(boolean stem,String path){
+//       return indexer.getTermDic(stem,path);
+//    }
     public HashMap<String,String> getTermDicWithoutUpload(){
         return indexer.getTermDicWithoutUpload();
     }
-    public HashMap<String, String> getDocDic(boolean stem, String path){
-        return indexer.getDocDic(stem,path);
-    }
 
-    public LinkedHashMap<String, Integer> findEntities(String text, HashSet<String> entities) {
-        HashMap<String,Integer> allEntities = new HashMap<>();
-        String parsedText = parseQuery(text);
-        String[] terms = parsedText.split(" ");
-        for (String term: terms) {
-            if(entities.contains(term)){
-                if(allEntities.containsKey(term)){
-                    allEntities.replace(term,allEntities.get(term)+1);
-                }
-                else{
-                    allEntities.put(term,1);
-                }
-            }
-        }
-        return getTopFive(allEntities);
-    }
 
     private LinkedHashMap<String, Integer> getTopFive(HashMap<String, Integer> allEntities) {
         // Create a list from elements of HashMap

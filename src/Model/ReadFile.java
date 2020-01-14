@@ -106,25 +106,6 @@ public class ReadFile {
         }
     }
 
-    public LinkedHashMap<String,Integer> readDoc(String docPath, String docNO, HashSet<String> entities){
-        try {
-            FileInputStream fis = new FileInputStream(new File(docPath));
-            Document file = Jsoup.parse(fis, null, "", Parser.xmlParser());
-            Elements Documents=file.select("DOC");
-            for(Element doc : Documents){
-                String docNo = doc.select("DOCNO").text();
-                if(docNO.equals(docNo) && doc.select("TEXT").first()!=null){
-                    return parser.findEntities(doc.select("TEXT").text(),entities);
-                }
-            }
-            return null;
-        }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-            return null;
-        }
-    }
-
     /**
      *  Method set the stem value by sending it to th parser
      */

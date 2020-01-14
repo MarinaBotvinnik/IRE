@@ -721,7 +721,7 @@ public class Indexer {
             String term;
             while ((term = br.readLine()) != null) {
                 String[] info = term.split(",");
-                termDicBeforeRemove.put(info[0],info[1]);
+                termDicBeforeRemove.put(info[0],info[1]+","+info[2]);
             }
             dictionary = termDicBeforeRemove;
             List<String> names = new ArrayList<>();

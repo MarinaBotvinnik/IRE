@@ -21,9 +21,11 @@ public class Searcher {
     private boolean isSemantic;
     private double avgLength;
     private HashMap<String,HashMap<String,Integer>> d_docEntities;
+    private boolean isStem;
 
     public Searcher(boolean stem, String path, boolean isSemantic,Parse parser){
         ranker = new Ranker();
+        isStem = stem;
         this.parser = parser;
         if(stem) {
             postingPath = path+"//Stemming";
@@ -91,7 +93,7 @@ public class Searcher {
         //for every query that we get DO
         for (Map.Entry<String,String> query: queries.entrySet()) {
             //get the terms of the query
-            String t = parser.parseQuery(query.getValue()).substring(1);
+            String t = parser.parseQuery(query.getValue(),isStem).substring(1);
             if(isSemantic){
                 t = semantic(t);
             }
@@ -105,10 +107,14 @@ public class Searcher {
             // all terms of query are complete
             for (int i = 0; i < terms.length; i++) {
                 String s = terms[i];
-                if (!d_terms.containsKey(s)) {
-                    continue;
+                String path;
+                if (d_terms.containsKey(s.toLowerCase())) {
+                    path = d_terms.get(s.toLowerCase()).split(",")[0];
                 }
-                String path = d_terms.get(s);
+                else if(d_terms.containsKey(s.toUpperCase())){
+                    path = d_terms.get(s.toUpperCase()).split(",")[0];
+                }
+                else continue;
                 try {
                     File file = new File(path);
                     BufferedReader br = new BufferedReader(new FileReader(file));
@@ -137,6 +143,8 @@ public class Searcher {
                     }
 
                 } catch (IOException e) {
+                    System.out.println(path);
+                    System.out.println(terms[i]);
                     e.printStackTrace();
                 }
             }
@@ -152,10 +160,33 @@ public class Searcher {
 
     public void writeQueriesResults() {
         try{
+            // Create a list from elements of HashMap
+            List<Map.Entry<String, HashMap<String, LinkedHashMap<String, Double>>>> list = new LinkedList<>(d_docsAndEntitiesForQuery.entrySet());
+
+            // Sort the list
+            Collections.sort(list, new Comparator<Map.Entry<String, HashMap<String, LinkedHashMap<String, Double>>>>() {
+                public int compare(Map.Entry<String, HashMap<String, LinkedHashMap<String, Double>>> o1,
+                                   Map.Entry<String, HashMap<String, LinkedHashMap<String, Double>>> o2)
+                {
+                    if(Integer.parseInt(o1.getKey())<Integer.parseInt(o2.getKey())){
+                        return -1;
+                    }
+                    if(Integer.parseInt(o1.getKey())==Integer.parseInt(o2.getKey())){
+                        return 0;
+                    }
+                    else return 1;
+                }
+            });
+
+            // put data from sorted list to hashmap (the first 50)
+            HashMap<String, HashMap<String, LinkedHashMap<String, Double>>> temp = new LinkedHashMap<>();
+            for (Map.Entry<String, HashMap<String, LinkedHashMap<String, Double>>> doc : list) {
+                    temp.put(doc.getKey(), doc.getValue());
+            }
             File termPostingFile = new File(this.postingPath+"\\results.txt");
             termPostingFile.createNewFile();
             BufferedWriter writer = new BufferedWriter(new FileWriter(termPostingFile));
-            for (Map.Entry<String, HashMap<String, LinkedHashMap<String, Double>>> info: d_docsAndEntitiesForQuery.entrySet()) {
+            for (Map.Entry<String, HashMap<String, LinkedHashMap<String, Double>>> info: temp.entrySet()) {
                 String queryNum = info.getKey();
                 HashSet<String> docs = new HashSet<>(info.getValue().keySet());
                 for (String doc:docs) {
@@ -176,10 +207,12 @@ public class Searcher {
             int maxTf = d_docmaxTF.get(docNo);
             HashMap<String,Integer> entStack = d_docEntities.get(docNo);
             LinkedHashMap<String,Double> ents = new LinkedHashMap<>();
-            for (Map.Entry<String,Integer> entry: entStack.entrySet()) {
-                String name = entry.getKey();
-                double rank = (double)entry.getValue() / maxTf;
-                ents.put(name,rank);
+            if(entStack!=null && !entStack.isEmpty()) {
+                for (Map.Entry<String, Integer> entry : entStack.entrySet()) {
+                    String name = entry.getKey();
+                    double rank = (double) entry.getValue() / maxTf;
+                    ents.put(name, rank);
+                }
             }
             docEntities.put(docNo, ents);
         }
@@ -194,8 +227,9 @@ public class Searcher {
             String[] terms = query.split(" ");
             StringBuilder queryBuilder = new StringBuilder(query);
             for (String term: terms) {
-                if (d_terms.containsKey(term)) {
-                    List<com.medallia.word2vec.Searcher.Match> matches = semanticSearcher.getMatches(term, numOfResultInList);
+                if (d_terms.containsKey(term) || d_terms.containsKey(term.toUpperCase()) || d_terms.containsKey(term.toLowerCase())) {
+                    try {
+                        List<com.medallia.word2vec.Searcher.Match> matches = semanticSearcher.getMatches(term, numOfResultInList);
                     int count =0;
                     for (com.medallia.word2vec.Searcher.Match match : matches) {
                         if (match.distance() > 0.9) {
@@ -205,12 +239,15 @@ public class Searcher {
                             }
                         }
                     }
+                    }catch (com.medallia.word2vec.Searcher.UnknownWordException e){
+                        continue;
+                    }
                 }
             }
             query = queryBuilder.toString();
             return query;
 
-        } catch (IOException | com.medallia.word2vec.Searcher.UnknownWordException e){
+        } catch (IOException e){
             e.printStackTrace();
             return null;
         }
