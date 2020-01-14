@@ -21,7 +21,7 @@ public class Searcher {
     private HashMap<String,Integer> d_docmaxTF;
     private boolean isSemantic;
     private double avgLength;
-    ConcurrentHashMap<String,Stack<Pair<String, Integer>>> tempmap;
+    private HashMap<String,HashMap<String,Integer>> d_docEntities;
 
     public Searcher(boolean stem, String path, boolean isSemantic,Parse parser){
         ranker = new Ranker();
@@ -35,18 +35,30 @@ public class Searcher {
         d_terms = parser.getTermDicWithoutUpload();
         d_docs = parser.getDocDic(stem,path);
         fillDictionaries();
+        fillEntities();
         this.isSemantic = isSemantic;
         setAvgLength();
         d_docsAndEntitiesForQuery = new HashMap<>();
+
+    }
+
+    private void fillEntities() {
         try {
-            FileInputStream fis = new FileInputStream(new File(this.postingPath + "\\docsents\\docsents.ser"));
-            ObjectInputStream inputStream = new ObjectInputStream(fis);
-            tempmap=(ConcurrentHashMap)inputStream.readObject();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+            File file = new File(this.postingPath + "/docsents/docsents.txt");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            d_docEntities = new HashMap<>();
+            String term;
+            while ((term = br.readLine()) != null) {
+                String[] info = term.split(",");
+                HashMap<String,Integer> entities = new HashMap<>();
+                for(int i=1;i<info.length;i=i+2){
+                    String entity = info[i];
+                    int rank = Integer.parseInt(info[i+1]);
+                    entities.put(entity,rank);
+                }
+                d_docEntities.put(info[0],entities);
+            }
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -144,13 +156,12 @@ public class Searcher {
         for (Map.Entry<String, Double> docs : rankedDocs.entrySet()) {
             String docNo = docs.getKey();
             int maxTf = d_docmaxTF.get(docNo);
-            Stack entStack = tempmap.get(docNo);
-            LinkedHashMap<String, Double> ents = new LinkedHashMap<>();
-            if (entStack != null) {
-                while (!entStack.isEmpty()) {
-                    Pair<String, Integer> tempEnt = (Pair<String, Integer>) entStack.pop();
-                    ents.put(tempEnt.getKey(), (((double) tempEnt.getValue()) / maxTf));
-                }
+            HashMap<String,Integer> entStack = d_docEntities.get(docNo);
+            LinkedHashMap<String,Double> ents = new LinkedHashMap<>();
+            for (Map.Entry<String,Integer> entry: entStack.entrySet()) {
+                String name = entry.getKey();
+                double rank = (double)entry.getValue() / maxTf;
+                ents.put(name,rank);
             }
             docEntities.put(docNo, ents);
         }
@@ -165,10 +176,16 @@ public class Searcher {
             String[] terms = query.split(" ");
             StringBuilder queryBuilder = new StringBuilder(query);
             for (String term: terms) {
-                List<com.medallia.word2vec.Searcher.Match> matches = semanticSearcher.getMatches(term, numOfResultInList);
-                for (com.medallia.word2vec.Searcher.Match match : matches) {
-                    if(match.distance()>0.97){
-                        queryBuilder.append(" ").append(match.match());
+                if (d_terms.containsKey(term)) {
+                    List<com.medallia.word2vec.Searcher.Match> matches = semanticSearcher.getMatches(term, numOfResultInList);
+                    int count =0;
+                    for (com.medallia.word2vec.Searcher.Match match : matches) {
+                        if (match.distance() > 0.9) {
+                            count++;
+                            if(count>1) {
+                                queryBuilder.append(" ").append(match.match());
+                            }
+                        }
                     }
                 }
             }

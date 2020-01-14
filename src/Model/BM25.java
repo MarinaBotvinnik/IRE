@@ -71,7 +71,7 @@ public class BM25 implements RelevanceRanker {
      * Default constructor with k1 = 1.2, b = 0.75, delta = 1.0.
      */
     public BM25() {
-        this(1.2, 0.75, 1.0);
+        this(2, 0.5, 1.0);
     }
 
     /**
