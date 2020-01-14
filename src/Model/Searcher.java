@@ -110,7 +110,7 @@ public class Searcher {
                 if (!d_terms.containsKey(s)) {
                     continue;
                 }
-                String path = d_terms.get(s).split(",")[0];
+                String path = d_terms.get(s);
                 try {
                     File file = new File(path);
                     BufferedReader br = new BufferedReader(new FileReader(file));
