@@ -96,6 +96,7 @@ public class Searcher {
             String t = parser.parseQuery(query.getValue(),isStem).substring(1);
             if(isSemantic){
                 t = semantic(t);
+                t = parser.parseQuery(t,isStem).substring(1);
             }
             String[] terms = t.split(" ");
             HashMap<String,Integer> idf = new HashMap<>(); //***First thing I need for the ranker Term-->idf ****
