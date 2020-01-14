@@ -175,6 +175,7 @@ public class mainMenuController {
     }
 
     public void setP_Answers(){
+        viewModel.writeAns();
         ch_queries = new ChoiceBox<>();
         HashSet<String> queries = new HashSet<>(viewModel.getAnswers().keySet());
         ObservableList<String> add = FXCollections.observableArrayList();
@@ -237,10 +238,15 @@ public class mainMenuController {
             for (Map.Entry<String, LinkedHashMap<String,Double>> entry : docs.entrySet()) {
                 String docNo = entry.getKey();
                 LinkedHashMap<String,Double> entities = entry.getValue();
-                str1.append(docNo).append("                     ------->                   ");
+                str1.append(docNo).append("               ------->              ");
+                int count =0;
                 for (Map.Entry<String, Double> entry1: entities.entrySet()){
                     String entity = entry1.getKey();
-                    str1.append(entity).append(", ");
+                    str1.append(entity).append(" ").append(entry1.getValue()).append(",");
+                    count++;
+                }
+                if(count ==0){
+                    str1.append("no entities in this document");
                 }
                 str1.append("\n");
             }

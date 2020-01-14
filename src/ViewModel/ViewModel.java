@@ -141,4 +141,8 @@ public class ViewModel {
         }
         return queryWords;
     }
+
+    public void writeAns(){
+        model.writeAns();
+    }
 }

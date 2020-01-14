@@ -79,4 +79,8 @@ public class Model {
     public HashMap<String, HashMap<String, LinkedHashMap<String, Double>>> getAnswers() {
         return searcher.getDocsAndEntitiesForQuery();
     }
+
+    public void writeAns(){
+        searcher.writeQueriesResults();
+    }
 }

@@ -122,11 +122,10 @@ public class Searcher {
     }
 
     public HashMap<String, HashMap<String, LinkedHashMap<String, Double>>> getDocsAndEntitiesForQuery() {
-        writeQueriesResults();
         return d_docsAndEntitiesForQuery;
     }
 
-    private void writeQueriesResults() {
+    public void writeQueriesResults() {
         try{
             File termPostingFile = new File(this.postingPath+"\\results.txt");
             termPostingFile.createNewFile();
@@ -135,7 +134,7 @@ public class Searcher {
                 String queryNum = info.getKey();
                 HashSet<String> docs = new HashSet<>(info.getValue().keySet());
                 for (String doc:docs) {
-                    writer.write(queryNum+" 0 "+doc+" 0 42.38 mt");
+                    writer.write(queryNum+" 0 "+doc+" 0 42.38 mt\n");
                 }
             }
             writer.close();
