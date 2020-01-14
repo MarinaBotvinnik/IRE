@@ -131,6 +131,8 @@ public class mainMenuController {
      * Method that replace pane 3 with pane 2
      */
     public void setBackPane2(){
+        p_Query.setVisible(false);
+        p_Query.setDisable(true);
         p_dictionary.setVisible(false);
         p_dictionary.setDisable(true);
         p_second.setVisible(true);
@@ -141,19 +143,21 @@ public class mainMenuController {
      * Method that replace pane 2 with pane 4
      */
     public void setQueryPane(){
-//        if(!isUploaded) {
-//            Alert alert = new Alert(Alert.AlertType.WARNING, "Please upload the dictionary first");
-//            alert.show();
-//        }
-//        else {
+        if(!isUploaded) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please upload the dictionary first");
+            alert.show();
+        }
+        else {
             p_second.setVisible(false);
             p_second.setDisable(true);
             p_Query.setVisible(true);
             p_Query.setDisable(false);
-        //}
+        }
     }
 
     public void setQueryPaneBack(){
+        tf_OptionA.clear();
+        tf_OptionB.clear();
         p_Options.setDisable(true);
         p_Options.setVisible(false);
         p_Query.setVisible(true);
@@ -176,18 +180,30 @@ public class mainMenuController {
 
     public void setP_Answers(){
         viewModel.writeAns();
+        if(p_Answers.getChildren().contains(ch_queries)){
+            p_Answers.getChildren().remove(ch_queries);
+        }
         ch_queries = new ChoiceBox<>();
-        LinkedHashSet<String> queries = viewModel.getQueriesWithNoDesc();
+        String choose = ch_queryOp.getValue();
+
+        LinkedHashMap<String,String> queries = viewModel.getQueriesWithNoDesc();
         ObservableList<String> add = FXCollections.observableArrayList();
+
         String defaultQ="";
-        for (String query: queries) {
-            if(defaultQ.isEmpty()){
-                defaultQ = query;
+        if(choose.equals("OPTION A")) {
+            for (Map.Entry<String, String> query : queries.entrySet()) {
+                if (defaultQ.isEmpty()) {
+                    defaultQ = query.getKey();
+                }
+                add.add(query.getKey());
             }
-            add.add(query);
+        }
+        else{
+            add.add(tf_OptionB.getText());
         }
         ch_queries = new ChoiceBox<>(add);
         ch_queries.setValue(defaultQ);
+
         p_Answers.getChildren().add(ch_queries);
         p_Options.setDisable(true);
         p_Options.setVisible(false);
@@ -197,6 +213,7 @@ public class mainMenuController {
     }
 
     public void startSearch(){
+        c_docsAndEnt.clear();
         String choose = ch_queryOp.getValue();
         boolean isSemantic = cb_semantic.isSelected();
         // if there is a document of queries
@@ -205,6 +222,7 @@ public class mainMenuController {
             if (optionAText.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "You need to enter a path, or choose another option");
                 alert.show();
+                return;
             }
             else{
                 viewModel.searchQuery(optionAText,true,isStem,isSemantic,postPath);
@@ -216,6 +234,7 @@ public class mainMenuController {
             if (optionBText.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "You need to enter a query, or choose another option");
                 alert.show();
+                return;
             }
             else{
                 viewModel.searchQuery(optionBText,false,isStem, isSemantic, postPath);
@@ -227,13 +246,20 @@ public class mainMenuController {
     public void showAnswers(){
         c_docsAndEnt.clear();
         HashMap<String,HashMap<String,LinkedHashMap<String,Double>>> d_docsAndEntitiesForQuery = viewModel.getAnswers();
+        HashMap<String,String> bidquery = viewModel.getQueriesWithNoDesc();
         String query = ch_queries.getValue();
         if(query.isEmpty()){
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please choose a query!");
             alert.show();
         }
         else{
-            HashMap<String,LinkedHashMap<String,Double>> docs = d_docsAndEntitiesForQuery.get(query);
+            HashMap<String, LinkedHashMap<String, Double>> docs;
+            if(!bidquery.isEmpty()) {
+                docs = d_docsAndEntitiesForQuery.get(bidquery.get(query));
+            }
+            else{
+                docs = d_docsAndEntitiesForQuery.get(query);
+            }
             StringBuilder str1 = new StringBuilder();
             for (Map.Entry<String, LinkedHashMap<String,Double>> entry : docs.entrySet()) {
                 String docNo = entry.getKey();
@@ -242,7 +268,8 @@ public class mainMenuController {
                 int count =0;
                 for (Map.Entry<String, Double> entry1: entities.entrySet()){
                     String entity = entry1.getKey();
-                    str1.append(entity).append(" ").append(entry1.getValue()).append(",");
+                    Double rank = Math.floor(entry1.getValue() * 10000) / 10000;
+                    str1.append(entity).append(" ").append(rank).append(",");
                     count++;
                 }
                 if(count ==0){
