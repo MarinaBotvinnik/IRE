@@ -14,7 +14,6 @@ import java.util.concurrent.*;
  * and creating a posting file and a dictionary for both the terms and documents
  */
 public class Indexer {
-//    private ExecutorService executor;
     private volatile ConcurrentHashMap<String,Stack<Pair<String, Integer>>> docEnts;
     private String path;
     private volatile int iteration;
@@ -49,7 +48,6 @@ public class Indexer {
         maxDoc = 10000;
         docDirectoryNum = 1;
         isStem = stem;
-//        executor = Executors.newFixedThreadPool(8);
         numOfDocs = 0;
         numOfTerms = 0;
         docLengths = new ArrayList<>();
@@ -67,7 +65,7 @@ public class Indexer {
     /**
      * Method returns the number of documents parsed so far
      *
-     * @return
+     * @return number of docs parsed
      */
     public int getNumOfDocs() {
         return numOfDocs;
@@ -181,8 +179,6 @@ public class Indexer {
                 File postingFolder = new File(this.path + "/Posting");
                 postingFolder.mkdir();
             }
-//            Set set = sortedPosting.entrySet();
-//            Iterator it = set.iterator();
             Term currTerm;
             boolean needWrite = false;
             String charAt0 = null;
@@ -226,21 +222,6 @@ public class Indexer {
                     termPostingFile.createNewFile();
                     needWrite = true;
                 }
-//                HashMap<String, Integer> docs = currTerm.getDocs();
-//                HashMap<String, String> positionsList = currTerm.getPositions();
-//                toWrite += currTerm.getTermName() + "[" + docs.size() + "]";
-//                for (Map.Entry<String, Integer> entry : docs.entrySet()) {
-//                    toWrite += "[" + entry.getKey() + "," + entry.getValue() + ",";
-//                    if (!dictionary.containsKey(currTerm.getTermName())) {
-//                        dictionary.put(currTerm.getTermName(), this.path + "\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt" + "," + entry.getValue());
-//                    } else {
-//                        String vals[] = ("" + dictionary.get(currTerm.getTermName())).split(",");
-//                        int tf = Integer.parseInt(vals[1]) + Integer.parseInt("" + entry.getValue());
-//                        dictionary.replace(currTerm.getTermName(), this.path + "\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt" + "," + tf);
-//                    }
-//                    String positions = positionsList.get(entry.getKey());
-//                    toWrite += positions + "]";
-//                }
                 if (!dictionary.containsKey(currTerm.getTermName())) {
                     dictionary.put(currTerm.getTermName(), this.path + "\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt" + "," + currTerm.getTf());
                 } else{
@@ -298,6 +279,12 @@ public class Indexer {
         }
     }
 
+    /**
+     * Method checks if the entity is one of the most frequent entities in the
+     * document. If it is, the method puts the entity in the data base.
+     * @param ent
+     * @param doc
+     */
     private void addEntToEntDocPosting(Term ent, String doc){
         if(!this.docEnts.containsKey(doc)){
             this.docEnts.put(doc,new Stack<>());
@@ -393,8 +380,8 @@ public class Indexer {
     }
 
     /**
-     * Method accepts a document and adds it to the documents dictionary and the document posting held in the ram in this iteration.
-     * if we pass the documents threshold we clear the documents and terms position file to the disk and start a new iteration
+     * Method adds a document to the documents posting database, and removes
+     * the document from the open documnets database (it is now considred close)
      *
      * @param doc
      */
@@ -403,6 +390,10 @@ public class Indexer {
         this.openedDocs.remove(doc.getDocName());
     }
 
+    /**
+     * Method writes all the documents in the current database to the documents dictionary and sends the to a function that writes them to the documents posting.
+     * Method writes sends all the terms currently held in the database to a function that wrties them to the temporary term posting and writes them in the dictionary.
+     */
     public void write() {
         for (Map.Entry<String, Document> stringIntegerEntry : documentsPosting.entrySet()) {
             HashMap.Entry pair = stringIntegerEntry;
@@ -455,10 +446,8 @@ public class Indexer {
     }
 
     /**
-     * Method waits for all the iterations to finish saving their terms to the temporary posting file,
-     * checks if there are anymore documents or terms to save to the disk, and saves the if there are
-     * saves the terms and documents dictionaries to the disk
-     * and calls for the merging function of the temporary posting files
+     * Method checks if there are anymore documents or terms to save to the disk, and saves the terms and documents dictionaries to the disk.
+     * Method calls for the merging function of the temporary posting files
      */
     public void closeIndexer() {
         if (!posting.isEmpty() || !documentsPosting.isEmpty()) {
@@ -521,6 +510,9 @@ public class Indexer {
         writeAverage(this.path + "\\avg");
     }
 
+    /**
+     * Method writes the data base that holds the 5 most frequent entities in each document to the disk
+     */
     private void writeDocsEnts(){
         try {
             File avgFolder = new File(this.path + "\\docsents");
@@ -543,7 +535,10 @@ public class Indexer {
             e.printStackTrace();
         }
     }
-
+    /**
+     * Method writes the average document size to the disk
+     * @param p Path of where we want to save the average
+     */
     private void writeAverage(String p){
         File avgFolder = new File(p);
         avgFolder.mkdir();
@@ -613,7 +608,6 @@ public class Indexer {
                 for (int i = 0; i < iters.length; i++) {
                     LinkedList<String> temp = toWrite;
                     toWrite=new LinkedList<>();
-                    //Iterator elementIter = temp.iterator();
                     BufferedReader br = new BufferedReader(new FileReader(iters[i]));
                     String line;
                     while ((line = br.readLine()) != null) {
@@ -656,13 +650,10 @@ public class Indexer {
                     }
                 }
                 BufferedWriter writer = new BufferedWriter(new FileWriter(secondLetters.getAbsolutePath() + ".txt"));
-                String finalize = "";
                 for (String i : toWrite) {
-                    //finalize += i + "\n";
                     writer.write(i);
                     writer.newLine();
                 }
-                //writer.write(finalize);
                 writer.close();
                 for (int i = 0; i < iters.length; i++) {
                     iters[i].delete();
@@ -745,52 +736,5 @@ public class Indexer {
     public HashMap<String,String> getTermDicWithoutUpload(){
         HashMap<String,String> dic = new HashMap<>(dictionary);
         return dic;
-    }
-
-    public HashMap<String, String> getTermDic(boolean stem, String path) {
-        try {
-            setStem(stem);
-            setPath(path);
-            File file = new File(this.path + "/TermDictionary/TermDictionary.txt");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            HashMap<String, String> termDicBeforeRemove = new HashMap<>();
-            String term;
-            while ((term = br.readLine()) != null) {
-                String[] info = term.split(",");
-                termDicBeforeRemove.put(info[0],info[1]);
-            }
-            HashMap<String, String> termDicFinal = new HashMap<>();
-            for (Map.Entry<String, String> stringIntegerEntry : termDicBeforeRemove.entrySet()) {
-                HashMap.Entry pair = stringIntegerEntry;
-                String termValue = (String) pair.getValue();
-                String[] vals = termValue.split(" ");
-                String termPath = vals[0];
-                termDicFinal.put((String) pair.getKey(), termPath);
-            }
-            this.dictionary = new ConcurrentHashMap<>(termDicBeforeRemove);
-            return termDicFinal;
-
-        } catch (Exception e) {
-            e.getStackTrace();
-            return null;
-        }
-    }
-
-    public HashMap<String, String> getDocDic(boolean stem, String path) {
-        try {
-            setStem(stem);
-            setPath(path);
-            Map<String, String> dic;
-            FileInputStream fis = new FileInputStream(new File(this.path + "/DocumentsDictionary/DocumentsDictionary.ser"));
-            ObjectInputStream inputStream = new ObjectInputStream(fis);
-            dic = (Map) inputStream.readObject();
-            HashMap<String, String> docDic = new HashMap<>(dic);
-            fis.close();
-            inputStream.close();
-            return docDic;
-        } catch (Exception e) {
-            e.getStackTrace();
-            return null;
-        }
     }
 }
