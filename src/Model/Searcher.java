@@ -20,6 +20,7 @@ public class Searcher {
     private HashMap<String,HashMap<String,LinkedHashMap<String,Double>>> d_docsAndEntitiesForQuery;
     private boolean isSemantic;
     private double avgLength;
+    ConcurrentHashMap<String,Stack<Pair<String, Integer>>> tempmap;
 
     public Searcher(boolean stem, String path, boolean isSemantic,Parse parser){
         ranker = new Ranker();
@@ -36,6 +37,17 @@ public class Searcher {
         this.isSemantic = isSemantic;
         setAvgLength();
         d_docsAndEntitiesForQuery = new HashMap<>();
+        try {
+            FileInputStream fis = new FileInputStream(new File(this.postingPath + "\\docsents\\docsents.ser"));
+            ObjectInputStream inputStream = new ObjectInputStream(fis);
+            tempmap=(ConcurrentHashMap)inputStream.readObject();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private HashSet<String> findEntities() {
@@ -135,18 +147,6 @@ public class Searcher {
 
     private HashMap<String, LinkedHashMap<String, Double>> getEntities(HashMap<String, Double> rankedDocs) {
         HashMap<String,LinkedHashMap<String,Double>> docEntities = new HashMap<>();
-        ConcurrentHashMap<String,Stack<Pair<String, Integer>>> tempmap=null;
-        try {
-            FileInputStream fis = new FileInputStream(new File(this.postingPath + "\\docsents\\docsents.ser"));
-            ObjectInputStream inputStream = new ObjectInputStream(fis);
-            tempmap=(ConcurrentHashMap)inputStream.readObject();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
         for (Map.Entry<String, Double > docs : rankedDocs.entrySet()) {
             String docNo = docs.getKey();
             String path = d_docs.get(docNo);
@@ -165,9 +165,11 @@ public class Searcher {
                         int maxTf=Integer.parseInt(docInfo[1]);
                         Stack entStack=tempmap.get(docInfo[0]);
                         LinkedHashMap<String,Double>ents = new LinkedHashMap<>();
-                        while(!entStack.isEmpty()){
-                            Pair<String, Integer> tempEnt= (Pair<String, Integer>) entStack.pop();
-                            ents.put(tempEnt.getKey(),(((double)tempEnt.getValue())/maxTf));
+                        if(entStack!=null) {
+                            while (!entStack.isEmpty()) {
+                                Pair<String, Integer> tempEnt = (Pair<String, Integer>) entStack.pop();
+                                ents.put(tempEnt.getKey(), (((double) tempEnt.getValue()) / maxTf));
+                            }
                         }
                         docEntities.put(docNo,ents);
                     }
