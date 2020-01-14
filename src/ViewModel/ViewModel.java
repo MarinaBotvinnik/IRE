@@ -121,7 +121,19 @@ public class ViewModel {
                 }
                 String query = doc.select("title").text();
                 String[] split2 = query.split("\n");
-                query = split2[0];
+                String tag = split2[2];
+                String desc ="";
+                for (int i=0; i<split2.length; i++) {
+                    if (split2[i].equals("Description:")) {
+                        i++;
+                        while (split2[i] != "Narrative:") {
+                            desc = desc + split2[i];
+                            i++;
+                        }
+                        break;
+                    }
+                }
+                query = split2[0]+desc;
                 finalQueries.put(queryNo,query);
             }
             return finalQueries;

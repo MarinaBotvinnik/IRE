@@ -16,8 +16,9 @@ public class Searcher {
     private String postingPath;
     private HashMap<String,String> d_terms;
     private HashMap<String,String> d_docs;
-    private HashSet<String> d_entities;
     private HashMap<String,HashMap<String,LinkedHashMap<String,Double>>> d_docsAndEntitiesForQuery;
+    private HashMap<String,Integer>d_docLength;
+    private HashMap<String,Integer> d_docmaxTF;
     private boolean isSemantic;
     private double avgLength;
     ConcurrentHashMap<String,Stack<Pair<String, Integer>>> tempmap;
@@ -33,7 +34,7 @@ public class Searcher {
         }
         d_terms = parser.getTermDicWithoutUpload();
         d_docs = parser.getDocDic(stem,path);
-        d_entities = findEntities();
+        fillDictionaries();
         this.isSemantic = isSemantic;
         setAvgLength();
         d_docsAndEntitiesForQuery = new HashMap<>();
@@ -50,17 +51,11 @@ public class Searcher {
         }
     }
 
-    private HashSet<String> findEntities() {
-        HashSet<String> entities = new HashSet<>();
-        for (Map.Entry<String, String > terms : d_terms.entrySet()) {
-            String term = terms.getKey();
-            String[] words = term.split(" ");
-            if(Character.isUpperCase(term.charAt(0)) && words.length>1){
-                entities.add(term);
-            }
-        }
-        return entities;
+    private void fillDictionaries() {
+        d_docLength = new HashMap<>();
+        d_docmaxTF = new HashMap<>();
     }
+
 
     public void search(LinkedHashMap<String,String> queries) {
         //for every query that we get DO
@@ -145,38 +140,19 @@ public class Searcher {
     }
 
     private HashMap<String, LinkedHashMap<String, Double>> getEntities(HashMap<String, Double> rankedDocs) {
-        HashMap<String,LinkedHashMap<String,Double>> docEntities = new HashMap<>();
-        for (Map.Entry<String, Double > docs : rankedDocs.entrySet()) {
+        HashMap<String, LinkedHashMap<String, Double>> docEntities = new HashMap<>();
+        for (Map.Entry<String, Double> docs : rankedDocs.entrySet()) {
             String docNo = docs.getKey();
-            String path = d_docs.get(docNo);
-            try {
-                File file = new File(path);
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String doc;
-                while ((doc = br.readLine()) != null){
-                    String[] docInfo = doc.split(",");
-                    //we got the right doc from the posting file
-                    if(docInfo[0].equals(docNo)){
-                        //NEED TO ADD WHERE THE DOCUMENT IN THE CORPUS
-                        //String corpusFile = docInfo[4];
-                        //String docPath = corpusPath+ "\\" + corpusFile;
-                        //LinkedHashMap<String,Integer>ents = readFile.readDoc(docPath,docNo,d_entities);
-                        int maxTf=Integer.parseInt(docInfo[1]);
-                        Stack entStack=tempmap.get(docInfo[0]);
-                        LinkedHashMap<String,Double>ents = new LinkedHashMap<>();
-                        if(entStack!=null) {
-                            while (!entStack.isEmpty()) {
-                                Pair<String, Integer> tempEnt = (Pair<String, Integer>) entStack.pop();
-                                ents.put(tempEnt.getKey(), (((double) tempEnt.getValue()) / maxTf));
-                            }
-                        }
-                        docEntities.put(docNo,ents);
-                    }
+            int maxTf = d_docmaxTF.get(docNo);
+            Stack entStack = tempmap.get(docNo);
+            LinkedHashMap<String, Double> ents = new LinkedHashMap<>();
+            if (entStack != null) {
+                while (!entStack.isEmpty()) {
+                    Pair<String, Integer> tempEnt = (Pair<String, Integer>) entStack.pop();
+                    ents.put(tempEnt.getKey(), (((double) tempEnt.getValue()) / maxTf));
                 }
             }
-            catch (IOException e){
-                e.getStackTrace();
-            }
+            docEntities.put(docNo, ents);
         }
         return docEntities;
     }
@@ -222,27 +198,10 @@ public class Searcher {
     }
 
     private HashMap<String, Integer> getLengthofDocs(HashSet<String> docsForQuery) {
-        try{
             HashMap<String,Integer> docLength = new HashMap<>();
             for (String docNo: docsForQuery) {
-                String path = d_docs.get(docNo);
-                File file = new File(path);
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String doc;
-                while ((doc = br.readLine()) != null){
-                    String[] docInfo = doc.split(",");
-                    if(docInfo[0].equals(docNo)){
-                        //NEED TO CHANGE THAT TO THE REAL LENGTH
-                        int length = Integer.parseInt(docInfo[3]);
-                        docLength.put(docNo,length);
-                        break;
-                    }
-                }
+                docLength.put(docNo,d_docLength.get(docNo));
             }
             return docLength;
-        }catch (IOException e){
-            e.printStackTrace();
-            return null;
-        }
     }
 }
