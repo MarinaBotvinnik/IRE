@@ -15,7 +15,6 @@ public class Searcher {
     private Parse parser;
     private String postingPath;
     private HashMap<String,String> d_terms;
-    private HashMap<String,String> d_docs;
     private HashMap<String,HashMap<String,LinkedHashMap<String,Double>>> d_docsAndEntitiesForQuery;
     private HashMap<String,Integer>d_docLength;
     private HashMap<String,Integer> d_docmaxTF;
@@ -33,7 +32,6 @@ public class Searcher {
             postingPath = path+"//noStemming";
         }
         d_terms = parser.getTermDicWithoutUpload();
-        d_docs = parser.getDocDic(stem,path);
         fillDictionaries();
         fillEntities();
         this.isSemantic = isSemantic;
@@ -143,7 +141,7 @@ public class Searcher {
                 }
             }
             docLengths = getLengthofDocs(docsForQuery);
-            HashMap<String,Double> rankedDocs = ranker.rank(terms,d_docs.size(),idf,tf,docsForQuery,docLengths,avgLength);
+            HashMap<String,Double> rankedDocs = ranker.rank(terms,d_docLength.size(),idf,tf,docsForQuery,docLengths,avgLength);
             d_docsAndEntitiesForQuery.put(query.getKey(),getEntities(rankedDocs));
         }
     }
@@ -167,7 +165,7 @@ public class Searcher {
             writer.close();
 
         } catch (Exception e) {
-            e.getStackTrace();
+            e.printStackTrace();
         }
     }
 

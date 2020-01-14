@@ -541,7 +541,7 @@ public class Indexer {
                 writer.newLine();
             }
         } catch (Exception e) {
-            e.getStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -562,7 +562,7 @@ public class Indexer {
             writer.close();
 
         } catch (Exception e) {
-            e.getStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -698,7 +698,7 @@ public class Indexer {
                 writer.newLine();
             }
         } catch (Exception e) {
-            e.getStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -714,18 +714,20 @@ public class Indexer {
     public LinkedHashMap<String, String> uploadDictionary(boolean stem, String path) {
         setStem(stem);
         setPath(path);
-        Map<String, String> dic;
         try {
             File file = new File(this.path + "/TermDictionary/TermDictionary.txt");
             BufferedReader br = new BufferedReader(new FileReader(file));
-            HashMap<String, String> termDicBeforeRemove = new HashMap<>();
+            ConcurrentHashMap<String, String> termDicBeforeRemove = new ConcurrentHashMap<>();
             String term;
             while ((term = br.readLine()) != null) {
                 String[] info = term.split(",");
-                termDicBeforeRemove.put(info[0],info[1]);
+                if(info.length==2) {
+                    System.out.println();
+                    continue;
+                }
+                termDicBeforeRemove.put(info[0],info[1]+","+info[2]);
             }
-            ConcurrentHashMap<String, String> append = new ConcurrentHashMap<>(termDicBeforeRemove);
-            dictionary = append;
+            dictionary = termDicBeforeRemove;
             List<String> names = new ArrayList<>();
             for (Map.Entry<String, String> stringIntegerEntry : dictionary.entrySet()) {
                 HashMap.Entry pair = stringIntegerEntry;
@@ -739,7 +741,7 @@ public class Indexer {
             }
             return ordered;
         } catch (Exception e) {
-            e.getStackTrace();
+            e.printStackTrace();
             return null;
         }
     }

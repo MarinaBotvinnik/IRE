@@ -177,7 +177,7 @@ public class mainMenuController {
     public void setP_Answers(){
         viewModel.writeAns();
         ch_queries = new ChoiceBox<>();
-        HashSet<String> queries = new HashSet<>(viewModel.getAnswers().keySet());
+        LinkedHashSet<String> queries = viewModel.getQueriesWithNoDesc();
         ObservableList<String> add = FXCollections.observableArrayList();
         String defaultQ="";
         for (String query: queries) {
