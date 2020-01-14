@@ -93,6 +93,7 @@ public class ViewModel {
     }
 
     public void searchQuery(String query, boolean isPath, boolean isStem, boolean isSemantic, String postPath) {
+        queries.clear();
         if(model == null){
             model = new Model(isStem);
         }
