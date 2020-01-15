@@ -103,8 +103,10 @@ public class Indexer {
         dictionary.clear();
         posting.clear();
         entities.clear();
-        deleteAll(this.path);
         File file = new File(this.path);
+        while(file.listFiles().length!=0) {
+            deleteAll(this.path);
+        }
         if(file.listFiles().length!=0){
             for (File child: file.listFiles()) {
                 child.delete();
