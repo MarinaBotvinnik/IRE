@@ -359,7 +359,7 @@ public class mainMenuController {
      * after the function is complete it will show the proper message
      */
     public void reset(){
-        viewModel.reset();
+        viewModel.reset(isStem,postPath);
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "you reset the system , all posting files were deleted!");
         alert.show();
         setPane1();

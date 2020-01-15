@@ -88,7 +88,11 @@ public class ViewModel {
     /**
      * Method that sends a request to the model to reset the System.
      */
-    public void reset(){
+    public void reset(boolean isStem, String postPath){
+        if(model == null){
+            model = new Model(isStem,postPath);
+        }
+        model.setIndexerPath(postPath);
         model.reset();
     }
 

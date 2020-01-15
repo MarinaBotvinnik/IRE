@@ -105,7 +105,9 @@ public class Indexer {
         entities.clear();
         deleteAll(this.path);
         File file = new File(this.path);
+        File parent=file.getParentFile();
         file.delete();
+        parent.delete();
     }
 
     /**
@@ -115,12 +117,14 @@ public class Indexer {
      */
     private void deleteAll(String filepath) {
         final File folder = new File(filepath);
-        for (final File fileEntry : folder.listFiles()) {
-            if (fileEntry.isDirectory()) {
-                deleteAll(fileEntry.getPath());
-                fileEntry.delete();
-            } else {//I GOT TO THE DOCUMENT
-                fileEntry.delete();
+        if(folder.listFiles()!=null) {
+            for (final File fileEntry : folder.listFiles()) {
+                if (fileEntry.isDirectory()) {
+                    deleteAll(fileEntry.getPath());
+                    fileEntry.delete();
+                } else {//I GOT TO THE DOCUMENT
+                    fileEntry.delete();
+                }
             }
         }
 

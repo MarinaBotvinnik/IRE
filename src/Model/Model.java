@@ -49,6 +49,11 @@ public class Model {
         readFile.setIndexerPath(postingPath);
         readFile.readFile(corpusPath);
     }
+
+    public void setIndexerPath(String postingPath){
+        readFile.setIndexerPath(postingPath);
+    }
+
     /**
      * returns number of documents in the corpus
      * @return
