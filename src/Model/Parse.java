@@ -21,6 +21,7 @@ public class Parse {
      * The method initializes the list of the stop words, and initializes the Indexer with the proper stem value
      *
      * @param stem - true if stem needed, false otherwise
+     * @param path - gives the path to the "stop words" file location
      */
     public Parse(boolean stem, String path) {
         if(stem)
@@ -48,6 +49,12 @@ public class Parse {
         indexer = new Indexer(stem);
     }
 
+    /**
+     * Method accepts a query and parses it
+     * @param text query to be parsed
+     * @param isStem indicates whether the method should also stem the query
+     * @return parsed query
+     */
     public String parseQuery(String text,boolean isStem){
         StringBuilder parsed= new StringBuilder();
         String[] splitText = deleteStopWords(text);
@@ -267,6 +274,14 @@ public class Parse {
 
     }
 
+    /**
+     * Method accepts a term that represents an amount of dollars and parses it according to the rules
+     * we were requested to have
+     * @param splitText the split text we wish to parse
+     * @param i an indexer
+     * @param termTxt the value returned
+     * @return the parsed term
+     */
     private String getAmount(String[] splitText, int i, String termTxt) {
         if (splitText[i + 1].equals("million") || splitText[i + 1].equals("Million") || splitText[i + 1].equals("M") || splitText[i + 1].equals("m")) {
             termTxt = splitText[i] + "M Dollars";
@@ -547,6 +562,15 @@ public class Parse {
         indexer.addDocToDic(document);
     }
 
+    /**
+     * Method accepts a term that represents an amount of dollars and parses it according to the rules
+     * we were requested to have
+     * @param splitText the split text we wish to parse
+     * @param textLength the texts length
+     * @param i an indexer
+     * @param termTxt the value returned
+     * @return the parsed term
+     */
     private String getDollars(String[] splitText, int textLength, int i, String termTxt) {
         String value = splitText[i].substring(1);
         if (value.length() > 1 && value.charAt(0) == '.' && Character.isDigit(value.charAt(1))) {
@@ -846,26 +870,12 @@ public class Parse {
 //    public HashMap<String,String> getTermDic(boolean stem,String path){
 //       return indexer.getTermDic(stem,path);
 //    }
+
+    /**
+     * Method returns the terms dictionary (if its already loaded to the RAM)
+     * @return the terms dictionary
+     */
     public HashMap<String,String> getTermDicWithoutUpload(){
         return indexer.getTermDicWithoutUpload();
-    }
-
-
-    private LinkedHashMap<String, Integer> getTopFive(HashMap<String, Integer> allEntities) {
-        // Create a list from elements of HashMap
-        List<HashMap.Entry<String, Integer> > list = new LinkedList<>(allEntities.entrySet());
-
-        // Sort the list
-        list.sort((o1, o2) -> -(o1.getValue()).compareTo(o2.getValue()));
-
-        // put data from sorted list to hashmap (the first 50)
-        LinkedHashMap<String, Integer> temp = new LinkedHashMap<>();
-        for (Map.Entry<String, Integer> doc : list) {
-            if(temp.size()<6) {
-                temp.put(doc.getKey(), doc.getValue());
-            }
-        }
-
-        return temp;
     }
 }

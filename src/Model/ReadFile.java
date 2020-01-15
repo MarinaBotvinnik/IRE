@@ -153,6 +153,10 @@ public class ReadFile {
         parser.reset();
     }
 
+    /**
+     * Method returns the parser
+     * @return parser
+     */
     public Parse getParser() {
         return parser;
     }

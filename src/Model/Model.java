@@ -50,6 +50,11 @@ public class Model {
         readFile.readFile(corpusPath);
     }
 
+    /**
+     * Method recieves the path to the posting file and sets the indexer path (where it saves
+     * its indexed value)accordingly
+     * @param postingPath
+     */
     public void setIndexerPath(String postingPath){
         readFile.setIndexerPath(postingPath);
     }
@@ -76,15 +81,31 @@ public class Model {
         readFile.reset();
     }
 
+    /**
+     * Method recieves a list of queries, a stem indicator, a semantic indicator and the path to the
+     * posting files, it then creates an new searcher and activates its searching function
+     * @param queries list of queries
+     * @param isStem indicates if the stemmer was activated
+     * @param isSemantic indicates whether to use semantics
+     * @param postingPath the path to the posting file
+     */
     public void search(LinkedHashMap<String,String> queries, boolean isStem, boolean isSemantic, String postingPath) {
         searcher = new Searcher(isStem,postingPath,isSemantic,readFile.getParser());
         searcher.search(queries);
     }
 
+    /**
+     * Method returns the document that were returned from the sent queries
+     * @return documents
+     */
     public HashMap<String, HashMap<String, LinkedHashMap<String, Double>>> getAnswers() {
         return searcher.getDocsAndEntitiesForQuery();
     }
 
+    /**
+     * Method writes the queries results to the given path
+     * @param path
+     */
     public void writeAns(String path){
         searcher.writeQueriesResults(path);
     }

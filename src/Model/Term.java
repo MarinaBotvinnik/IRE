@@ -102,10 +102,18 @@ public class Term {
         }
     }
 
+    /**
+     * return the total amount of times this term appeared in this iteration
+     * @return
+     */
     public int getTf(){
         return this.tf;
     }
 
+    /**
+     *
+     * @return the String representation of the term
+     */
     public String toString() {
         synchronized (this) {
             String temp;

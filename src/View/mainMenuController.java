@@ -181,6 +181,9 @@ public class mainMenuController {
         p_Options.setVisible(true);
     }
 
+    /**
+     * Method sets the pane answer
+     */
     public void setP_Answers(){
         if(p_Answers.getChildren().contains(ch_queries)){
             p_Answers.getChildren().remove(ch_queries);
@@ -214,6 +217,9 @@ public class mainMenuController {
 
     }
 
+    /**
+     * Method checks whether user chose option  A or B and sends to viewModel accordingly
+     */
     public void startSearch(){
         c_docsAndEnt.clear();
         String choose = ch_queryOp.getValue();
@@ -245,6 +251,10 @@ public class mainMenuController {
         setOptionsPane();
     }
 
+    /**
+     * Method starts when "show answer" button is chosen, and it shows the user the result
+     * for the chosen query
+     */
     public void showAnswers(){
         c_docsAndEnt.clear();
         HashMap<String,HashMap<String,LinkedHashMap<String,Double>>> d_docsAndEntitiesForQuery = viewModel.getAnswers();
@@ -312,6 +322,10 @@ public class mainMenuController {
         alert.show();
     }
 
+    /**
+     * Method that begins when "browse" of query is pressed
+     * it will put text of the chosen path to the text field
+     */
     public void browseQuery(){
         tf_OptionA.clear();
         JFileChooser fileChooser = new JFileChooser();

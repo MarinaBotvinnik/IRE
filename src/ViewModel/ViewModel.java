@@ -111,6 +111,13 @@ public class ViewModel {
         model.search(queries,isStem,isSemantic,postPath);
     }
 
+    /**
+     * Method parses the queries, for each query it gets the title (the query itself) and its description and joins them.
+     * in addition, it gets the query number, and creates a map where the key is the query number, and the value its the query with the description.
+     * The method will return the map in the end.
+     * @param path - the path to the queries
+     * @return - map with query numbers and the full queries
+     */
     private LinkedHashMap<String,String> getQueries(String path){
         try {
             LinkedHashMap<String,String> finalQueries = new LinkedHashMap<>();
@@ -152,6 +159,10 @@ public class ViewModel {
         }
     }
 
+    /**
+     *
+     * @return the queries answers
+     */
     public HashMap<String, HashMap<String, LinkedHashMap<String, Double>>> getAnswers() {
         HashMap<String, HashMap<String, LinkedHashMap<String, Double>>> queryNums =  model.getAnswers();
         HashMap<String, HashMap<String, LinkedHashMap<String, Double>>> queryWords = new HashMap<>();

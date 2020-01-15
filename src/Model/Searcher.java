@@ -9,6 +9,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Double.parseDouble;
 
+/**
+ * Class is in charge of searching for the top 50 relevant documents according
+ * to the user's queries and the given index.
+ * The class contains a Ranker instance, a Parser instance, the path to the posting files,
+ * d_terms- terms dictionary, d_docsAndEntitiesForQuery- a database that holds the top 50 documents according to their rate
+ * and their top 5 entities according to appearence inside them, d_docLength- a database that holds all the documents lengths,
+ * d_docmaxTF- holds the number of times the most frequent term appeared in each document, isSemantic-
+ * hold whether or not we should use semantics when ranking the documents, avgLength- average document length,
+ * d_docEntities-a database that holds the top 5 frequent entities that appears in
+ * all the documents in the index documents posting, isStem- whether or not we should stem the query
+ */
 public class Searcher {
 
     private Ranker ranker;
@@ -23,6 +34,13 @@ public class Searcher {
     private HashMap<String,HashMap<String,Integer>> d_docEntities;
     private boolean isStem;
 
+    /**
+     * Constructor initializes some of the databases
+     * @param stem indicates whether we should stem or not
+     * @param path the path to the posting files
+     * @param isSemantic indicates whether we should use semantics
+     * @param parser the parser we will use
+     */
     public Searcher(boolean stem, String path, boolean isSemantic,Parse parser){
         ranker = new Ranker();
         isStem = stem;
@@ -42,6 +60,10 @@ public class Searcher {
 
     }
 
+    /**
+     * Method fills from posting files the 5 most frequent entities that appear
+     * in each document
+     */
     private void fillEntities() {
         try {
             File file = new File(this.postingPath + "/docsents/docsents.txt");
@@ -63,6 +85,10 @@ public class Searcher {
         }
     }
 
+    /**
+     * Method fills from posting files the length of each document and the number of times the
+     * most frequent term appeared in each document
+     */
     private void fillDictionaries() {
         d_docLength = new HashMap<>();
         d_docmaxTF = new HashMap<>();
@@ -88,7 +114,11 @@ public class Searcher {
         }
     }
 
-
+    /**
+     * Method recieves a database filled with the user's queries and fills the database
+     * that holds the top 50 documents relevant to each query
+     * @param queries
+     */
     public void search(LinkedHashMap<String,String> queries) {
         //for every query that we get DO
         for (Map.Entry<String,String> query: queries.entrySet()) {
@@ -154,10 +184,18 @@ public class Searcher {
         }
     }
 
+    /**
+     * Method retuns the database that holds the top 50 documents for each query
+     * @return top 50 documents for each query
+     */
     public HashMap<String, HashMap<String, LinkedHashMap<String, Double>>> getDocsAndEntitiesForQuery() {
         return d_docsAndEntitiesForQuery;
     }
 
+    /**
+     * Method writes the queries results to the given path
+     * @param path path to where we want to save our results
+     */
     public void writeQueriesResults(String path) {
         try{
             // Create a list from elements of HashMap
@@ -200,6 +238,11 @@ public class Searcher {
         }
     }
 
+    /**
+     * Method gets a list of file and returns the top 5 most frequent entities that appeared in each document
+     * @param rankedDocs
+     * @return top 5 most frequent entities that appeared in each document
+     */
     private HashMap<String, LinkedHashMap<String, Double>> getEntities(HashMap<String, Double> rankedDocs) {
         HashMap<String, LinkedHashMap<String, Double>> docEntities = new HashMap<>();
         for (Map.Entry<String, Double> docs : rankedDocs.entrySet()) {
@@ -219,6 +262,11 @@ public class Searcher {
         return docEntities;
     }
 
+    /**
+     * Method accepts a query and adds words to it that resembles to the query words semantically
+     * @param query
+     * @return modified query
+     */
     public String semantic(String query){
         try {
             Word2VecModel model = Word2VecModel.fromTextFile(new File("Resource/word2vec.c.output.model.txt"));
@@ -254,6 +302,9 @@ public class Searcher {
 
     }
 
+    /**
+     * Method accesses the posting files and sets the average document length
+     */
     private void setAvgLength() {
         try {
             File file = new File(this.postingPath + "\\avg\\avg.txt");
@@ -269,6 +320,11 @@ public class Searcher {
         }
     }
 
+    /**
+     * Method documents and returns each document length
+     * @param docsForQuery
+     * @return each document length
+     */
     private HashMap<String, Integer> getLengthofDocs(HashSet<String> docsForQuery) {
             HashMap<String,Integer> docLength = new HashMap<>();
             for (String docNo: docsForQuery) {
