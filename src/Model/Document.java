@@ -109,6 +109,10 @@ public class Document {
         }
     }
 
+    /**
+     * Getter got the length of the document
+     * @return length of the doc
+     */
     public int getLength() {
         return length;
     }

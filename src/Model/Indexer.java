@@ -391,7 +391,7 @@ public class Indexer {
     }
 
     /**
-     * Method writes all the documents in the current database to the documents dictionary and sends the to a function that writes them to the documents posting.
+     * Method writes all the documents in the current database to the documents dictionary and sends to a function that writes them to the documents posting.
      * Method writes sends all the terms currently held in the database to a function that wrties them to the temporary term posting and writes them in the dictionary.
      */
     public void write() {
@@ -733,6 +733,10 @@ public class Indexer {
         }
     }
 
+    /**
+     * getter fot the dictionary of the terms
+     * @return a hash map of all the terms and their path to the disc
+     */
     public HashMap<String,String> getTermDicWithoutUpload(){
         HashMap<String,String> dic = new HashMap<>(dictionary);
         return dic;
