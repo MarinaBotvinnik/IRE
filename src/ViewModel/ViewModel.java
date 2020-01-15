@@ -162,8 +162,8 @@ public class ViewModel {
         return queryWords;
     }
 
-    public void writeAns(){
-        model.writeAns();
+    public void writeAns(String path){
+        model.writeAns(path);
     }
 
     public LinkedHashMap<String,String> getQueriesWithNoDesc() {

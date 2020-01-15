@@ -92,7 +92,6 @@ public class Searcher {
     public void search(LinkedHashMap<String,String> queries) {
         //for every query that we get DO
         for (Map.Entry<String,String> query: queries.entrySet()) {
-            long startTime     = System.nanoTime();
             //get the terms of the query
             String t = parser.parseQuery(query.getValue(),isStem).substring(1);
             if(isSemantic){
@@ -152,12 +151,6 @@ public class Searcher {
             docLengths = getLengthofDocs(docsForQuery);
             HashMap<String,Double> rankedDocs = ranker.rank(terms,d_docLength.size(),idf,tf,docsForQuery,docLengths,avgLength);
             d_docsAndEntitiesForQuery.put(query.getKey(),getEntities(rankedDocs));
-            long endTime = System.nanoTime();
-            long div = 1000000;
-            long totalTime =(endTime-startTime)/div;
-            System.out.println("query no: "+query.getKey());
-            System.out.println("Total time of running(in millis): "+totalTime);
-            System.out.println("Total time of running(in seconds): "+totalTime/1000);
         }
     }
 
@@ -165,7 +158,7 @@ public class Searcher {
         return d_docsAndEntitiesForQuery;
     }
 
-    public void writeQueriesResults() {
+    public void writeQueriesResults(String path) {
         try{
             // Create a list from elements of HashMap
             List<Map.Entry<String, HashMap<String, LinkedHashMap<String, Double>>>> list = new LinkedList<>(d_docsAndEntitiesForQuery.entrySet());
@@ -190,7 +183,7 @@ public class Searcher {
             for (Map.Entry<String, HashMap<String, LinkedHashMap<String, Double>>> doc : list) {
                     temp.put(doc.getKey(), doc.getValue());
             }
-            File termPostingFile = new File(this.postingPath+"\\results.txt");
+            File termPostingFile = new File(path+"\\results.txt");
             termPostingFile.createNewFile();
             BufferedWriter writer = new BufferedWriter(new FileWriter(termPostingFile));
             for (Map.Entry<String, HashMap<String, LinkedHashMap<String, Double>>> info: temp.entrySet()) {

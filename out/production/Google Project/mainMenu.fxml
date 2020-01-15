@@ -194,6 +194,7 @@
                </font>
             </Button>
             <CheckBox fx:id="cb_semantic" layoutX="14.0" layoutY="331.0" mnemonicParsing="false" text="Activate Semantics" />
+            <Button layoutX="14.0" layoutY="359.0" mnemonicParsing="false" onAction="#setBackPane2" text="Back to main menu" />
          </children></Pane>
       <Pane fx:id="p_Options" disable="true" prefHeight="434.0" prefWidth="650.0" visible="false">
          <Button layoutX="130.0" layoutY="161.0" mnemonicParsing="false" onAction="#setP_Answers" prefHeight="59.0" prefWidth="158.0" text="Show Results">
@@ -219,6 +220,9 @@
                <Font name="Berlin Sans FB Demi Bold" size="14.0" />
             </font>
          </Button>
+         <TextField fx:id="tf_saveAns" layoutX="135.0" layoutY="254.0" prefHeight="25.0" prefWidth="283.0" />
+         <Button layoutX="446.0" layoutY="254.0" mnemonicParsing="false" onAction="#browseAns" text="Browse" />
+         <Button layoutX="284.0" layoutY="296.0" mnemonicParsing="false" onAction="#saveAnswers" text="Save Results" />
       </Pane>
       <Pane fx:id="p_Answers" disable="true" prefHeight="434.0" prefWidth="650.0" visible="false">
          <children>

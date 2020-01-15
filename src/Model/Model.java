@@ -85,7 +85,7 @@ public class Model {
         return searcher.getDocsAndEntitiesForQuery();
     }
 
-    public void writeAns(){
-        searcher.writeQueriesResults();
+    public void writeAns(String path){
+        searcher.writeQueriesResults(path);
     }
 }

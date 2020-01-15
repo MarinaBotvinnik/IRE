@@ -22,6 +22,7 @@ public class mainMenuController {
     public TextField tf_postingPath;
     public TextField tf_OptionA;
     public TextField tf_OptionB;
+    public TextField tf_saveAns;
     public CheckBox cb_stem;
     public CheckBox cb_semantic;
     public Pane p_first;
@@ -165,6 +166,7 @@ public class mainMenuController {
     }
 
     public void setOptionsPane(){
+        tf_saveAns.clear();
         p_Query.setVisible(false);
         p_Query.setDisable(true);
         p_Options.setDisable(false);
@@ -172,6 +174,7 @@ public class mainMenuController {
     }
 
     public void setOptionsPaneBack(){
+        tf_saveAns.clear();
         p_Answers.setVisible(false);
         p_Answers.setDisable(true);
         p_Options.setDisable(false);
@@ -179,7 +182,6 @@ public class mainMenuController {
     }
 
     public void setP_Answers(){
-        viewModel.writeAns();
         if(p_Answers.getChildren().contains(ch_queries)){
             p_Answers.getChildren().remove(ch_queries);
         }
@@ -294,6 +296,20 @@ public class mainMenuController {
      */
     public void browsePost(){
         getPath(tf_postingPath);
+    }
+
+    public void browseAns(){getPath(tf_saveAns);}
+
+    public void saveAnswers() {
+        String path = tf_saveAns.getText();
+        if (path.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "You didn't enter a path, Please enter a path before continue");
+            alert.show();
+            return;
+        }
+        viewModel.writeAns(path);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "The answers were save correctly!");
+        alert.show();
     }
 
     public void browseQuery(){
