@@ -7,21 +7,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ed855956-439f-4db6-b857-ae02e384f8d4" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Google_Project_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/Google_Project_jar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/CheckClass.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/CheckClass.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Indexer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Indexer.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Model.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Model.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Parse.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Parse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/ReadFile.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/ReadFile.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Term.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Term.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Google Project/View/mainMenuController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/View/mainMenuController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Google Project/ViewModel/ViewModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/ViewModel/ViewModel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/mainMenu.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/mainMenu.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/Model.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Model.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/Parse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Parse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/Ranker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Ranker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/ReadFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/ReadFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/Searcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Searcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Model/Term.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Term.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/View/mainMenuController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/View/mainMenuController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ViewModel/ViewModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ViewModel/ViewModel.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -77,7 +70,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ViewModel/ViewModel.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="478">
@@ -95,8 +88,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Model/Parse.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="14705">
-              <caret line="879" column="5" selection-start-line="879" selection-start-column="5" selection-end-line="879" selection-end-column="5" />
+            <state relative-caret-position="217">
+              <caret line="648" column="19" selection-start-line="648" selection-start-column="19" selection-end-line="648" selection-end-column="19" />
               <folding>
                 <element signature="e#29992#29993#0" expanded="true" />
                 <element signature="e#30029#30030#0" expanded="true" />
@@ -110,23 +103,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Model/Ranker.java">
+        <entry file="file://$PROJECT_DIR$/src/Model/Indexer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="935">
-              <caret line="55" column="76" selection-start-line="55" selection-start-column="76" selection-end-line="55" selection-end-column="76" />
-              <folding>
-                <element signature="e#255#256#0" expanded="true" />
-                <element signature="e#294#295#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="125">
+              <caret line="90" column="7" selection-start-line="90" selection-start-column="7" selection-end-line="90" selection-end-column="7" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Model/Searcher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="410">
-              <caret line="325" column="35" selection-start-line="325" selection-start-column="35" selection-end-line="325" selection-end-column="35" />
+            <state relative-caret-position="223">
+              <caret line="233" column="6" selection-start-line="233" selection-start-column="6" selection-end-line="233" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -157,7 +146,7 @@
         <entry file="file://$PROJECT_DIR$/src/Model/RelevanceRanker.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="495">
-              <caret line="38" column="22" lean-forward="true" selection-start-line="38" selection-start-column="22" selection-end-line="38" selection-end-column="22" />
+              <caret line="38" column="22" selection-start-line="38" selection-start-column="22" selection-end-line="38" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -262,17 +251,17 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1579115377115" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1579116732757" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Resource/medallia-word2vec-0.10.2-jar-with-dependencies.jar!/" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="SDKs" />
-    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="reference.settings.ide.settings.file-colors" />
   </component>
@@ -496,7 +485,14 @@
       <option name="project" value="LOCAL" />
       <updated>1579109268032</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="jhgjhjhg">
+      <created>1579115401947</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1579115401947</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -577,7 +573,8 @@
     <MESSAGE value="ALLLLL things" />
     <MESSAGE value="lalala" />
     <MESSAGE value="mamama" />
-    <option name="LAST_COMMIT_MESSAGE" value="mamama" />
+    <MESSAGE value="jhgjhjhg" />
+    <option name="LAST_COMMIT_MESSAGE" value="jhgjhjhg" />
   </component>
   <component name="WindowStateProjectService">
     <state x="490" y="231" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1579091974131">
@@ -646,12 +643,6 @@
           <properties />
           <option name="timeStamp" value="141" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Model/Indexer.java</url>
-          <line>109</line>
-          <properties />
-          <option name="timeStamp" value="150" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
@@ -697,13 +688,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Model/Indexer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-10136">
-          <caret line="137" column="20" selection-start-line="137" selection-start-column="20" selection-end-line="137" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Resource/mainMenu.fxml">
       <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
@@ -741,22 +725,7 @@
     <entry file="file://$PROJECT_DIR$/src/Model/RelevanceRanker.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="495">
-          <caret line="38" column="22" lean-forward="true" selection-start-line="38" selection-start-column="22" selection-end-line="38" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Model/Parse.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="14705">
-          <caret line="879" column="5" selection-start-line="879" selection-start-column="5" selection-end-line="879" selection-end-column="5" />
-          <folding>
-            <element signature="e#29992#29993#0" expanded="true" />
-            <element signature="e#30029#30030#0" expanded="true" />
-            <element signature="e#30551#30552#0" expanded="true" />
-            <element signature="e#30582#30583#0" expanded="true" />
-            <element signature="e#40134#40135#0" expanded="true" />
-            <element signature="e#40190#40191#0" expanded="true" />
-          </folding>
+          <caret line="38" column="22" selection-start-line="38" selection-start-column="22" selection-end-line="38" selection-end-column="22" />
         </state>
       </provider>
     </entry>
@@ -774,13 +743,6 @@
             <element signature="e#3422#3423#0" expanded="true" />
             <element signature="e#3472#3473#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Model/Searcher.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="410">
-          <caret line="325" column="35" selection-start-line="325" selection-start-column="35" selection-end-line="325" selection-end-column="35" />
         </state>
       </provider>
     </entry>
@@ -819,6 +781,35 @@
             <element signature="e#5487#5488#0" expanded="true" />
             <element signature="e#5527#5528#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Model/Parse.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="217">
+          <caret line="648" column="19" selection-start-line="648" selection-start-column="19" selection-end-line="648" selection-end-column="19" />
+          <folding>
+            <element signature="e#29992#29993#0" expanded="true" />
+            <element signature="e#30029#30030#0" expanded="true" />
+            <element signature="e#30551#30552#0" expanded="true" />
+            <element signature="e#30582#30583#0" expanded="true" />
+            <element signature="e#40134#40135#0" expanded="true" />
+            <element signature="e#40190#40191#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Model/Indexer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="90" column="7" selection-start-line="90" selection-start-column="7" selection-end-line="90" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Model/Searcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="223">
+          <caret line="233" column="6" selection-start-line="233" selection-start-column="6" selection-end-line="233" selection-end-column="6" />
         </state>
       </provider>
     </entry>

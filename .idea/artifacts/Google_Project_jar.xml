@@ -4,6 +4,7 @@
     <root id="archive" name="Google Project.jar">
       <element id="module-output" name="Google Project" />
       <element id="extracted-dir" path="$PROJECT_DIR$/Resource/jsoup-1.12.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Resource/medallia-word2vec-0.10.2-jar-with-dependencies.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
