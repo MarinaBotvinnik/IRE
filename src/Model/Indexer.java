@@ -105,6 +105,15 @@ public class Indexer {
         entities.clear();
         deleteAll(this.path);
         File file = new File(this.path);
+        if(file.listFiles().length!=0){
+            for (File child: file.listFiles()) {
+                child.delete();
+            }
+        }
+        try {
+            Files.deleteIfExists(Paths.get(this.path + "/stop_words.txt"));
+        }catch (Exception e){
+        }
         File parent=file.getParentFile();
         file.delete();
         parent.delete();
