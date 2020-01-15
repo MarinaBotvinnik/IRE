@@ -39,7 +39,7 @@ public class ViewModel {
      */
     public void uploadDictionary(boolean stem,String path){
         if(model==null) {
-            model = new Model(stem);
+            model = new Model(stem,path);
         }
         dictionary = model.uploadDictionary(stem, path);
     }
@@ -66,7 +66,7 @@ public class ViewModel {
      * @param isStem - true if stem needed, false otherwise
      */
     public void start(String corpusPath,String PostingPath, boolean isStem){
-        this.model = new Model(isStem);
+        this.model = new Model(isStem, corpusPath);
         setStem(isStem);
         model.startPosting(corpusPath,PostingPath);
     }
@@ -95,7 +95,7 @@ public class ViewModel {
     public void searchQuery(String query, boolean isPath, boolean isStem, boolean isSemantic, String postPath) {
         queries.clear();
         if(model == null){
-            model = new Model(isStem);
+            model = new Model(isStem,postPath);
         }
         this.queries.clear();
         if(isPath){

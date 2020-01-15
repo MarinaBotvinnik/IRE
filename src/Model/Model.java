@@ -16,8 +16,8 @@ public class Model {
      * Constructor of the class that initializes the readFile class with the stem value
      * @param isStem - - true if stem needed, false otherwise
      */
-    public Model(boolean isStem) {
-        readFile = new ReadFile(isStem);
+    public Model(boolean isStem, String path) {
+        readFile = new ReadFile(isStem,path);
     }
 
     /**

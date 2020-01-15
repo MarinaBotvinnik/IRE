@@ -16,6 +16,7 @@ import java.util.concurrent.*;
 public class Indexer {
     private volatile ConcurrentHashMap<String,Stack<Pair<String, Integer>>> docEnts;
     private String path;
+    private String stemString;
     private volatile int iteration;
     private volatile int maxDoc;
     private volatile int docDirectoryNum;
@@ -36,6 +37,12 @@ public class Indexer {
      * @param stem - true if words should be stemmed, false otherwise
      */
     public Indexer(boolean stem) {
+        if(stem){
+            this.stemString="\\Stemming";
+        }
+        else{
+            this.stemString="\\noStemming";
+        }
         path = "";
         iteration = 0;
         docEnts=new ConcurrentHashMap<>();
@@ -59,6 +66,12 @@ public class Indexer {
      * @param stem - true if words should be stemmed, false otherwise
      */
     public void setStem(boolean stem) {
+        if(stem){
+            this.stemString="\\Stemming";
+        }
+        else{
+            this.stemString="\\noStemming";
+        }
         isStem = stem;
     }
 
@@ -119,9 +132,7 @@ public class Indexer {
      * @param path
      */
     public void setPath(String path) {
-        if (isStem) {
-            this.path = path + "\\Stemming";
-        } else this.path = path + "\\noStemming";
+        this.path = path + this.stemString;
         File file = new File(this.path);
         if (!file.isDirectory())
             file.mkdir();
@@ -223,11 +234,11 @@ public class Indexer {
                     needWrite = true;
                 }
                 if (!dictionary.containsKey(currTerm.getTermName())) {
-                    dictionary.put(currTerm.getTermName(), this.path + "\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt" + "," + currTerm.getTf());
+                    dictionary.put(currTerm.getTermName(), this.stemString + "\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt" + "," + currTerm.getTf());
                 } else{
                     String vals[] = ("" + dictionary.get(currTerm.getTermName())).split(",");
                         int tf = Integer.parseInt(vals[1]) + Integer.parseInt("" + currTerm.getTf());
-                        dictionary.replace(currTerm.getTermName(), this.path + "\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt" + "," + tf);
+                        dictionary.replace(currTerm.getTermName(), this.stemString + "\\Posting\\" + charAt0 + "\\" + charAt1 + ".txt" + "," + tf);
                 }
                 toWrite +=currTerm.toString()+"\n";
                 if (queue.isEmpty()) {
@@ -398,7 +409,7 @@ public class Indexer {
         for (Map.Entry<String, Document> stringIntegerEntry : documentsPosting.entrySet()) {
             HashMap.Entry pair = stringIntegerEntry;
             Document document = (Document) pair.getValue();
-            String str = this.path + "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + "/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + ".txt";
+            String str = this.stemString + "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + "/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + ".txt";
             documentsDictionary.put(document.getDocName(), str);
         }
         ConcurrentHashMap<String, Document> copy = new ConcurrentHashMap<>(documentsPosting);
@@ -449,12 +460,12 @@ public class Indexer {
      * Method checks if there are anymore documents or terms to save to the disk, and saves the terms and documents dictionaries to the disk.
      * Method calls for the merging function of the temporary posting files
      */
-    public void closeIndexer() {
+    public void closeIndexer(String stopwordPath) {
         if (!posting.isEmpty() || !documentsPosting.isEmpty()) {
             for (Map.Entry<String, Document> stringIntegerEntry : documentsPosting.entrySet()) {
                 HashMap.Entry pair = stringIntegerEntry;
                 Document document = (Document) pair.getValue();
-                String str = this.path + "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + "/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + ".txt";
+                String str =  this.stemString + "/DocumentsPosting/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + "/" + docDirectoryNum + "-" + (docDirectoryNum + maxDoc - 1) + ".txt";
                 documentsDictionary.put(document.getDocName(), str);
             }
             ConcurrentHashMap<String, Document> copy = documentsPosting;
@@ -508,6 +519,13 @@ public class Indexer {
         writeDocsEnts();
         mergePostingToOne(this.path + "\\Posting");
         writeAverage(this.path + "\\avg");
+        try {
+            Path src = Paths.get(stopwordPath);
+            Path dest = Paths.get(this.path + "/stop_words.txt");
+            Files.copy(src, dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -712,7 +730,7 @@ public class Indexer {
             String term;
             while ((term = br.readLine()) != null) {
                 String[] info = term.split(",");
-                termDicBeforeRemove.put(info[0],info[1]+","+info[2]);
+                termDicBeforeRemove.put(info[0],path+info[1]+","+info[2]);
             }
             dictionary = termDicBeforeRemove;
             List<String> names = new ArrayList<>();

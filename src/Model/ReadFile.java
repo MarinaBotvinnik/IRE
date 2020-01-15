@@ -29,9 +29,9 @@ public class ReadFile {
      * Constructor of the class, sets if the words need to be stemmed
      * @param isStem - true if words should be stemmed, false otherwise
      */
-    public ReadFile(boolean isStem) {
+    public ReadFile(boolean isStem, String path) {
         //docMap = new HashMap<>();
-        parser = new Parse(isStem);
+        parser = new Parse(isStem,path);
         docsSent=0;
         max=10000;
         //lock=new ReentrantLock();
