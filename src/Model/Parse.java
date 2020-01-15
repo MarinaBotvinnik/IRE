@@ -23,10 +23,13 @@ public class Parse {
      * @param stem - true if stem needed, false otherwise
      */
     public Parse(boolean stem, String path) {
-        stopwordPath=path+"/stop_words.txt";
+        if(stem)
+            stopwordPath=path+"/Stemming/stop_words.txt";
+        else
+            stopwordPath=path+"/noStemming/stop_words.txt";
         stopWords = new HashSet<>();
         try {
-            BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(path+"/stop_words.txt"), "UTF-8"));
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(stopwordPath), "UTF-8"));
             String st;
             //add all the stop-words in all their ways
             while ((st = buffer.readLine()) != null) {
