@@ -92,6 +92,7 @@ public class Searcher {
     public void search(LinkedHashMap<String,String> queries) {
         //for every query that we get DO
         for (Map.Entry<String,String> query: queries.entrySet()) {
+            long startTime     = System.nanoTime();
             //get the terms of the query
             String t = parser.parseQuery(query.getValue(),isStem).substring(1);
             if(isSemantic){
@@ -151,6 +152,12 @@ public class Searcher {
             docLengths = getLengthofDocs(docsForQuery);
             HashMap<String,Double> rankedDocs = ranker.rank(terms,d_docLength.size(),idf,tf,docsForQuery,docLengths,avgLength);
             d_docsAndEntitiesForQuery.put(query.getKey(),getEntities(rankedDocs));
+            long endTime = System.nanoTime();
+            long div = 1000000;
+            long totalTime =(endTime-startTime)/div;
+            System.out.println("query no: "+query.getKey());
+            System.out.println("Total time of running(in millis): "+totalTime);
+            System.out.println("Total time of running(in seconds): "+totalTime/1000);
         }
     }
 
