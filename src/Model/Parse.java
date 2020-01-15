@@ -41,6 +41,7 @@ public class Parse {
             }
             stopWords.add("<P>");
             stopWords.add("</P>");
+            buffer.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
