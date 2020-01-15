@@ -30,6 +30,10 @@ public class Parse {
             stopwordPath=path+"/noStemming/stop_words.txt";
         stopWords = new HashSet<>();
         try {
+            File file=new File(stopwordPath);
+            if(!file.exists()){
+                stopwordPath=path+"/stop_words.txt";
+            }
             BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(stopwordPath), "UTF-8"));
             String st;
             //add all the stop-words in all their ways

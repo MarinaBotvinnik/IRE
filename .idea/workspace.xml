@@ -7,14 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ed855956-439f-4db6-b857-ae02e384f8d4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Google_Project_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/Google_Project_jar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Model.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Model.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Parse.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Parse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/ReadFile.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/ReadFile.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/Model/Term.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/Model/Term.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/View/mainMenuController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/View/mainMenuController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Google Project/ViewModel/ViewModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Google Project/ViewModel/ViewModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Model/Parse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Parse.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -85,18 +79,24 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Model/Parse.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
-              <caret line="648" column="19" selection-start-line="648" selection-start-column="19" selection-end-line="648" selection-end-column="19" />
+            <state relative-caret-position="306">
+              <caret line="35" column="13" lean-forward="true" selection-start-line="35" selection-start-column="13" selection-end-line="35" selection-end-column="13" />
               <folding>
-                <element signature="e#29992#29993#0" expanded="true" />
-                <element signature="e#30029#30030#0" expanded="true" />
-                <element signature="e#30551#30552#0" expanded="true" />
-                <element signature="e#30582#30583#0" expanded="true" />
-                <element signature="e#40134#40135#0" expanded="true" />
-                <element signature="e#40190#40191#0" expanded="true" />
+                <element signature="e#30567#30568#0" expanded="true" />
+                <element signature="e#31224#31225#0" expanded="true" />
+                <element signature="e#31432#31433#0" expanded="true" />
+                <element signature="e#31632#31633#0" expanded="true" />
+                <element signature="e#31777#31778#0" expanded="true" />
+                <element signature="e#39582#39583#0" expanded="true" />
+                <element signature="e#39939#39940#0" expanded="true" />
+                <element signature="e#39978#39979#0" expanded="true" />
+                <element signature="e#40004#40005#0" expanded="true" />
+                <element signature="e#40040#40041#0" expanded="true" />
+                <element signature="e#40362#40363#0" expanded="true" />
+                <element signature="e#40418#40419#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -111,10 +111,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Model/Searcher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="223">
+            <state relative-caret-position="2416">
               <caret line="233" column="6" selection-start-line="233" selection-start-column="6" selection-end-line="233" selection-end-column="6" />
             </state>
           </provider>
@@ -177,13 +177,13 @@
         <option value="$PROJECT_DIR$/src/CheckClass.java" />
         <option value="$PROJECT_DIR$/Resource/mainMenu.fxml" />
         <option value="$PROJECT_DIR$/src/Model/Model.java" />
-        <option value="$PROJECT_DIR$/src/Model/Parse.java" />
         <option value="$PROJECT_DIR$/src/Model/Ranker.java" />
         <option value="$PROJECT_DIR$/src/Model/ReadFile.java" />
         <option value="$PROJECT_DIR$/src/Model/Searcher.java" />
         <option value="$PROJECT_DIR$/src/Model/Term.java" />
         <option value="$PROJECT_DIR$/src/View/mainMenuController.java" />
         <option value="$PROJECT_DIR$/src/ViewModel/ViewModel.java" />
+        <option value="$PROJECT_DIR$/src/Model/Parse.java" />
       </list>
     </option>
   </component>
@@ -251,7 +251,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1579116732757" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1579119069730" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/Resource/medallia-word2vec-0.10.2-jar-with-dependencies.jar!/" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -492,7 +492,14 @@
       <option name="project" value="LOCAL" />
       <updated>1579115401947</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="jhgjhjhg">
+      <created>1579116746673</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1579116746673</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -504,7 +511,7 @@
       <window_info id="UI Designer" />
       <window_info id="Capture Tool" />
       <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Version Control" />
       <window_info anchor="bottom" id="Terminal" />
@@ -512,8 +519,8 @@
       <window_info anchor="bottom" id="Messages" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.17984831" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.26977247" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.17984831" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.26868907" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -642,6 +649,12 @@
           <line>82</line>
           <properties />
           <option name="timeStamp" value="141" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Model/Parse.java</url>
+          <line>26</line>
+          <properties />
+          <option name="timeStamp" value="152" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -784,21 +797,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Model/Parse.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="648" column="19" selection-start-line="648" selection-start-column="19" selection-end-line="648" selection-end-column="19" />
-          <folding>
-            <element signature="e#29992#29993#0" expanded="true" />
-            <element signature="e#30029#30030#0" expanded="true" />
-            <element signature="e#30551#30552#0" expanded="true" />
-            <element signature="e#30582#30583#0" expanded="true" />
-            <element signature="e#40134#40135#0" expanded="true" />
-            <element signature="e#40190#40191#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Model/Indexer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="125">
@@ -808,8 +806,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Model/Searcher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
+        <state relative-caret-position="2416">
           <caret line="233" column="6" selection-start-line="233" selection-start-column="6" selection-end-line="233" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Model/Parse.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="35" column="13" lean-forward="true" selection-start-line="35" selection-start-column="13" selection-end-line="35" selection-end-column="13" />
+          <folding>
+            <element signature="e#30567#30568#0" expanded="true" />
+            <element signature="e#31224#31225#0" expanded="true" />
+            <element signature="e#31432#31433#0" expanded="true" />
+            <element signature="e#31632#31633#0" expanded="true" />
+            <element signature="e#31777#31778#0" expanded="true" />
+            <element signature="e#39582#39583#0" expanded="true" />
+            <element signature="e#39939#39940#0" expanded="true" />
+            <element signature="e#39978#39979#0" expanded="true" />
+            <element signature="e#40004#40005#0" expanded="true" />
+            <element signature="e#40040#40041#0" expanded="true" />
+            <element signature="e#40362#40363#0" expanded="true" />
+            <element signature="e#40418#40419#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
